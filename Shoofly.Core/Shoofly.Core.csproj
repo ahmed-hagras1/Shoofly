@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shoofly.Data\Shoofly.Data.csproj" />
+    <ProjectReference Include="..\Shoofly.Service\Shoofly.Service.csproj" />
+    <ProjectReference Include="..\Shoofly.Shared\Shoofly.Shared.csproj" />
   </ItemGroup>
 
 </Project>

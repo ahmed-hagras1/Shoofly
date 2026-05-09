@@ -7,8 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shoofly.Core\Shoofly.Core.csproj" />
     <ProjectReference Include="..\Shoofly.Data\Shoofly.Data.csproj" />
+    <ProjectReference Include="..\Shoofly.Infrastructure\Shoofly.Infrastructure.csproj" />
+    <ProjectReference Include="..\Shoofly.Shared\Shoofly.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Abstracts\" />
+    <Folder Include="Implementations\" />
+    <Folder Include="BackgroundServices\" />
   </ItemGroup>
 
 </Project>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shoofly.Data.Enums
+namespace Shoofly.Shared.Enums
 {
     public enum PaymentMethod
     {

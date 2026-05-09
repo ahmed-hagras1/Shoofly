@@ -25,6 +25,13 @@ namespace Shoofly.Data.Entities.Identity
         //public string? Address { get; set; }
         //public string? Country { get; set; }
 
+        // ADD THIS: Store the ISO culture code directly on the user
+        // Default to English (or Arabic, depending on your primary audience)
+        public string PreferredLanguage { get; set; } = "en-US";
+
+        public int CountryId { get; set; }
+        public virtual Country Country { get; set; } = null!;
+
         // Navigation properties
         public virtual ICollection<UserRefreshToken> UserRefreshTokens { get; set; }
         public virtual ICollection<Order> ClientOrders { get; set; }

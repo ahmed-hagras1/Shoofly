@@ -12,4 +12,10 @@
     <ProjectReference Include="..\Shoofly.Shared\Shoofly.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstracts\" />
+    <Folder Include="Implementations\" />
+    <Folder Include="BackgroundServices\" />
+  </ItemGroup>
+
 </Project>

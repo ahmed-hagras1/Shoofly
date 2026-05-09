@@ -128,6 +128,36 @@ namespace Shoofly.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ServiceServiceProvider", b =>
+                {
+                    b.Property<int>("OfferedServicesId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProvidersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("OfferedServicesId", "ProvidersId");
+
+                    b.HasIndex("ProvidersId");
+
+                    b.ToTable("ServiceServiceProvider");
+                });
+
+            modelBuilder.Entity("ServiceTeam", b =>
+                {
+                    b.Property<int>("OfferedServicesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OfferedServicesId", "TeamsId");
+
+                    b.HasIndex("TeamsId");
+
+                    b.ToTable("ServiceTeam");
+                });
+
             modelBuilder.Entity("Shoofly.Data.Entities.Cart", b =>
                 {
                     b.Property<int>("Id")
@@ -188,6 +218,23 @@ namespace Shoofly.Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Shoofly.Data.Entities.Country", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Countries");
+                });
+
             modelBuilder.Entity("Shoofly.Data.Entities.Identity.ApplicationRole", b =>
                 {
                     b.Property<string>("Id")
@@ -227,6 +274,14 @@ namespace Shoofly.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -261,6 +316,10 @@ namespace Shoofly.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("PreferredLanguage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -273,6 +332,8 @@ namespace Shoofly.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CountryId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -282,6 +343,10 @@ namespace Shoofly.Infrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("ApplicationUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Shoofly.Data.Entities.Identity.UserRefreshToken", b =>
@@ -321,6 +386,42 @@ namespace Shoofly.Infrastructure.Migrations
                     b.ToTable("UserRefreshTokens");
                 });
 
+            modelBuilder.Entity("Shoofly.Data.Entities.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("Shoofly.Data.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -332,6 +433,9 @@ namespace Shoofly.Infrastructure.Migrations
                     b.Property<string>("ApartmentNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Area")
                         .HasColumnType("nvarchar(max)");
 
@@ -342,29 +446,28 @@ namespace Shoofly.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("CoordinatorId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Floor")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("HoursSelected")
-                        .HasColumnType("int");
-
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderStatus")
-                        .HasColumnType("int");
+                    b.Property<string>("OrderStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PaymentMethod")
-                        .HasColumnType("int");
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ServeDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
@@ -374,11 +477,87 @@ namespace Shoofly.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApplicationUserId");
+
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("CoordinatorId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.OrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("HoursSelected")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ItemStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProviderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("SubTotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProviderId");
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("Orders");
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId")
+                        .IsUnique();
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Shoofly.Data.Entities.Service", b =>
@@ -395,10 +574,14 @@ namespace Shoofly.Infrastructure.Migrations
                     b.Property<decimal?>("HourlyRateStart")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("PricingType")
-                        .HasColumnType("int");
+                    b.Property<string>("PricingType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("RequiresPhysicalAttendance")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RequiresTeam")
                         .HasColumnType("bit");
 
                     b.Property<decimal?>("ServiceAmountStart")
@@ -438,6 +621,127 @@ namespace Shoofly.Infrastructure.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("SubCategories");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.Team", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LeaderId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Teams");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.Transaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.Coordinator", b =>
+                {
+                    b.HasBaseType("Shoofly.Data.Entities.Identity.ApplicationUser");
+
+                    b.Property<int>("DispatchedOrdersCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DocumentFileUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Salary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasDiscriminator().HasValue("Coordinator");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.ServiceProvider", b =>
+                {
+                    b.HasBaseType("Shoofly.Data.Entities.Identity.ApplicationUser");
+
+                    b.Property<double>("AverageRating")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DocumentFileUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Salary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("TeamId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("AspNetUsers", t =>
+                        {
+                            t.Property("DocumentFileUrl")
+                                .HasColumnName("ServiceProvider_DocumentFileUrl");
+
+                            t.Property("Salary")
+                                .HasColumnName("ServiceProvider_Salary");
+                        });
+
+                    b.HasDiscriminator().HasValue("ServiceProvider");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -491,6 +795,36 @@ namespace Shoofly.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ServiceServiceProvider", b =>
+                {
+                    b.HasOne("Shoofly.Data.Entities.Service", null)
+                        .WithMany()
+                        .HasForeignKey("OfferedServicesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shoofly.Data.Entities.ServiceProvider", null)
+                        .WithMany()
+                        .HasForeignKey("ProvidersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ServiceTeam", b =>
+                {
+                    b.HasOne("Shoofly.Data.Entities.Service", null)
+                        .WithMany()
+                        .HasForeignKey("OfferedServicesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shoofly.Data.Entities.Team", null)
+                        .WithMany()
+                        .HasForeignKey("TeamsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Shoofly.Data.Entities.CartItem", b =>
                 {
                     b.HasOne("Shoofly.Data.Entities.Cart", "Cart")
@@ -500,7 +834,7 @@ namespace Shoofly.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Shoofly.Data.Entities.Service", "Service")
-                        .WithMany()
+                        .WithMany("CartItems")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -508,6 +842,17 @@ namespace Shoofly.Infrastructure.Migrations
                     b.Navigation("Cart");
 
                     b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.Identity.ApplicationUser", b =>
+                {
+                    b.HasOne("Shoofly.Data.Entities.Country", "Country")
+                        .WithMany("Users")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("Shoofly.Data.Entities.Identity.UserRefreshToken", b =>
@@ -521,23 +866,81 @@ namespace Shoofly.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Shoofly.Data.Entities.Notification", b =>
+                {
+                    b.HasOne("Shoofly.Data.Entities.Identity.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Shoofly.Data.Entities.Order", b =>
                 {
-                    b.HasOne("Shoofly.Data.Entities.Identity.ApplicationUser", "Client")
+                    b.HasOne("Shoofly.Data.Entities.Identity.ApplicationUser", null)
                         .WithMany("ClientOrders")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Shoofly.Data.Entities.Identity.ApplicationUser", "Client")
+                        .WithMany()
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Shoofly.Data.Entities.Coordinator", "Coordinator")
+                        .WithMany("ManagedOrders")
+                        .HasForeignKey("CoordinatorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Coordinator");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.OrderItem", b =>
+                {
+                    b.HasOne("Shoofly.Data.Entities.Order", "Order")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shoofly.Data.Entities.ServiceProvider", "Provider")
+                        .WithMany("AssignedTasks")
+                        .HasForeignKey("ProviderId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Shoofly.Data.Entities.Service", "Service")
-                        .WithMany("Orders")
+                        .WithMany("OrderItems")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Client");
+                    b.HasOne("Shoofly.Data.Entities.Team", "AssignedTeam")
+                        .WithMany("AssignedTasks")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("AssignedTeam");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Provider");
 
                     b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.Review", b =>
+                {
+                    b.HasOne("Shoofly.Data.Entities.OrderItem", "OrderItem")
+                        .WithOne("Review")
+                        .HasForeignKey("Shoofly.Data.Entities.Review", "OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderItem");
                 });
 
             modelBuilder.Entity("Shoofly.Data.Entities.Service", b =>
@@ -562,6 +965,34 @@ namespace Shoofly.Infrastructure.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("Shoofly.Data.Entities.Transaction", b =>
+                {
+                    b.HasOne("Shoofly.Data.Entities.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Shoofly.Data.Entities.Identity.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.ServiceProvider", b =>
+                {
+                    b.HasOne("Shoofly.Data.Entities.Team", "Team")
+                        .WithMany("Members")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Team");
+                });
+
             modelBuilder.Entity("Shoofly.Data.Entities.Cart", b =>
                 {
                     b.Navigation("Items");
@@ -572,6 +1003,11 @@ namespace Shoofly.Infrastructure.Migrations
                     b.Navigation("SubCategories");
                 });
 
+            modelBuilder.Entity("Shoofly.Data.Entities.Country", b =>
+                {
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("Shoofly.Data.Entities.Identity.ApplicationUser", b =>
                 {
                     b.Navigation("ClientOrders");
@@ -579,14 +1015,43 @@ namespace Shoofly.Infrastructure.Migrations
                     b.Navigation("UserRefreshTokens");
                 });
 
+            modelBuilder.Entity("Shoofly.Data.Entities.Order", b =>
+                {
+                    b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.OrderItem", b =>
+                {
+                    b.Navigation("Review");
+                });
+
             modelBuilder.Entity("Shoofly.Data.Entities.Service", b =>
                 {
-                    b.Navigation("Orders");
+                    b.Navigation("CartItems");
+
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("Shoofly.Data.Entities.SubCategory", b =>
                 {
                     b.Navigation("Services");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.Team", b =>
+                {
+                    b.Navigation("AssignedTasks");
+
+                    b.Navigation("Members");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.Coordinator", b =>
+                {
+                    b.Navigation("ManagedOrders");
+                });
+
+            modelBuilder.Entity("Shoofly.Data.Entities.ServiceProvider", b =>
+                {
+                    b.Navigation("AssignedTasks");
                 });
 #pragma warning restore 612, 618
         }

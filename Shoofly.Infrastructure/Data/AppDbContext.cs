@@ -23,77 +23,178 @@ namespace Shoofly.Infrastructure.Data
         {
         }
 
+        // --------------------------------------------------------
         // DbSets (Your Tables)
+        // --------------------------------------------------------
         public DbSet<Category> Categories { get; set; }
         public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<Service> Services { get; set; }
+
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
 
-        // Added the UserRefreshTokens table for your JWT logic
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Country> Countries { get; set; }
+
+        // Employee and Team Entities
+        public DbSet<ServiceProvider> ServiceProviders { get; set; }
+        public DbSet<Coordinator> Coordinators { get; set; }
+        public DbSet<Team> Teams { get; set; }
+
         public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // If using IdentityDbContext, you MUST call the base method first
             base.OnModelCreating(modelBuilder);
 
-            // Configure the relationships for the User -> Orders
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Client)
-                .WithMany(u => u.ClientOrders)
-                .HasForeignKey(o => o.ClientId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // 1. Category -> SubCategory (1 to Many)
+            // --------------------------------------------------------
+            // 1. Core Platform Relationships
+            // --------------------------------------------------------
             modelBuilder.Entity<SubCategory>()
                 .HasOne(sc => sc.Category)
                 .WithMany(c => c.SubCategories)
                 .HasForeignKey(sc => sc.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict); // Prevent deleting a category if it has subcategories
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // 2. SubCategory -> Service (1 to Many)
             modelBuilder.Entity<Service>()
                 .HasOne(s => s.SubCategory)
                 .WithMany(sc => sc.Services)
                 .HasForeignKey(s => s.SubCategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 3. Service -> Order (1 to Many)
+            // --------------------------------------------------------
+            // 2. Order & Checkout Relationships
+            // --------------------------------------------------------
             modelBuilder.Entity<Order>()
-                .HasOne(o => o.Service)
-                .WithMany(s => s.Orders)
-                .HasForeignKey(o => o.ServiceId)
-                .OnDelete(DeleteBehavior.Restrict); // CRITICAL: Never delete financial orders even if the service is deleted
+                .HasOne(o => o.Client)
+                .WithMany()
+                .HasForeignKey(o => o.ClientId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // 4. Cart -> CartItem (1 to Many)
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Coordinator)
+                .WithMany(c => c.ManagedOrders)
+                .HasForeignKey(o => o.CoordinatorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Service)
+                .WithMany(s => s.OrderItems)
+                .HasForeignKey(oi => oi.ServiceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Provider)
+                .WithMany(p => p.AssignedTasks)
+                .HasForeignKey(oi => oi.ProviderId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.OrderItem)
+                .WithOne(oi => oi.Review)
+                .HasForeignKey<Review>(r => r.OrderItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // --------------------------------------------------------
+            // 3. Cart Relationships
+            // --------------------------------------------------------
             modelBuilder.Entity<CartItem>()
                 .HasOne(ci => ci.Cart)
                 .WithMany(c => c.Items)
                 .HasForeignKey(ci => ci.CartId)
-                .OnDelete(DeleteBehavior.Cascade); // Safe to cascade: if the cart is cleared, delete the items
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // 5. Service -> CartItem (1 to Many)
             modelBuilder.Entity<CartItem>()
                 .HasOne(ci => ci.Service)
-                .WithMany()
+                .WithMany(s => s.CartItems)
                 .HasForeignKey(ci => ci.ServiceId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 6. Decimal Precision Configuration
-            // EF Core requires you to define the precision for decimal columns to avoid truncation warnings
-            modelBuilder.Entity<Service>()
-                .Property(s => s.ServiceAmountStart)
-                .HasColumnType("decimal(18,2)");
+            // --------------------------------------------------------
+            // 4. Financial & System Relationships
+            // --------------------------------------------------------
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.User)
+                .WithMany()
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Service>()
-                .Property(s => s.HourlyRateStart)
-                .HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.Order)
+                .WithMany()
+                .HasForeignKey(t => t.OrderId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.User)
+                .WithMany()
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // --------------------------------------------------------
+            // 5. Team Relationships
+            // --------------------------------------------------------
+            modelBuilder.Entity<ServiceProvider>()
+                .HasOne(sp => sp.Team)
+                .WithMany(t => t.Members)
+                .HasForeignKey(sp => sp.TeamId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.AssignedTeam)
+                .WithMany(t => t.AssignedTasks)
+                .HasForeignKey(oi => oi.TeamId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Team>()
+                .HasMany(t => t.OfferedServices)
+                .WithMany(s => s.Teams);
+
+            // --------------------------------------------------------
+            // 6. Decimal Precision Configuration (Avoids SQL Warnings)
+            // --------------------------------------------------------
+            modelBuilder.Entity<Service>().Property(s => s.ServiceAmountStart).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Service>().Property(s => s.HourlyRateStart).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Order>().Property(o => o.TotalCost).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<OrderItem>().Property(oi => oi.UnitPrice).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<OrderItem>().Property(oi => oi.SubTotal).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Transaction>().Property(t => t.Amount).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<ServiceProvider>().Property(sp => sp.Salary).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Coordinator>().Property(c => c.Salary).HasColumnType("decimal(18,2)");
+
+            // --------------------------------------------------------
+            // 7. 🟢 Enum to String Conversions (Best Practice)
+            // --------------------------------------------------------
+
+            // Order Enums
+            modelBuilder.Entity<Order>()
+                .Property(o => o.OrderStatus)
+                .HasConversion<string>();
 
             modelBuilder.Entity<Order>()
-                .Property(o => o.TotalCost)
-                .HasColumnType("decimal(18,2)");
+                .Property(o => o.PaymentMethod)
+                .HasConversion<string>();
+
+            // Service Enum
+            modelBuilder.Entity<Service>()
+                .Property(s => s.PricingType)
+                .HasConversion<string>();
+
+            // 🟢 NEW: Transaction Enum
+            modelBuilder.Entity<Transaction>()
+                .Property(t => t.Type) // Assuming your property is named TransactionType
+                .HasConversion<string>();
         }
     }
 }

@@ -1,9 +1,5 @@
-﻿using Shoofly.Data.Enums;
-using System;
+﻿using Shoofly.Shared.Enums;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shoofly.Data.Entities
 {
@@ -17,11 +13,26 @@ namespace Shoofly.Data.Entities
         public PricingType PricingType { get; set; }
         public string? CoverPhoto { get; set; }
 
-        // Foreign Key and Navigation property back to SubCategory
+        public bool RequiresTeam { get; set; } = false;
+
+        // ----------------------------------------------------
+        // Navigation Properties
+        // ----------------------------------------------------
+
+        // 1. Upward Link: Which SubCategory does this belong to?
         public int SubCategoryId { get; set; }
         public virtual SubCategory SubCategory { get; set; } = null!;
 
-        // Navigation property: One Service can be requested in many Orders
-        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+        // 2. Downward Link: Services are now requested inside specific OrderItems!
+        public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
+        // 3. Downward Link (Many-to-Many): Which INDIVIDUAL workers have the skills to do this?
+        public virtual ICollection<ServiceProvider> Providers { get; set; } = new List<ServiceProvider>();
+
+        // 🟢 NEW: Downward Link (Many-to-Many): Which TEAMS have the skills to do this?
+        public virtual ICollection<Team> Teams { get; set; } = new List<Team>();
+
+        // 4. Cart Link: Users add this service to their cart before checking out
+        public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
     }
 }

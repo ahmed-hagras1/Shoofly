@@ -17,5 +17,15 @@ namespace Shoofly.Shared.Resources
         public const string Unauthorized = "Unauthorized";
         public const string BadRequest = "BadRequest";
         public const string UnprocessableEntity = "UnprocessableEntity";
+        public const string InvalidEmailOrPhone = "InvalidEmailOrPhone";
+        public const string PasswordsDoNotMatch = "PasswordsDoNotMatch";
+        public const string UserAlreadyExists = "UserAlreadyExists";
+        public const string PasswordRequirements = "PasswordRequirements";
+        public const string CodeMustBeNumbersOnly = "CodeMustBeNumbersOnly";
+        public const string CodeMustBe6Digits = "CodeMustBe6Digits";
+        public const string AccountVerifiedSuccessfully = "AccountVerifiedSuccessfully";
+        public const string InvalidCode = "InvalidCode";
+        public const string UserNotFound = "UserNotFound";
+
     }
 }

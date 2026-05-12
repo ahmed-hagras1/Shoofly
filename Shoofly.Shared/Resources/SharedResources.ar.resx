@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountVerifiedSuccessfully" xml:space="preserve">
+    <value>تم التحقق من الحساب بنجاح!</value>
+  </data>
   <data name="BadRequest" xml:space="preserve">
     <value>طلب غير صالح</value>
+  </data>
+  <data name="CodeMustBe6Digits" xml:space="preserve">
+    <value>يجب أن يتكون الكود من 6 أرقام بالضبط.</value>
+  </data>
+  <data name="CodeMustBeNumbersOnly" xml:space="preserve">
+    <value>يجب أن يحتوي الكود على أرقام فقط.</value>
   </data>
   <data name="Created" xml:space="preserve">
     <value>تمت عملية الإضافة بنجاح</value>
@@ -126,11 +135,23 @@
   <data name="Deleted" xml:space="preserve">
     <value>تمت عملية الحذف بنجاح</value>
   </data>
+  <data name="InvalidCode" xml:space="preserve">
+    <value>كود غير صحيح أو منتهي الصلاحية.</value>
+  </data>
+  <data name="InvalidEmailOrPhone" xml:space="preserve">
+    <value>يجب إدخال بريد إلكتروني أو رقم هاتف صحيح.</value>
+  </data>
   <data name="NotEmpty" xml:space="preserve">
     <value>يجب ألا يكون هذا الحقل فارغاً</value>
   </data>
   <data name="NotFound" xml:space="preserve">
     <value>لم يتم العثور على بيانات</value>
+  </data>
+  <data name="PasswordRequirements" xml:space="preserve">
+    <value>يجب أن تتكون كلمة المرور من 6 أحرف على الأقل، وأن تحتوي على رقم واحد وحرف صغير واحد على الأقل.</value>
+  </data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>كلمات المرور غير متطابقة.</value>
   </data>
   <data name="Required" xml:space="preserve">
     <value>هذا الحقل مطلوب</value>
@@ -143,5 +164,11 @@
   </data>
   <data name="UnprocessableEntity" xml:space="preserve">
     <value>خطأ في التحقق من صحة البيانات</value>
+  </data>
+  <data name="UserAlreadyExists" xml:space="preserve">
+    <value>هذا البريد الإلكتروني أو رقم الهاتف مسجل بالفعل.</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>المستخدم غير موجود.</value>
   </data>
 </root>

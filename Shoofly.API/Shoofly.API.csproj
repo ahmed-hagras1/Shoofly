@@ -20,8 +20,4 @@
     <ProjectReference Include="..\Shoofly.Shared\Shoofly.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

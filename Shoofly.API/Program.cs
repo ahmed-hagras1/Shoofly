@@ -45,7 +45,7 @@ namespace Shoofly.API
 
                 builder.Services.Configure<RequestLocalizationOptions>(options =>
                 {
-                    options.DefaultRequestCulture = new RequestCulture("ar-EG");
+                    options.DefaultRequestCulture = new RequestCulture("en-US");
                     options.SupportedCultures = supportedCultures;
                     options.SupportedUICultures = supportedCultures;
                     options.ApplyCurrentCultureToResponseHeaders = true;

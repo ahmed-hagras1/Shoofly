@@ -37,7 +37,9 @@ namespace Shoofly.Infrastructure.Dependencies
 
                 // --- User Settings ---
                 // Ensure every user has a unique email
-                options.User.RequireUniqueEmail = true;
+                // Note ==> If you using phone number for registration, you can set this to false and use phone number as the unique identifier instead.
+                // options.User.RequireUniqueEmail = true;
+                options.User.RequireUniqueEmail = false;
             })
             .AddEntityFrameworkStores<AppDbContext>() // Tells Identity to save users in your DB
             .AddDefaultTokenProviders(); // Required for password resets/email confirmation

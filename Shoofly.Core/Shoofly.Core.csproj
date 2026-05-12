@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="16.1.1" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="MediatR" Version="14.1.0" />
@@ -16,6 +17,14 @@
     <ProjectReference Include="..\Shoofly.Data\Shoofly.Data.csproj" />
     <ProjectReference Include="..\Shoofly.Service\Shoofly.Service.csproj" />
     <ProjectReference Include="..\Shoofly.Shared\Shoofly.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Auth\Queries\" />
+    <Folder Include="Features\Client\Queries\Handlers\" />
+    <Folder Include="Features\Client\Queries\Models\" />
+    <Folder Include="Features\Client\Queries\Results\" />
+    <Folder Include="Mapping\Clients\QueryMapping\" />
   </ItemGroup>
 
 </Project>

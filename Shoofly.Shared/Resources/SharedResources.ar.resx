@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountAlreadyVerified" xml:space="preserve">
+    <value>هذا الحساب مفعل بالفعل.</value>
+  </data>
+  <data name="AccountIsDisabled" xml:space="preserve">
+    <value>تم إلغاء تنشيط هذا الحساب، يرجى التواصل مع مسؤول النظام.</value>
+  </data>
   <data name="AccountVerifiedSuccessfully" xml:space="preserve">
     <value>تم التحقق من الحساب بنجاح!</value>
+  </data>
+  <data name="AllSessionsRevokedSuccessfully" xml:space="preserve">
+    <value>تم إنهاء جميع الجلسات النشطة بنجاح.</value>
   </data>
   <data name="BadRequest" xml:space="preserve">
     <value>طلب غير صالح</value>
@@ -135,11 +144,26 @@
   <data name="Deleted" xml:space="preserve">
     <value>تمت عملية الحذف بنجاح</value>
   </data>
+  <data name="EmailNotConfirmed" xml:space="preserve">
+    <value>لم يتم تفعيل البريد الإلكتروني الخاص بك بعد.</value>
+  </data>
+  <data name="EmailOrPasswordIsWrong" xml:space="preserve">
+    <value>خطأ في البريد الإلكتروني أو كلمة المرور.</value>
+  </data>
   <data name="InvalidCode" xml:space="preserve">
     <value>كود غير صحيح أو منتهي الصلاحية.</value>
   </data>
   <data name="InvalidEmailOrPhone" xml:space="preserve">
     <value>يجب إدخال بريد إلكتروني أو رقم هاتف صحيح.</value>
+  </data>
+  <data name="LoggedOutSuccessfully" xml:space="preserve">
+    <value>تم تسجيل الخروج بنجاح.</value>
+  </data>
+  <data name="MaximumLength" xml:space="preserve">
+    <value>لا يمكن أن يتجاوز هذا الحقل 100 حرف.</value>
+  </data>
+  <data name="NoActiveSessionsFound" xml:space="preserve">
+    <value>لم يتم العثور على جلسات نشطة لهذا المستخدم.</value>
   </data>
   <data name="NotEmpty" xml:space="preserve">
     <value>يجب ألا يكون هذا الحقل فارغاً</value>
@@ -153,11 +177,26 @@
   <data name="PasswordsDoNotMatch" xml:space="preserve">
     <value>كلمات المرور غير متطابقة.</value>
   </data>
+  <data name="PhoneNotConfirmed" xml:space="preserve">
+    <value>لم يتم تفعيل رقم الهاتف الخاص بك بعد.</value>
+  </data>
   <data name="Required" xml:space="preserve">
     <value>هذا الحقل مطلوب</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>تمت العملية بنجاح</value>
+  </data>
+  <data name="TokenAlreadyRevoked" xml:space="preserve">
+    <value>هذا الرمز ملغى بالفعل.</value>
+  </data>
+  <data name="TokenIsInvalid" xml:space="preserve">
+    <value>رمز الأمان غير صالح أو انتهت صلاحيته.</value>
+  </data>
+  <data name="TokenNotFound" xml:space="preserve">
+    <value>الجلسة غير موجودة أو تم إغلاقها بالفعل.</value>
+  </data>
+  <data name="TokenRevokedSuccessfully" xml:space="preserve">
+    <value>تم إلغاء صلاحية الرمز بنجاح.</value>
   </data>
   <data name="Unauthorized" xml:space="preserve">
     <value>وصول غير مصرح به</value>

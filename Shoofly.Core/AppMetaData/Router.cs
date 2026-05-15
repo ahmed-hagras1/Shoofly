@@ -24,6 +24,12 @@ namespace Shoofly.Core.AppMetaData
         {
             public const string Prefix = Rule + "Auth";
             public const string VerifyCode = Prefix + "/VerifyCode";
+            public const string SignIn = Prefix + "/SignIn";
+            public const string Logout = Prefix + "/Logout";
+            public const string ResendCode = Prefix + "/ResendCode";
+            public const string RefreshToken = Prefix + "/RefreshToken";
+            public const string RevokeToken = Prefix + "/RevokeToken";
+            public const string RevokeAllSessions = Prefix + "/RevokeAllSessions";
             // Final URL: api/v1/Auth/VerifyCode
         }
     }

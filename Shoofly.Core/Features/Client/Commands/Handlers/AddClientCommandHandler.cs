@@ -73,7 +73,7 @@ namespace Shoofly.Core.Features.Client.Commands.Handlers
 
             // This forces the server to wait for 10 seconds. 
             // If you cancel during this time, it throws an error and stops!
-            await Task.Delay(10000, cancellationToken);
+            //await Task.Delay(10000, cancellationToken);
 
             if (isEmail)
             {

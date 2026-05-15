@@ -11,6 +11,7 @@ namespace Shoofly.Service.Dependencies
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ISmsService, SmsService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             return services;
         }

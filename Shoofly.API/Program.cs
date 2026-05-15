@@ -28,7 +28,20 @@ namespace Shoofly.API
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
 
-                #region Dependency injection.
+                // ENABLE CORS
+                // This allows the Frontend (React, Angular, Flutter, etc.) 
+                // to communicate with your API from any domain.
+                builder.Services.AddCors(options =>
+                {
+                    options.AddPolicy("AllowAll", policy =>
+                    {
+                        policy.AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowAnyOrigin();
+                    });
+                });
+
+                #region Dependency Injection
                 builder.Services.AddInfrastructureDependencies(builder.Configuration)
                     .AddServiceDependencies()
                     .AddCoreDependencies()
@@ -54,27 +67,40 @@ namespace Shoofly.API
 
                 var app = builder.Build();
 
-                //  ERROR HANDLER (MUST BE FIRST)
+                // 🛑 MIDDLEWARE ORDER (CRITICAL)
+
+                // Error Handler must be first to catch exceptions from all following layers
                 app.UseMiddleware<ErrorHandlerMiddleware>();
+
+                // Move HttpsRedirection up to ensure local SSL works before routing
+                app.UseHttpsRedirection();
+
+                // Enable CORS Policy
+                // This must come before Authentication and MapControllers
+                app.UseCors("AllowAll");
 
                 app.UseRequestLocalization();
 
-                // Configure the HTTP request pipeline.
-                if (app.Environment.IsDevelopment())
+                // EXPOSE SWAGGER IN ALL ENVIRONMENTS
+                // We removed the 'if (app.Environment.IsDevelopment())' check 
+                // so your frontend partner can see the documentation on the host.
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
                 {
-                    app.UseSwagger();
-                    app.UseSwaggerUI();
-                }
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Shoofly API V1");
+
+                    // This makes Swagger the default home page (e.g., https://your-app.com/)
+                    options.RoutePrefix = string.Empty;
+                });
 
                 app.UseHttpsRedirection();
 
-                // AUTHENTICATION
-                app.UseAuthentication(); // <-- CRITICAL: Must be added before Authorization
+                // AUTHENTICATION & AUTHORIZATION
+                app.UseAuthentication();
                 app.UseAuthorization();
 
                 app.MapControllers();
 
-                // SEEDING BLOCK
                 #region Seeding Database
                 using (var scope = app.Services.CreateScope())
                 {
@@ -85,41 +111,26 @@ namespace Shoofly.API
                         var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
                         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
-                        // ---------------------------------------------------
-                        // STEP 1: Independent Tables (No Foreign Keys)
-                        // ---------------------------------------------------
+                        // Seed data in order of dependency
                         await CountrySeeder.SeedAsync(dbContext);
                         await CategorySeeder.SeedAsync(dbContext);
-                        await RoleSeeder.SeedAsync(roleManager); // Roles don't depend on users
-
-                        // ---------------------------------------------------
-                        // STEP 2: Level 1 Dependencies
-                        // ---------------------------------------------------
-                        // SubCategories require Categories to exist first
+                        await RoleSeeder.SeedAsync(roleManager);
                         await SubCategorySeeder.SeedAsync(dbContext);
-
-                        // Users require Roles to exist first (so we can assign them)
                         await UserSeeder.SeedAsync(userManager, dbContext);
-
-                        // ---------------------------------------------------
-                        // STEP 3: Level 2 Dependencies
-                        // ---------------------------------------------------
-                        // Services require SubCategories to exist first
                         await ServiceSeeder.SeedAsync(dbContext);
                     }
                     catch (Exception ex)
                     {
-                        // If seeding fails, log it to the console so we can see why
                         Console.WriteLine($"An error occurred during database seeding: {ex.Message}");
                     }
                 }
                 #endregion
 
-                // Run the application
                 await app.RunAsync();
             }
             catch (Exception ex)
             {
+                // Log critical startup failures here
                 throw;
             }
         }

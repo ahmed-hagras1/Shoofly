@@ -26,6 +26,19 @@ namespace Shoofly.Shared.Resources
         public const string AccountVerifiedSuccessfully = "AccountVerifiedSuccessfully";
         public const string InvalidCode = "InvalidCode";
         public const string UserNotFound = "UserNotFound";
+        public const string MaximumLength = "MaximumLength";
+        public const string EmailOrPasswordIsWrong = "EmailOrPasswordIsWrong";
+        public const string AccountIsDisabled = "AccountIsDisabled";
+        public const string EmailNotConfirmed = "EmailNotConfirmed";
+        public const string PhoneNotConfirmed = "PhoneNotConfirmed";
+        public const string LoggedOutSuccessfully = "LoggedOutSuccessfully";
+        public const string TokenNotFound = "TokenNotFound";
+        public const string TokenIsInvalid = "TokenIsInvalid";
+        public const string AccountAlreadyVerified = "AccountAlreadyVerified";
+        public const string TokenAlreadyRevoked = "TokenAlreadyRevoked";
+        public const string TokenRevokedSuccessfully = "TokenRevokedSuccessfully";
+        public const string AllSessionsRevokedSuccessfully = "AllSessionsRevokedSuccessfully";
+        public const string NoActiveSessionsFound = "NoActiveSessionsFound";
 
     }
 }

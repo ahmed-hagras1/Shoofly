@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Shoofly.Data.Entities.Identity;
+using Shoofly.Data.Helpers;
 using Shoofly.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -15,34 +18,49 @@ namespace Shoofly.Infrastructure.Dependencies
     {
         public static IServiceCollection AddIdentityDependencies(this IServiceCollection services, IConfiguration configuration)
         {
-            // 2. Add ASP.NET Core Identity
+            // 1. Identity Settings (Your existing code)
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
-                // --- Password Settings (Facebook Style) ---
-                // Low friction: Only enforce length and basic characters.
                 options.Password.RequiredLength = 6;
                 options.Password.RequireLowercase = true;
-                options.Password.RequireDigit = true; // Recommend keeping numbers for basic security
-
-                // Disable frustrating requirements
+                options.Password.RequireDigit = true;
                 options.Password.RequireUppercase = false;
-                options.Password.RequireNonAlphanumeric = false; // No forced symbols
+                options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredUniqueChars = 1;
-
-                // --- Lockout Settings (Crucial for security) ---
-                // Because the password is easier to type, you MUST protect against brute-force attacks.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); // Lock them out for 10 mins
-                options.Lockout.MaxFailedAccessAttempts = 5; // After 5 wrong guesses
-                options.Lockout.AllowedForNewUsers = true;
-
-                // --- User Settings ---
-                // Ensure every user has a unique email
-                // Note ==> If you using phone number for registration, you can set this to false and use phone number as the unique identifier instead.
-                // options.User.RequireUniqueEmail = true;
                 options.User.RequireUniqueEmail = false;
             })
-            .AddEntityFrameworkStores<AppDbContext>() // Tells Identity to save users in your DB
-            .AddDefaultTokenProviders(); // Required for password resets/email confirmation
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
+
+            // 2. Fetch JWT Settings from appsettings.json
+            var jwtSettings = configuration.GetSection("JwtSettings").Get<JWTSettings>();
+
+            // 3. Add Authentication and JWT Bearer (This is where SaveToken lives)
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true; // ✅ This allows HttpContext.GetTokenAsync to work!
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = jwtSettings.ValidateIssuer,
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidateAudience = jwtSettings.ValidateAudience,
+                    ValidAudience = jwtSettings.Audience,
+                    ValidateIssuerSigningKey = jwtSettings.ValidateIssuerSigningKey,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Key)),
+                    ValidateLifetime = jwtSettings.ValidateLifetime,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+            // 4. Existing Configuration Bindings
+            services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+            services.Configure<JWTSettings>(configuration.GetSection("JwtSettings"));
 
             return services;
         }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Shoofly.Infrastructure.Abstracts;
 using Shoofly.Infrastructure.Data;
 using Shoofly.Infrastructure.InfrastructureBases;
+using Shoofly.Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,9 @@ public static class ModuleInfrastructureDependencies
 
         // Register Generic Repository
         services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
+
+        // Register your infrastructure services here
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
         return services;
     }

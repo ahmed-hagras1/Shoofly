@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountAlreadyVerified" xml:space="preserve">
+    <value>This account is already verified.</value>
+  </data>
+  <data name="AccountIsDisabled" xml:space="preserve">
+    <value>This account has been deactivated. Please contact the system administrator.</value>
+  </data>
   <data name="AccountVerifiedSuccessfully" xml:space="preserve">
     <value>Account verified successfully!</value>
+  </data>
+  <data name="AllSessionsRevokedSuccessfully" xml:space="preserve">
+    <value>All active sessions have been terminated.</value>
   </data>
   <data name="BadRequest" xml:space="preserve">
     <value>Bad request</value>
@@ -135,11 +144,26 @@
   <data name="Deleted" xml:space="preserve">
     <value>Deleted successfully</value>
   </data>
+  <data name="EmailNotConfirmed" xml:space="preserve">
+    <value>Your email address has not been verified yet.</value>
+  </data>
+  <data name="EmailOrPasswordIsWrong" xml:space="preserve">
+    <value>Invalid email or password.</value>
+  </data>
   <data name="InvalidCode" xml:space="preserve">
     <value>Invalid or expired code.</value>
   </data>
   <data name="InvalidEmailOrPhone" xml:space="preserve">
     <value>Must be a valid Email Address or Phone Number.</value>
+  </data>
+  <data name="LoggedOutSuccessfully" xml:space="preserve">
+    <value>Logged out successfully.</value>
+  </data>
+  <data name="MaximumLength" xml:space="preserve">
+    <value>This field cannot exceed 100 characters.</value>
+  </data>
+  <data name="NoActiveSessionsFound" xml:space="preserve">
+    <value>No active sessions were found for this user.</value>
   </data>
   <data name="NotEmpty" xml:space="preserve">
     <value>This field must not be empty</value>
@@ -153,11 +177,26 @@
   <data name="PasswordsDoNotMatch" xml:space="preserve">
     <value>Passwords do not match.</value>
   </data>
+  <data name="PhoneNotConfirmed" xml:space="preserve">
+    <value>Your phone number has not been verified yet.</value>
+  </data>
   <data name="Required" xml:space="preserve">
     <value>This field is required</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Operation completed successfully</value>
+  </data>
+  <data name="TokenAlreadyRevoked" xml:space="preserve">
+    <value>This token has already been revoked.</value>
+  </data>
+  <data name="TokenIsInvalid" xml:space="preserve">
+    <value>The security token is invalid or expired.</value>
+  </data>
+  <data name="TokenNotFound" xml:space="preserve">
+    <value>Session not found or already closed.</value>
+  </data>
+  <data name="TokenRevokedSuccessfully" xml:space="preserve">
+    <value>Token has been revoked successfully.</value>
   </data>
   <data name="Unauthorized" xml:space="preserve">
     <value>Unauthorized access</value>

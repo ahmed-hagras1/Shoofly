@@ -34,22 +34,13 @@ namespace Shoofly.API.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
-            // Extract the Access Token from the "Authorization: Bearer <token>" header
-            // This is built into ASP.NET Core Authentication
+            // The filter already verified the token isn't revoked in the DB!
+            // We can just safely proceed with executing the command.
             var accessToken = await HttpContext.GetTokenAsync("access_token");
 
-            // Fallback: If for some reason GetTokenAsync fails, extract it manually
-            if (string.IsNullOrEmpty(accessToken))
-            {
-                var authHeader = Request.Headers["Authorization"].FirstOrDefault();
-                accessToken = authHeader?.Replace("Bearer ", "").Trim();
-            }
-
-            // Create the Command and send it to the Handler via Mediator
             var command = new LogoutCommand { AccessToken = accessToken! };
             var response = await Mediator.Send(command);
 
-            // Return the standardized response
             return NewResult(response);
         }
 

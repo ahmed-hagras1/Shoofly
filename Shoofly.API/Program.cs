@@ -12,6 +12,7 @@ using Shoofly.Data.Entities.Identity;
 
 // Add the Middleware namespace
 using Shoofly.Api.Middlewares;
+using Shoofly.API.Filters;
 
 namespace Shoofly.API
 {
@@ -64,6 +65,15 @@ namespace Shoofly.API
                     options.ApplyCurrentCultureToResponseHeaders = true;
                 });
                 #endregion
+
+                // Register the filter class for Dependency Injection
+                builder.Services.AddScoped<TokenValidationFilter>();
+
+                // Add it to the global filters collection
+                builder.Services.AddControllers(options =>
+                {
+                    options.Filters.AddService<TokenValidationFilter>();
+                });
 
                 var app = builder.Build();
 

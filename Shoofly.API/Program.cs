@@ -13,6 +13,7 @@ using Shoofly.Data.Entities.Identity;
 // Add the Middleware namespace
 using Shoofly.Api.Middlewares;
 using Shoofly.API.Filters;
+using Shoofly.Infrastructure.BackgroundServices;
 
 namespace Shoofly.API
 {
@@ -74,6 +75,9 @@ namespace Shoofly.API
                 {
                     options.Filters.AddService<TokenValidationFilter>();
                 });
+
+                // Register the background service worker 
+                builder.Services.AddHostedService<TokenCleanupBackgroundService>();
 
                 var app = builder.Build();
 

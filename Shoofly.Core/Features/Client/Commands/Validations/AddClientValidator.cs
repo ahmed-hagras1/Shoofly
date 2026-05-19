@@ -13,20 +13,13 @@ namespace Shoofly.Core.Features.Client.Commands.Validations
 {
     public class AddClientValidator : AbstractValidator<AddClientCommand>
     {
-        #region Fields
         private readonly IStringLocalizer<SharedResources> _stringLocalizer;
-        #endregion
 
-        #region Constructor
         public AddClientValidator(IStringLocalizer<SharedResources> stringLocalizer)
         {
             _stringLocalizer = stringLocalizer;
             ApplyValidationRules();
-            ApplyCustomValidations();
         }
-        #endregion
-        #region Methods
-
 
         private void ApplyValidationRules()
         {
@@ -35,12 +28,11 @@ namespace Shoofly.Core.Features.Client.Commands.Validations
                 .MaximumLength(100);
 
             RuleFor(x => x.Password)
-                // CascadeMode.Stop means if it's empty, it won't run the Regex checks
-                .Cascade(CascadeMode.Stop)
+                .Cascade(CascadeMode.Stop) // Stops running rules if the previous one fails
                 .NotEmpty().WithMessage(_stringLocalizer[SharedResourcesKeys.NotEmpty])
-                .MinimumLength(6).WithMessage(_stringLocalizer[SharedResourcesKeys.PasswordRequirements])
-                .Matches("[a-z]").WithMessage(_stringLocalizer[SharedResourcesKeys.PasswordRequirements])
-                .Matches("[0-9]").WithMessage(_stringLocalizer[SharedResourcesKeys.PasswordRequirements]);
+                .MinimumLength(6).WithMessage(_stringLocalizer[SharedResourcesKeys.PasswordMinimumLength])
+                .Matches("[a-z]").WithMessage(_stringLocalizer[SharedResourcesKeys.PasswordRequiresLower])
+                .Matches("[0-9]").WithMessage(_stringLocalizer[SharedResourcesKeys.PasswordRequiresDigit]);
 
             RuleFor(x => x.ConfirmPassword)
                 .Equal(x => x.Password).WithMessage(_stringLocalizer[SharedResourcesKeys.PasswordsDoNotMatch]);
@@ -53,10 +45,9 @@ namespace Shoofly.Core.Features.Client.Commands.Validations
 
             RuleFor(x => x.EmailOrPhone)
                 .NotEmpty().WithMessage(_stringLocalizer[SharedResourcesKeys.NotEmpty])
-                // Pass the localizer into the custom method if you need custom error logic, 
-                // or just attach the message here:
-                .Must(IsValidEmailOrPhone).WithMessage(_stringLocalizer[SharedResourcesKeys.InvalidEmailOrPhone]); 
+                .Must(IsValidEmailOrPhone).WithMessage(_stringLocalizer[SharedResourcesKeys.InvalidEmailOrPhone]);
         }
+
         private bool IsValidEmailOrPhone(string input)
         {
             if (string.IsNullOrWhiteSpace(input)) return false;
@@ -66,10 +57,5 @@ namespace Shoofly.Core.Features.Client.Commands.Validations
 
             return isEmail || isPhone;
         }
-        private void ApplyCustomValidations()
-        {
-            // Add any custom validation logic here if needed in the future.
-        }
-        #endregion
     }
 }

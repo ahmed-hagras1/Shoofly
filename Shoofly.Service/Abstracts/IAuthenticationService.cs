@@ -1,4 +1,5 @@
-﻿using Shoofly.Data.Entities.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using Shoofly.Data.Entities.Identity;
 using Shoofly.Data.Helpers;
 using System;
 using System.Collections.Generic;
@@ -18,5 +19,7 @@ namespace Shoofly.Service.Abstracts
         Task<string> RevokeAllSessions(string userId);
         Task<string> ForgotPasswordAsync(string emailOrPhone, CancellationToken cancellationToken);
         Task<string> VerifyResetCodeAsync(string emailOrPhone, string code, CancellationToken cancellationToken);
+        Task<IdentityResult> ResetPasswordAsync(string emailOrPhone, string code, string newPassword, CancellationToken cancellationToken);
+        Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Shoofly.Api.Base;
 using Shoofly.Core.AppMetaData;
 using Shoofly.Core.Features.Auth.Commands.Models;
+using System.Security.Claims;
 using static Shoofly.Core.AppMetaData.Router;
 
 namespace Shoofly.API.Controllers
@@ -85,6 +86,32 @@ namespace Shoofly.API.Controllers
         [EnableRateLimiting("AuthBruteForcePolicy")]
         public async Task<IActionResult> VerifyResetCode([FromBody] VerifyResetCodeCommand command, CancellationToken cancellationToken)
         {
+            var response = await Mediator.Send(command, cancellationToken);
+            return NewResult(response);
+        }
+        [HttpPost(Router.AuthRouting.ResetPassword)]
+        [AllowAnonymous]
+        [EnableRateLimiting("AuthBruteForcePolicy")] // 🛡️ Protects the final reset action
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command, CancellationToken cancellationToken)
+        {
+            var response = await Mediator.Send(command, cancellationToken);
+            return NewResult(response);
+        }
+        [HttpPost(Router.AuthRouting.ChangePassword)]
+        [Authorize] // Requires a valid JWT token
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command, CancellationToken cancellationToken)
+        {
+            // Extract the secure UserId directly from the token claims
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            // Attach it to the command
+            command.UserId = userId;
+
             var response = await Mediator.Send(command, cancellationToken);
             return NewResult(response);
         }

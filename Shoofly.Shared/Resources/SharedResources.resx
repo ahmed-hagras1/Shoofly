@@ -147,6 +147,9 @@
   <data name="Created" xml:space="preserve">
     <value>Created successfully</value>
   </data>
+  <data name="CurrentPasswordIsWrong" xml:space="preserve">
+    <value>The current password is incorrect.</value>
+  </data>
   <data name="Deleted" xml:space="preserve">
     <value>Deleted successfully</value>
   </data>
@@ -180,11 +183,29 @@
   <data name="NotFound" xml:space="preserve">
     <value>Data not found</value>
   </data>
+  <data name="PasswordChangedSuccessfully" xml:space="preserve">
+    <value>Password changed successfully.</value>
+  </data>
+  <data name="PasswordMinimumLength" xml:space="preserve">
+    <value>Password must be at least 6 characters.</value>
+  </data>
   <data name="PasswordRequirements" xml:space="preserve">
     <value>Password must be at least 6 characters long, and contain at least one number and one lowercase letter.</value>
   </data>
+  <data name="PasswordRequiresDigit" xml:space="preserve">
+    <value>Password must contain at least one number.</value>
+  </data>
+  <data name="PasswordRequiresLower" xml:space="preserve">
+    <value>Password must contain at least one lowercase letter.</value>
+  </data>
   <data name="PasswordResetEmailSent" xml:space="preserve">
     <value>If the account exists, a verification code has been sent to your registered email or phone number.</value>
+  </data>
+  <data name="PasswordResetFailed" xml:space="preserve">
+    <value>Failed to reset password.</value>
+  </data>
+  <data name="PasswordResetSuccess" xml:space="preserve">
+    <value>Your password has been reset successfully.</value>
   </data>
   <data name="PasswordsDoNotMatch" xml:space="preserve">
     <value>Passwords do not match.</value>

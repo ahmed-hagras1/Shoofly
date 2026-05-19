@@ -43,6 +43,13 @@ namespace Shoofly.Shared.Resources
         public const string CodeSentSuccessfully = "CodeSentSuccessfully";
         public const string InvalidOrExpiredCode = "InvalidOrExpiredCode";
         public const string CodeVerifiedSuccess = "CodeVerifiedSuccess";
+        public const string PasswordResetFailed = "PasswordResetFailed";
+        public const string PasswordResetSuccess = "PasswordResetSuccess";
+        public const string PasswordMinimumLength = "PasswordMinimumLength";
+        public const string PasswordRequiresDigit = "PasswordRequiresDigit";
+        public const string PasswordRequiresLower = "PasswordRequiresLower";
+        public const string CurrentPasswordIsWrong = "CurrentPasswordIsWrong";
+        public const string PasswordChangedSuccessfully = "PasswordChangedSuccessfully";
 
     }
 }

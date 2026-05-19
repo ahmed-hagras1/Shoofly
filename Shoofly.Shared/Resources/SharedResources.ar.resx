@@ -147,6 +147,9 @@
   <data name="Created" xml:space="preserve">
     <value>تمت عملية الإضافة بنجاح</value>
   </data>
+  <data name="CurrentPasswordIsWrong" xml:space="preserve">
+    <value>كلمة المرور الحالية غير صحيحة.</value>
+  </data>
   <data name="Deleted" xml:space="preserve">
     <value>تمت عملية الحذف بنجاح</value>
   </data>
@@ -180,11 +183,29 @@
   <data name="NotFound" xml:space="preserve">
     <value>لم يتم العثور على بيانات</value>
   </data>
+  <data name="PasswordChangedSuccessfully" xml:space="preserve">
+    <value>تم تغيير كلمة المرور بنجاح.</value>
+  </data>
+  <data name="PasswordMinimumLength" xml:space="preserve">
+    <value>يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.</value>
+  </data>
   <data name="PasswordRequirements" xml:space="preserve">
     <value>يجب أن تتكون كلمة المرور من 6 أحرف على الأقل، وأن تحتوي على رقم واحد وحرف صغير واحد على الأقل.</value>
   </data>
+  <data name="PasswordRequiresDigit" xml:space="preserve">
+    <value>يجب أن تحتوي كلمة المرور على رقم واحد على الأقل.</value>
+  </data>
+  <data name="PasswordRequiresLower" xml:space="preserve">
+    <value>يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل.</value>
+  </data>
   <data name="PasswordResetEmailSent" xml:space="preserve">
     <value>إذا كان الحساب مسجلاً، فقد تم إرسال كود التحقق إلى البريد الإلكتروني أو رقم الهاتف المسجل.</value>
+  </data>
+  <data name="PasswordResetFailed" xml:space="preserve">
+    <value>فشل في إعادة تعيين كلمة المرور.</value>
+  </data>
+  <data name="PasswordResetSuccess" xml:space="preserve">
+    <value>تم إعادة تعيين كلمة المرور بنجاح.</value>
   </data>
   <data name="PasswordsDoNotMatch" xml:space="preserve">
     <value>كلمات المرور غير متطابقة.</value>

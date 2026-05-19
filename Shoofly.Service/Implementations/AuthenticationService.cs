@@ -242,6 +242,33 @@ namespace Shoofly.Service.Implementations
             // 3. Success
             return SharedResourcesKeys.CodeVerifiedSuccess;
         }
+        public async Task<IdentityResult> ResetPasswordAsync(string emailOrPhone, string code, string newPassword, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.FindByNameAsync(emailOrPhone)
+                       ?? await _userManager.FindByEmailAsync(emailOrPhone)
+                       ?? await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == emailOrPhone, cancellationToken);
+
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = SharedResourcesKeys.UserNotFound });
+            }
+
+            // This safely consumes the token and updates the password
+            var result = await _userManager.ResetPasswordAsync(user, code, newPassword);
+
+            return result;
+        }
+        public async Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = SharedResourcesKeys.UserNotFound });
+            }
+
+            // Identity automatically verifies the current password and hashes the new one
+            return await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+        }
         #endregion
 
         #region Private Helpers

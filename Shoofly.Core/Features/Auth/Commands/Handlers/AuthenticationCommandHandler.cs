@@ -25,7 +25,9 @@ namespace Shoofly.Core.Features.Auth.Commands.Handlers
         IRequestHandler<RevokeTokenCommand, Response<string>>,
         IRequestHandler<RevokeAllSessionsCommand, Response<string>>,
         IRequestHandler<ForgotPasswordCommand, Response<string>>,
-        IRequestHandler<VerifyResetCodeCommand, Response<string>>
+        IRequestHandler<VerifyResetCodeCommand, Response<string>>,
+        IRequestHandler<ResetPasswordCommand, Response<string>>,
+        IRequestHandler<ChangePasswordCommand, Response<string>>
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserService _userService;
@@ -225,6 +227,40 @@ namespace Shoofly.Core.Features.Auth.Commands.Handlers
             }
 
             return Success(_localizer[messageKey].Value);
+        }
+
+        public async Task<Response<string>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authenticationService.ResetPasswordAsync(request.EmailOrPhone, request.Code, request.NewPassword, cancellationToken);
+
+            if (!result.Succeeded)
+            {
+                // Get the first error from Identity (e.g., "Password requires a digit") or fall back to generic error
+                var errorDesc = result.Errors.FirstOrDefault()?.Description ?? _localizer[SharedResourcesKeys.PasswordResetFailed].Value;
+                return BadRequest<string>(errorDesc);
+            }
+
+            return Success<string>(_localizer[SharedResourcesKeys.PasswordResetSuccess].Value);
+        }
+
+        public async Task<Response<string>> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authenticationService.ChangePasswordAsync(request.UserId, request.CurrentPassword, request.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                // Identity returns a specific error code if the current password is wrong
+                var error = result.Errors.FirstOrDefault();
+                if (error?.Code == "PasswordMismatch")
+                {
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.CurrentPasswordIsWrong].Value);
+                }
+
+                // Fallback for other complexity errors
+                return BadRequest<string>(error?.Description ?? _localizer[SharedResourcesKeys.BadRequest].Value);
+            }
+
+            return Success<string>(_localizer[SharedResourcesKeys.PasswordChangedSuccessfully].Value);
         }
     }
 }

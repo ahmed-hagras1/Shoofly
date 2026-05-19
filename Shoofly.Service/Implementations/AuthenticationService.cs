@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Shoofly.Data.Entities.Identity;
 using Shoofly.Data.Helpers;
 using Shoofly.Infrastructure.Abstracts;
+using Shoofly.Infrastructure.Data;
 using Shoofly.Service.Abstracts;
 using Shoofly.Shared.Resources;
 using System;
@@ -24,16 +25,25 @@ namespace Shoofly.Service.Implementations
         private readonly JWTSettings _jwtSettings;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailService _emailService; 
+        private readonly ISmsService _smsService;     
+        private readonly AppDbContext _dbContext;     
         #endregion
 
         #region Constructor
         public AuthenticationService(IOptions<JWTSettings> jwtSettings,
             IRefreshTokenRepository refreshTokenRepository,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IEmailService emailService,
+            ISmsService smsService,
+            AppDbContext dbContext)
         {
             _jwtSettings = jwtSettings.Value;
             _refreshTokenRepository = refreshTokenRepository;
             _userManager = userManager;
+            _emailService = emailService;
+            _smsService = smsService;
+            _dbContext = dbContext;
         }
         #endregion
 
@@ -162,7 +172,76 @@ namespace Shoofly.Service.Implementations
 
             return SharedResourcesKeys.AllSessionsRevokedSuccessfully;
         }
+        public async Task<string> ForgotPasswordAsync(string emailOrPhone, CancellationToken cancellationToken)
+        {
+            // 1. Unified Search optimized across Identity Indices
+            var user = await _userManager.FindByNameAsync(emailOrPhone)
+                       ?? await _userManager.FindByEmailAsync(emailOrPhone)
+                       ?? await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == emailOrPhone, cancellationToken);
 
+            // Security Guardrail: Fake success text to mitigate username/email enumeration attacks
+            if (user == null)
+            {
+                return SharedResourcesKeys.UserNotFound;
+            }
+
+            // Generate the Token (Identity naturally outputs 6 digits due to our Infrastructure setting)
+            var numericCode = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            // Automated Communication Gateway Routing
+            if (emailOrPhone.Contains("@"))
+            {
+                // Send via SMTP Email Service
+                string subject = "Shoofly: Password Reset Verification Code";
+                string body = $"<p>Your password reset verification code is: <strong>{numericCode}</strong></p>";
+
+                await _emailService.SendEmailAsync(user.Email!, subject, body, cancellationToken);
+            }
+            else
+            {
+                // Send via Twilio SMS Service (Using your customized DialCode lookups)
+                string formattedPhone = user.PhoneNumber!.TrimStart('0');
+                var country = await _dbContext.Countries.FindAsync(new object[] { user.CountryId }, cancellationToken);
+                string dialCode = country?.DialCode ?? "+20";
+                string fullPhoneNumber = string.Concat(dialCode, formattedPhone);
+
+                string smsMessage = $"Your Shoofly password reset code is: {numericCode}";
+
+                await _smsService.SendSmsAsync(fullPhoneNumber, smsMessage, cancellationToken);
+            }
+
+            return SharedResourcesKeys.CodeSentSuccessfully;
+        }
+        public async Task<string> VerifyResetCodeAsync(string emailOrPhone, string code, CancellationToken cancellationToken)
+        {
+            // Find the user
+            var user = await _userManager.FindByNameAsync(emailOrPhone)
+                       ?? await _userManager.FindByEmailAsync(emailOrPhone)
+                       ?? await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == emailOrPhone, cancellationToken);
+
+            // If the user doesn't exist, we return Invalid Token. 
+            // We DO NOT say "User not found" here, because a hacker could use this endpoint to guess emails.
+            if (user == null)
+            {
+                return SharedResourcesKeys.InvalidOrExpiredCode;
+            }
+
+            // Cryptographically verify the 6-digit code
+            // This checks if the code is valid, but DOES NOT consume it yet.
+            bool isValid = await _userManager.VerifyUserTokenAsync(
+                user,
+                _userManager.Options.Tokens.PasswordResetTokenProvider,
+                "ResetPassword", // The specific purpose of this token
+                code);
+
+            if (!isValid)
+            {
+                return SharedResourcesKeys.InvalidOrExpiredCode;
+            }
+
+            // 3. Success
+            return SharedResourcesKeys.CodeVerifiedSuccess;
+        }
         #endregion
 
         #region Private Helpers

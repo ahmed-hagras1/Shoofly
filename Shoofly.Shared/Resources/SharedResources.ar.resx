@@ -138,6 +138,12 @@
   <data name="CodeMustBeNumbersOnly" xml:space="preserve">
     <value>يجب أن يحتوي الكود على أرقام فقط.</value>
   </data>
+  <data name="CodeSentSuccessfully" xml:space="preserve">
+    <value>تم إرسال كود التحقق بنجاح.</value>
+  </data>
+  <data name="CodeVerifiedSuccess" xml:space="preserve">
+    <value>كود التحقق صحيح.</value>
+  </data>
   <data name="Created" xml:space="preserve">
     <value>تمت عملية الإضافة بنجاح</value>
   </data>
@@ -156,6 +162,9 @@
   <data name="InvalidEmailOrPhone" xml:space="preserve">
     <value>يجب إدخال بريد إلكتروني أو رقم هاتف صحيح.</value>
   </data>
+  <data name="InvalidOrExpiredCode" xml:space="preserve">
+    <value>كود التحقق غير صحيح أو انتهت صلاحيته.</value>
+  </data>
   <data name="LoggedOutSuccessfully" xml:space="preserve">
     <value>تم تسجيل الخروج بنجاح.</value>
   </data>
@@ -173,6 +182,9 @@
   </data>
   <data name="PasswordRequirements" xml:space="preserve">
     <value>يجب أن تتكون كلمة المرور من 6 أحرف على الأقل، وأن تحتوي على رقم واحد وحرف صغير واحد على الأقل.</value>
+  </data>
+  <data name="PasswordResetEmailSent" xml:space="preserve">
+    <value>إذا كان الحساب مسجلاً، فقد تم إرسال كود التحقق إلى البريد الإلكتروني أو رقم الهاتف المسجل.</value>
   </data>
   <data name="PasswordsDoNotMatch" xml:space="preserve">
     <value>كلمات المرور غير متطابقة.</value>

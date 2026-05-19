@@ -30,6 +30,8 @@ namespace Shoofly.Core.AppMetaData
             public const string RefreshToken = Prefix + "/RefreshToken";
             public const string RevokeToken = Prefix + "/RevokeToken";
             public const string RevokeAllSessions = Prefix + "/RevokeAllSessions";
+            public const string ForgotPassword = Prefix + "/ForgotPassword";
+            public const string VerifyResetCode = Prefix + "/VerifyResetCode";
             // Final URL: api/v1/Auth/VerifyCode
         }
     }

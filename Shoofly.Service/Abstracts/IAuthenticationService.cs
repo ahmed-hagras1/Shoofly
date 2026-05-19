@@ -16,5 +16,7 @@ namespace Shoofly.Service.Abstracts
         Task<string> RevokeRefreshToken(string accessToken);
         Task<string> RevokeToken(string refreshToken);
         Task<string> RevokeAllSessions(string userId);
+        Task<string> ForgotPasswordAsync(string emailOrPhone, CancellationToken cancellationToken);
+        Task<string> VerifyResetCodeAsync(string emailOrPhone, string code, CancellationToken cancellationToken);
     }
 }

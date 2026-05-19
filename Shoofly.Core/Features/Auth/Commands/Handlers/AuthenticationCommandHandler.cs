@@ -23,7 +23,9 @@ namespace Shoofly.Core.Features.Auth.Commands.Handlers
         IRequestHandler<ResendCodeCommand, Response<string>>,
         IRequestHandler<RefreshTokenCommand, Response<JWTAuthResult>>,
         IRequestHandler<RevokeTokenCommand, Response<string>>,
-        IRequestHandler<RevokeAllSessionsCommand, Response<string>>
+        IRequestHandler<RevokeAllSessionsCommand, Response<string>>,
+        IRequestHandler<ForgotPasswordCommand, Response<string>>,
+        IRequestHandler<VerifyResetCodeCommand, Response<string>>
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserService _userService;
@@ -199,6 +201,30 @@ namespace Shoofly.Core.Features.Auth.Commands.Handlers
             var resultKey = await _authenticationService.RevokeAllSessions(request.UserId);
 
             return Success<string>(_localizer[resultKey]);
+        }
+
+        public async Task<Response<string>> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
+        {
+            var messageKey = await _authenticationService.ForgotPasswordAsync(request.EmailOrPhone, cancellationToken);
+
+            if (messageKey == SharedResourcesKeys.UserNotFound)
+            {
+                return BadRequest<string>(_localizer[messageKey].Value);
+            }
+
+            return Success(_localizer[messageKey].Value);
+        }
+
+        public async Task<Response<string>> Handle(VerifyResetCodeCommand request, CancellationToken cancellationToken)
+        {
+            var messageKey = await _authenticationService.VerifyResetCodeAsync(request.EmailOrPhone, request.Code, cancellationToken);
+
+            if (messageKey == SharedResourcesKeys.InvalidOrExpiredCode)
+            {
+                return BadRequest<string>(_localizer[messageKey].Value);
+            }
+
+            return Success(_localizer[messageKey].Value);
         }
     }
 }

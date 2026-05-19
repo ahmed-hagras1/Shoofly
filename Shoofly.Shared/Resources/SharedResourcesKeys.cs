@@ -39,6 +39,10 @@ namespace Shoofly.Shared.Resources
         public const string TokenRevokedSuccessfully = "TokenRevokedSuccessfully";
         public const string AllSessionsRevokedSuccessfully = "AllSessionsRevokedSuccessfully";
         public const string NoActiveSessionsFound = "NoActiveSessionsFound";
+        public const string PasswordResetEmailSent = "PasswordResetEmailSent";
+        public const string CodeSentSuccessfully = "CodeSentSuccessfully";
+        public const string InvalidOrExpiredCode = "InvalidOrExpiredCode";
+        public const string CodeVerifiedSuccess = "CodeVerifiedSuccess";
 
     }
 }

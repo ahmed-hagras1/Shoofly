@@ -28,6 +28,9 @@ namespace Shoofly.Infrastructure.Dependencies
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredUniqueChars = 1;
                 options.User.RequireUniqueEmail = false;
+
+                // Force Identity to issue a 6-digit numeric OTP instead of a heavy token string
+                options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultPhoneProvider;
             })
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();

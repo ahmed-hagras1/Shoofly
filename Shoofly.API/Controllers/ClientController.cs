@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shoofly.Api.Base;
@@ -11,6 +12,7 @@ namespace Shoofly.API.Controllers
     public class ClientController : AppControllerBase
     {
         [HttpPost(Router.ClientRouting.Register)]
+        [AllowAnonymous]
         public async Task<IActionResult> RegisterClient([FromBody] AddClientCommand command, CancellationToken cancellationToken)
         {
             var response = await Mediator.Send(command, cancellationToken);

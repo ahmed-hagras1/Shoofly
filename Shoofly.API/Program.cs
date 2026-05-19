@@ -14,6 +14,7 @@ using Shoofly.Data.Entities.Identity;
 using Shoofly.Api.Middlewares;
 using Shoofly.API.Filters;
 using Shoofly.Infrastructure.BackgroundServices;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Shoofly.API
 {
@@ -40,6 +41,21 @@ namespace Shoofly.API
                         policy.AllowAnyHeader()
                               .AllowAnyMethod()
                               .AllowAnyOrigin();
+                    });
+                });
+
+                // Add Rate Limiting Services
+                builder.Services.AddRateLimiter(options =>
+                {
+                    // Return a 429 status code when the limit is reached
+                    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                    // Define the specific policy
+                    options.AddFixedWindowLimiter("AuthBruteForcePolicy", fixedOptions =>
+                    {
+                        fixedOptions.PermitLimit = 5; // Allow 5 requests
+                        fixedOptions.Window = TimeSpan.FromMinutes(1); // per 1 minute
+                        fixedOptions.QueueLimit = 0; // Reject immediately if over the limit
                     });
                 });
 
@@ -79,6 +95,7 @@ namespace Shoofly.API
                 // Register the background service worker 
                 builder.Services.AddHostedService<TokenCleanupBackgroundService>();
 
+
                 var app = builder.Build();
 
                 // 🛑 MIDDLEWARE ORDER (CRITICAL)
@@ -93,6 +110,9 @@ namespace Shoofly.API
                 // This must come before Authentication and MapControllers
                 app.UseCors("AllowAll");
 
+                // Add the Rate Limiter Middleware
+                app.UseRateLimiter();
+
                 app.UseRequestLocalization();
 
                 // EXPOSE SWAGGER IN ALL ENVIRONMENTS
@@ -106,8 +126,6 @@ namespace Shoofly.API
                     // This makes Swagger the default home page (e.g., https://your-app.com/)
                     options.RoutePrefix = string.Empty;
                 });
-
-                app.UseHttpsRedirection();
 
                 // AUTHENTICATION & AUTHORIZATION
                 app.UseAuthentication();

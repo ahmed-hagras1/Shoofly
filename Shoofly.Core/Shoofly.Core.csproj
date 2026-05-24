@@ -20,11 +20,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Authorization\Commands\Handlers\" />
+    <Folder Include="Features\Authorization\Commands\Models\" />
+    <Folder Include="Features\Authorization\Commands\Validations\" />
     <Folder Include="Features\Auth\Queries\" />
     <Folder Include="Features\Client\Queries\Handlers\" />
     <Folder Include="Features\Client\Queries\Models\" />
     <Folder Include="Features\Client\Queries\Results\" />
     <Folder Include="Mapping\Clients\QueryMapping\" />
+    <Folder Include="Mapping\Roles\CommandMapping\" />
   </ItemGroup>
 
 </Project>

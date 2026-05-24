@@ -36,5 +36,10 @@ namespace Shoofly.Core.AppMetaData
             public const string ChangePassword = Prefix + "/ChangePassword";
             // Final URL: api/v1/Auth/VerifyCode
         }
+        public static class AuthorizationRouting
+        {
+            public const string Prefix = Rule + "Authorization";
+            public const string GetRolesList = Prefix + "/GetRolesList";
+        }
     }
 }

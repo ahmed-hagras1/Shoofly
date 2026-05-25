@@ -15,7 +15,8 @@ using System.Threading.Tasks;
 namespace Shoofly.Core.Features.Authorization.Queries.Handlers
 {
     public class AuthorizationQueryHandler : ResponseHandler,
-        IRequestHandler<GetRoleListQuery, Response<List<GetRoleListResult>>>
+        IRequestHandler<GetRoleListQuery, Response<List<GetRoleListResult>>>,
+        IRequestHandler<GetRoleByIdQuery, Response<GetRoleByIdResult>>
     {
         #region Fields
         private readonly IAuthorizationService _authorizationService;
@@ -43,6 +44,24 @@ namespace Shoofly.Core.Features.Authorization.Queries.Handlers
 
             // Return the standard Success response
             return Success(mappedRoles);
+        }
+
+        public async Task<Response<GetRoleByIdResult>> Handle(GetRoleByIdQuery request, CancellationToken cancellationToken)
+        {
+            // Fetch the role from the database
+            var role = await _authorizationService.GetRoleByIdAsync(request.Id,cancellationToken);
+
+            // Handle the Not Found case securely
+            if (role == null)
+            {
+                return NotFound<GetRoleByIdResult>(_localizer[SharedResourcesKeys.NotFound]);
+            }
+
+            // Map to DTO
+            var result = _mapper.Map<GetRoleByIdResult>(role);
+
+            // Return Success
+            return Success(result);
         }
         #endregion
     }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Shoofly.Core.Features.Authorization.Queries.Results;
+using Shoofly.Data.Entities.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +14,9 @@ namespace Shoofly.Core.Mapping.Roles
     {
         public RoleProfile()
         {
-            // Role Mapping.
-            AddRoleQueryMapping();
+            // Maps the properties automatically based on matching names (Id to Id, Name to Name)
+            CreateMap<ApplicationRole, GetRoleListResult>();
+            CreateMap<ApplicationRole, GetRoleByIdResult>();
         }
     }
 }

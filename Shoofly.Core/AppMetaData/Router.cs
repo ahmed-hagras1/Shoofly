@@ -39,7 +39,11 @@ namespace Shoofly.Core.AppMetaData
         public static class AuthorizationRouting
         {
             public const string Prefix = Rule + "Authorization";
-            public const string GetRolesList = Prefix + "/GetRolesList";
+            public const string GetRolesList = Prefix + "/Role/List";
+            public const string GetRoleById = Prefix + "/Role" + SignleRoute;
+            public const string CreateRole = Prefix + "/Role/Create";
+            public const string EditRole = Prefix + "/Role/Edit";
+            public const string DeleteRole = Prefix + "/Role/Delete" + SignleRoute;
         }
     }
 }

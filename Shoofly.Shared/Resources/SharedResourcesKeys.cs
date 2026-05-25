@@ -50,6 +50,9 @@ namespace Shoofly.Shared.Resources
         public const string PasswordRequiresLower = "PasswordRequiresLower";
         public const string CurrentPasswordIsWrong = "CurrentPasswordIsWrong";
         public const string PasswordChangedSuccessfully = "PasswordChangedSuccessfully";
+        public const string RoleIsExist = "RoleIsExist";
+        public const string Updated = "Updated";
+        public const string RoleHasUsers = "RoleHasUsers";
 
     }
 }

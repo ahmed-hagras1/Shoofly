@@ -216,6 +216,12 @@
   <data name="Required" xml:space="preserve">
     <value>This field is required</value>
   </data>
+  <data name="RoleHasUsers" xml:space="preserve">
+    <value>Cannot delete this role because there are users assigned to it.</value>
+  </data>
+  <data name="RoleIsExist" xml:space="preserve">
+    <value>This role already exists.</value>
+  </data>
   <data name="Success" xml:space="preserve">
     <value>Operation completed successfully</value>
   </data>
@@ -236,6 +242,9 @@
   </data>
   <data name="UnprocessableEntity" xml:space="preserve">
     <value>Validation error occurred</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>Updated successfully.</value>
   </data>
   <data name="UserAlreadyExists" xml:space="preserve">
     <value>This email or phone number is already registered.</value>

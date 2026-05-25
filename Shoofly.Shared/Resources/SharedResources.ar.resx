@@ -216,6 +216,12 @@
   <data name="Required" xml:space="preserve">
     <value>هذا الحقل مطلوب</value>
   </data>
+  <data name="RoleHasUsers" xml:space="preserve">
+    <value>لا يمكن حذف هذه الصلاحية لوجود مستخدمين مرتبطين بها.</value>
+  </data>
+  <data name="RoleIsExist" xml:space="preserve">
+    <value>هذه الصلاحية موجودة بالفعل.</value>
+  </data>
   <data name="Success" xml:space="preserve">
     <value>تمت العملية بنجاح</value>
   </data>
@@ -236,6 +242,9 @@
   </data>
   <data name="UnprocessableEntity" xml:space="preserve">
     <value>خطأ في التحقق من صحة البيانات</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>تم التحديث بنجاح.</value>
   </data>
   <data name="UserAlreadyExists" xml:space="preserve">
     <value>هذا البريد الإلكتروني أو رقم الهاتف مسجل بالفعل.</value>

@@ -53,6 +53,8 @@ namespace Shoofly.Shared.Resources
         public const string RoleIsExist = "RoleIsExist";
         public const string Updated = "Updated";
         public const string RoleHasUsers = "RoleHasUsers";
-
+        public const string FailedToRemoveOldRoles = "FailedToRemoveOldRoles";
+        public const string FailedToAddNewRoles = "FailedToAddNewRoles";
+        public const string FailedToUpdateRoles = "FailedToUpdateRoles";
     }
 }

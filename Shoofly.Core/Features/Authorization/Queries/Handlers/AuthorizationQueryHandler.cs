@@ -16,7 +16,8 @@ namespace Shoofly.Core.Features.Authorization.Queries.Handlers
 {
     public class AuthorizationQueryHandler : ResponseHandler,
         IRequestHandler<GetRoleListQuery, Response<List<GetRoleListResult>>>,
-        IRequestHandler<GetRoleByIdQuery, Response<GetRoleByIdResult>>
+        IRequestHandler<GetRoleByIdQuery, Response<GetRoleByIdResult>>,
+        IRequestHandler<ManageUserRolesQuery, Response<ManageUserRolesResult>>
     {
         #region Fields
         private readonly IAuthorizationService _authorizationService;
@@ -61,6 +62,38 @@ namespace Shoofly.Core.Features.Authorization.Queries.Handlers
             var result = _mapper.Map<GetRoleByIdResult>(role);
 
             // Return Success
+            return Success(result);
+        }
+        public async Task<Response<ManageUserRolesResult>> Handle(ManageUserRolesQuery request, CancellationToken cancellationToken)
+        {
+            // Call the service to get the raw data Tuple
+            var data = await _authorizationService.GetManageUserRolesDataAsync(request.UserId);
+
+            // If null, the user doesn't exist
+            if (data == null)
+            {
+                return NotFound<ManageUserRolesResult>(_localizer[SharedResourcesKeys.UserNotFound]);
+            }
+
+            // Map the raw data into our Core DTO
+            var result = new ManageUserRolesResult
+            {
+                UserId = request.UserId,
+                UserRoles = new List<UserRoleViewModel>()
+            };
+
+            foreach (var role in data.Value.Roles) // .Value is used because the Tuple is nullable (?)
+            {
+                result.UserRoles.Add(new UserRoleViewModel
+                {
+                    Id = role.Id,
+                    Name = role.Name ?? string.Empty,
+                    // If the user's role list contains this role name, mark as true
+                    HasRole = data.Value.UserRoles.Contains(role.Name)
+                });
+            }
+
+            // Return the fully mapped object
             return Success(result);
         }
         #endregion

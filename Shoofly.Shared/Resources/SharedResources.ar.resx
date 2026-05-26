@@ -159,6 +159,15 @@
   <data name="EmailOrPasswordIsWrong" xml:space="preserve">
     <value>خطأ في البريد الإلكتروني أو كلمة المرور.</value>
   </data>
+  <data name="FailedToAddNewRoles" xml:space="preserve">
+    <value>فشل في إضافة الصلاحيات الجديدة للمستخدم.</value>
+  </data>
+  <data name="FailedToRemoveOldRoles" xml:space="preserve">
+    <value>فشل في إزالة الصلاحيات القديمة للمستخدم.</value>
+  </data>
+  <data name="FailedToUpdateRoles" xml:space="preserve">
+    <value>حدث خطأ أثناء تحديث الصلاحيات. لم يتم حفظ أي تغييرات.</value>
+  </data>
   <data name="InvalidCode" xml:space="preserve">
     <value>كود غير صحيح أو منتهي الصلاحية.</value>
   </data>

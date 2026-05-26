@@ -159,6 +159,15 @@
   <data name="EmailOrPasswordIsWrong" xml:space="preserve">
     <value>Invalid email or password.</value>
   </data>
+  <data name="FailedToAddNewRoles" xml:space="preserve">
+    <value>Failed to add the new roles to the user.</value>
+  </data>
+  <data name="FailedToRemoveOldRoles" xml:space="preserve">
+    <value>Failed to remove the user's old roles.</value>
+  </data>
+  <data name="FailedToUpdateRoles" xml:space="preserve">
+    <value>An error occurred while updating roles. No changes were saved.</value>
+  </data>
   <data name="InvalidCode" xml:space="preserve">
     <value>Invalid or expired code.</value>
   </data>

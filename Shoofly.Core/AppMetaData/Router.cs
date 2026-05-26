@@ -44,6 +44,9 @@ namespace Shoofly.Core.AppMetaData
             public const string CreateRole = Prefix + "/Role/Create";
             public const string EditRole = Prefix + "/Role/Edit";
             public const string DeleteRole = Prefix + "/Role/Delete" + SignleRoute;
+
+            public const string ManageUserRoles = Prefix + "/User-Roles" + SignleRoute;
+            public const string UpdateUserRoles = Prefix + "/User-Roles/Update";
         }
     }
 }

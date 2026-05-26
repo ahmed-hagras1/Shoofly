@@ -15,7 +15,8 @@ namespace Shoofly.Core.Features.Authorization.Commands.Handlers
     public class AuthorizationCommandHandler : ResponseHandler,
         IRequestHandler<AddRoleCommand, Response<string>>,
         IRequestHandler<EditRoleCommand, Response<string>>,
-        IRequestHandler<DeleteRoleCommand, Response<string>>
+        IRequestHandler<DeleteRoleCommand, Response<string>>,
+        IRequestHandler<UpdateUserRolesCommand, Response<string>>
     {
         #region Fields
         private readonly IAuthorizationService _authorizationService;
@@ -81,6 +82,33 @@ namespace Shoofly.Core.Features.Authorization.Commands.Handlers
             }
 
             return BadRequest<string>(_localizer[SharedResourcesKeys.BadRequest]);
+        }
+        public async Task<Response<string>> Handle(UpdateUserRolesCommand request, CancellationToken cancellationToken)
+        {
+            // Map the Core DTOs into a list of primitive Tuples
+            var mappedRoles = request.UserRoles
+                .Select(x => (RoleName: x.Name, HasRole: x.HasRole))
+                .ToList();
+
+            // Pass the clean Tuples to the Service
+            var result = await _authorizationService.UpdateUserRolesAsync(request.UserId, mappedRoles);
+
+            // Handle the response
+            switch (result)
+            {
+                case "UserNotFound":
+                    return NotFound<string>(_localizer[SharedResourcesKeys.UserNotFound]);
+                case "FailedToRemoveOldRoles":
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.FailedToRemoveOldRoles]);
+                case "FailedToAddNewRoles":
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.FailedToAddNewRoles]);
+                case "FailedToUpdateRoles":
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.FailedToUpdateRoles]);
+                case "Success":
+                    return Success<string>(_localizer[SharedResourcesKeys.Updated]);
+                default:
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.BadRequest]);
+            }
         }
     }
 }

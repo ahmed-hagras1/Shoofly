@@ -49,5 +49,17 @@ namespace Shoofly.API.Controllers
             var response = await Mediator.Send(new DeleteRoleCommand(id), cancellationToken);
             return NewResult(response);
         }
+        [HttpGet(Router.AuthorizationRouting.ManageUserRoles)]
+        public async Task<IActionResult> ManageUserRoles([FromRoute] string id, CancellationToken cancellationToken)
+        {
+            var response = await Mediator.Send(new ManageUserRolesQuery(id), cancellationToken);
+            return NewResult(response);
+        }
+        [HttpPost(Router.AuthorizationRouting.UpdateUserRoles)]
+        public async Task<IActionResult> UpdateUserRoles([FromBody] UpdateUserRolesCommand command, CancellationToken cancellationToken)
+        {
+            var response = await Mediator.Send(command, cancellationToken);
+            return NewResult(response);
+        }
     }
 }

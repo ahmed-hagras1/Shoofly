@@ -6,14 +6,16 @@ using Shoofly.Api.Base;
 using Shoofly.Core.AppMetaData;
 using Shoofly.Core.Features.Authorization.Commands.Models;
 using Shoofly.Core.Features.Authorization.Queries.Models;
+using Shoofly.Shared.Security;
 
 namespace Shoofly.API.Controllers
 {
     [ApiController]
     // Protects ALL endpoints in this controller so only users with the "Admin" role can access them
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class AuthorizationController : AppControllerBase
     {
+        [Authorize(Policy = Permissions.Roles.View)]
         [HttpGet(Router.AuthorizationRouting.GetRolesList)]
         public async Task<IActionResult> GetRoleList(CancellationToken cancellationToken)
         {
@@ -23,6 +25,7 @@ namespace Shoofly.API.Controllers
             // Return the formatted result
             return NewResult(response);
         }
+        [Authorize(Policy = Permissions.Roles.View)]
         [HttpGet(Router.AuthorizationRouting.GetRoleById)]
         public async Task<IActionResult> GetRoleById([FromRoute] string id, CancellationToken cancellationToken)
         {
@@ -30,6 +33,7 @@ namespace Shoofly.API.Controllers
             var response = await Mediator.Send(new GetRoleByIdQuery(id),cancellationToken);
             return NewResult(response);
         }
+        [Authorize(Policy = Permissions.Roles.Create)]
         [HttpPost(Router.AuthorizationRouting.CreateRole)]
         public async Task<IActionResult> CreateRole([FromBody] AddRoleCommand command, CancellationToken cancellationToken)
         {
@@ -37,26 +41,58 @@ namespace Shoofly.API.Controllers
             var response = await Mediator.Send(command, cancellationToken);
             return NewResult(response);
         }
+        [Authorize(Policy = Permissions.Roles.Edit)]
         [HttpPut(Router.AuthorizationRouting.EditRole)]
         public async Task<IActionResult> EditRole([FromBody] EditRoleCommand command, CancellationToken cancellationToken)
         {
             var response = await Mediator.Send(command, cancellationToken);
             return NewResult(response);
         }
+        [Authorize(Policy = Permissions.Roles.Delete)]
         [HttpDelete(Router.AuthorizationRouting.DeleteRole)]
         public async Task<IActionResult> DeleteRole([FromRoute] string id, CancellationToken cancellationToken)
         {
             var response = await Mediator.Send(new DeleteRoleCommand(id), cancellationToken);
             return NewResult(response);
         }
+        [Authorize(Policy = Permissions.Users.ViewRoles)]
         [HttpGet(Router.AuthorizationRouting.ManageUserRoles)]
         public async Task<IActionResult> ManageUserRoles([FromRoute] string id, CancellationToken cancellationToken)
         {
             var response = await Mediator.Send(new ManageUserRolesQuery(id), cancellationToken);
             return NewResult(response);
         }
+        [Authorize(Policy = Permissions.Users.EditRoles)]
         [HttpPost(Router.AuthorizationRouting.UpdateUserRoles)]
         public async Task<IActionResult> UpdateUserRoles([FromBody] UpdateUserRolesCommand command, CancellationToken cancellationToken)
+        {
+            var response = await Mediator.Send(command, cancellationToken);
+            return NewResult(response);
+        }
+        [Authorize(Policy = Permissions.Users.ViewClaims)]
+        [HttpGet(Router.AuthorizationRouting.ManageUserClaims)]
+        public async Task<IActionResult> ManageUserClaims([FromRoute] string id, CancellationToken cancellationToken)
+        {
+            var response = await Mediator.Send(new ManageUserClaimsQuery(id), cancellationToken);
+            return NewResult(response);
+        }
+        [Authorize(Policy = Permissions.Users.EditClaims)]
+        [HttpPut(Router.AuthorizationRouting.UpdateUserClaims)]
+        public async Task<IActionResult> UpdateUserClaims([FromBody] UpdateUserClaimsCommand command, CancellationToken cancellationToken)
+        {
+            var response = await Mediator.Send(command, cancellationToken);
+            return NewResult(response);
+        }
+        [Authorize(Policy = Permissions.Roles.Edit)]
+        [HttpGet(Router.AuthorizationRouting.ManageRoleClaims)]
+        public async Task<IActionResult> ManageRoleClaims([FromRoute] string id, CancellationToken cancellationToken)
+        {
+            var response = await Mediator.Send(new ManageRoleClaimsQuery(id), cancellationToken);
+            return NewResult(response);
+        }
+        [Authorize(Policy = Permissions.Roles.Edit)]
+        [HttpPut(Router.AuthorizationRouting.UpdateRoleClaims)]
+        public async Task<IActionResult> UpdateRoleClaims([FromBody] UpdateRoleClaimsCommand command, CancellationToken cancellationToken)
         {
             var response = await Mediator.Send(command, cancellationToken);
             return NewResult(response);

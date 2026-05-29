@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shoofly.Data.Entities.Identity;
+using Shoofly.Data.Results.Authorization;
 using Shoofly.Infrastructure.Data;
 using Shoofly.Service.Abstracts;
 using Shoofly.Shared.Resources;
+using Shoofly.Shared.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -192,6 +196,211 @@ namespace Shoofly.Service.Implementations
                 // this guarantees the database undoes any partial work.
                 await transaction.RollbackAsync();
                 return "FailedToUpdateRoles"; // You can add this to your localization keys!
+            }
+        }
+        public async Task<ManageUserClaimsResult> ManageUserClaimsAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return null;
+
+            // Get the claims this USER already has directly assigned to them
+            var existingClaims = await _userManager.GetClaimsAsync(user);
+            var existingClaimValues = existingClaims
+                .Where(x => x.Type == Permissions.Type) // Only look at Permission claims!
+                .Select(x => x.Value)
+                .ToList();
+
+            var userClaimsList = new List<UserClaimDto>();
+
+            // Use Reflection to grab ALL possible permissions in the system
+            var permissionClasses = typeof(Permissions).GetNestedTypes(BindingFlags.Public | BindingFlags.Static);
+
+            foreach (var module in permissionClasses)
+            {
+                var permissions = module.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                                        .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+                                        .Select(fi => fi.GetRawConstantValue()?.ToString());
+
+                foreach (var permission in permissions)
+                {
+                    if (permission != null)
+                    {
+                        // 3. Add to the checklist and check if the user currently holds it
+                        userClaimsList.Add(new UserClaimDto
+                        {
+                            PermissionName = permission,
+                            HasPermission = existingClaimValues.Contains(permission)
+                        });
+                    }
+                }
+            }
+
+            return new ManageUserClaimsResult
+            {
+                UserId = userId,
+                UserClaims = userClaimsList
+            };
+        }
+        public async Task<string> UpdateUserClaimsAsync(string userId, List<UserClaimDto> requestClaims)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return "UserNotFound";
+
+            // Get ALL current claims for this user
+            var allExistingClaims = await _userManager.GetClaimsAsync(user);
+
+            // Filter out non-permission claims (like Email, FullName) so we don't accidentally delete them!
+            var existingPermissionClaims = allExistingClaims.Where(x => x.Type == Permissions.Type).ToList();
+            var existingClaimValues = existingPermissionClaims.Select(x => x.Value).ToList();
+
+            // Figure out which claims to ADD
+            var claimsToAdd = requestClaims
+                .Where(x => x.HasPermission && !existingClaimValues.Contains(x.PermissionName))
+                .ToList();
+
+            // Figure out which claims to REMOVE
+            // We match against existingPermissionClaims because Identity requires the actual Claim object to remove it
+            var claimsToRemove = existingPermissionClaims
+                .Where(x => requestClaims.Any(req => req.PermissionName == x.Value && !req.HasPermission))
+                .ToList();
+
+            // 🛡️ START TRANSACTION 🛡️
+            using var transaction = await _appDbContext.Database.BeginTransactionAsync();
+
+            try
+            {
+                // Execute the deletions
+                foreach (var claim in claimsToRemove)
+                {
+                    var removeResult = await _userManager.RemoveClaimAsync(user, claim);
+                    if (!removeResult.Succeeded)
+                    {
+                        await transaction.RollbackAsync(); // Revert everything!
+                        return "FailedToRemove";
+                    }
+                }
+
+                // Execute the insertions
+                foreach (var claim in claimsToAdd)
+                {
+                    var addResult = await _userManager.AddClaimAsync(user, new Claim(Permissions.Type, claim.PermissionName));
+                    if (!addResult.Succeeded)
+                    {
+                        await transaction.RollbackAsync(); // Revert everything!
+                        return "FailedToAdd";
+                    }
+                }
+
+                // If we reach this line, EVERYTHING was successful!
+                await transaction.CommitAsync();
+                return "Success";
+            }
+            catch (Exception)
+            {
+                // Catch database connection drops or unexpected exceptions
+                await transaction.RollbackAsync();
+                return "FailedToUpdate";
+            }
+        }
+        public async Task<ManageRoleClaimsResult> ManageRoleClaimsAsync(string roleId)
+        {
+            // Check if the role exists
+            var role = await _roleManager.FindByIdAsync(roleId);
+            if (role == null) return null; // We will handle this null in the Command Handler
+
+            // Get the permissions this role ALREADY has in the database
+            var existingClaims = await _roleManager.GetClaimsAsync(role);
+            var existingClaimValues = existingClaims.Select(x => x.Value).ToList();
+
+            // Prepare our empty checklist
+            var roleClaimsList = new List<RoleClaimDto>();
+
+            // Use Reflection to grab ALL possible permissions in the system
+            var permissionClasses = typeof(Permissions).GetNestedTypes(BindingFlags.Public | BindingFlags.Static);
+
+            foreach (var module in permissionClasses)
+            {
+                var permissions = module.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                                        .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+                                        .Select(fi => fi.GetRawConstantValue()?.ToString());
+
+                foreach (var permission in permissions)
+                {
+                    if (permission != null)
+                    {
+                        // Add to the checklist and check if the role currently holds it
+                        roleClaimsList.Add(new RoleClaimDto
+                        {
+                            PermissionName = permission,
+                            HasPermission = existingClaimValues.Contains(permission)
+                        });
+                    }
+                }
+            }
+
+            // Return the perfectly formatted result for the UI
+            return new ManageRoleClaimsResult
+            {
+                RoleId = roleId,
+                RoleName = role.Name,
+                RoleClaims = roleClaimsList
+            };
+        }
+        public async Task<string> UpdateRoleClaimsAsync(string roleId, List<RoleClaimDto> requestClaims)
+        {
+            var role = await _roleManager.FindByIdAsync(roleId);
+            if (role == null) return "RoleNotFound";
+
+            // Get current claims from the database
+            var existingClaims = await _roleManager.GetClaimsAsync(role);
+            var existingClaimValues = existingClaims.Select(x => x.Value).ToList();
+
+            // Figure out which claims to ADD
+            var claimsToAdd = requestClaims
+                .Where(x => x.HasPermission && !existingClaimValues.Contains(x.PermissionName))
+                .ToList();
+
+            // Figure out which claims to REMOVE
+            var claimsToRemove = existingClaims
+                .Where(x => requestClaims.Any(req => req.PermissionName == x.Value && !req.HasPermission))
+                .ToList();
+
+            // START TRANSACTION
+            using var transaction = await _appDbContext.Database.BeginTransactionAsync();
+
+            try
+            {
+                // Execute the deletions
+                foreach (var claim in claimsToRemove)
+                {
+                    var removeResult = await _roleManager.RemoveClaimAsync(role, claim);
+                    if (!removeResult.Succeeded)
+                    {
+                        await transaction.RollbackAsync(); // Revert everything!
+                        return "FailedToRemove";
+                    }
+                }
+
+                // Execute the insertions
+                foreach (var claim in claimsToAdd)
+                {
+                    var addResult = await _roleManager.AddClaimAsync(role, new Claim(Permissions.Type, claim.PermissionName));
+                    if (!addResult.Succeeded)
+                    {
+                        await transaction.RollbackAsync(); // Revert everything!
+                        return "FailedToAdd";
+                    }
+                }
+
+                // If we reach this line, EVERYTHING was successful!
+                await transaction.CommitAsync();
+                return "Success";
+            }
+            catch (Exception)
+            {
+                // Catch any unexpected database crashes (like connection timeouts)
+                await transaction.RollbackAsync();
+                return "FailedToUpdate";
             }
         }
         #endregion

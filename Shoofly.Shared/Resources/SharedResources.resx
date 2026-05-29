@@ -162,8 +162,17 @@
   <data name="FailedToAddNewRoles" xml:space="preserve">
     <value>Failed to add the new roles to the user.</value>
   </data>
+  <data name="FailedToAddPermission" xml:space="preserve">
+    <value>Failed to assign new permissions. The transaction was aborted and no changes were saved.</value>
+  </data>
   <data name="FailedToRemoveOldRoles" xml:space="preserve">
     <value>Failed to remove the user's old roles.</value>
+  </data>
+  <data name="FailedToRemovePermission" xml:space="preserve">
+    <value>Failed to remove old permissions. The transaction was aborted and no changes were saved.</value>
+  </data>
+  <data name="FailedToUpdatePermissions" xml:space="preserve">
+    <value>An unexpected database error occurred while updating permissions. No changes were saved.</value>
   </data>
   <data name="FailedToUpdateRoles" xml:space="preserve">
     <value>An error occurred while updating roles. No changes were saved.</value>
@@ -225,11 +234,17 @@
   <data name="Required" xml:space="preserve">
     <value>This field is required</value>
   </data>
+  <data name="RoleClaimsUpdatedSuccessfully" xml:space="preserve">
+    <value>Role permissions have been successfully updated.</value>
+  </data>
   <data name="RoleHasUsers" xml:space="preserve">
     <value>Cannot delete this role because there are users assigned to it.</value>
   </data>
   <data name="RoleIsExist" xml:space="preserve">
     <value>This role already exists.</value>
+  </data>
+  <data name="RoleNotExist" xml:space="preserve">
+    <value>The specified role does not exist or could not be found.</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Operation completed successfully</value>

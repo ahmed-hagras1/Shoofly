@@ -1,7 +1,9 @@
 ﻿using Shoofly.Data.Entities.Identity;
+using Shoofly.Data.Results.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,5 +21,10 @@ namespace Shoofly.Service.Abstracts
         Task<(List<ApplicationRole> Roles, IList<string> UserRoles)?> GetManageUserRolesDataAsync(string userId);
         // Accepts a basic Tuple (String, Boolean) to maintain zero Core dependencies
         Task<string> UpdateUserRolesAsync(string userId, List<(string RoleName, bool HasRole)> userRoles);
+
+        Task<ManageUserClaimsResult> ManageUserClaimsAsync(string userId);
+        Task<string> UpdateUserClaimsAsync(string userId, List<UserClaimDto> requestClaims);
+        Task<ManageRoleClaimsResult> ManageRoleClaimsAsync(string roleId);
+        Task<string> UpdateRoleClaimsAsync(string roleId, List<RoleClaimDto> requestClaims);
     }
 }

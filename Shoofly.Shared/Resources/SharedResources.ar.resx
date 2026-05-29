@@ -162,8 +162,17 @@
   <data name="FailedToAddNewRoles" xml:space="preserve">
     <value>فشل في إضافة الصلاحيات الجديدة للمستخدم.</value>
   </data>
+  <data name="FailedToAddPermission" xml:space="preserve">
+    <value>فشلت عملية إضافة الصلاحيات الجديدة. تم إلغاء العملية ولم يتم حفظ أي تغييرات.</value>
+  </data>
   <data name="FailedToRemoveOldRoles" xml:space="preserve">
     <value>فشل في إزالة الصلاحيات القديمة للمستخدم.</value>
+  </data>
+  <data name="FailedToRemovePermission" xml:space="preserve">
+    <value>فشلت عملية إزالة الصلاحيات القديمة. تم إلغاء العملية ولم يتم حفظ أي تغييرات.</value>
+  </data>
+  <data name="FailedToUpdatePermissions" xml:space="preserve">
+    <value>حدث خطأ غير متوقع في قاعدة البيانات أثناء تحديث الصلاحيات. لم يتم حفظ أي تغييرات.</value>
   </data>
   <data name="FailedToUpdateRoles" xml:space="preserve">
     <value>حدث خطأ أثناء تحديث الصلاحيات. لم يتم حفظ أي تغييرات.</value>
@@ -225,11 +234,17 @@
   <data name="Required" xml:space="preserve">
     <value>هذا الحقل مطلوب</value>
   </data>
+  <data name="RoleClaimsUpdatedSuccessfully" xml:space="preserve">
+    <value>تم تحديث صلاحيات الدور بنجاح.</value>
+  </data>
   <data name="RoleHasUsers" xml:space="preserve">
     <value>لا يمكن حذف هذه الصلاحية لوجود مستخدمين مرتبطين بها.</value>
   </data>
   <data name="RoleIsExist" xml:space="preserve">
     <value>هذه الصلاحية موجودة بالفعل.</value>
+  </data>
+  <data name="RoleNotExist" xml:space="preserve">
+    <value>الدور المحدد غير موجود أو لم يتم العثور عليه.</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>تمت العملية بنجاح</value>

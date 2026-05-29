@@ -16,7 +16,9 @@ namespace Shoofly.Core.Features.Authorization.Commands.Handlers
         IRequestHandler<AddRoleCommand, Response<string>>,
         IRequestHandler<EditRoleCommand, Response<string>>,
         IRequestHandler<DeleteRoleCommand, Response<string>>,
-        IRequestHandler<UpdateUserRolesCommand, Response<string>>
+        IRequestHandler<UpdateUserRolesCommand, Response<string>>,
+        IRequestHandler<UpdateRoleClaimsCommand, Response<string>>,
+        IRequestHandler<UpdateUserClaimsCommand, Response<string>>
     {
         #region Fields
         private readonly IAuthorizationService _authorizationService;
@@ -107,6 +109,59 @@ namespace Shoofly.Core.Features.Authorization.Commands.Handlers
                 case "Success":
                     return Success<string>(_localizer[SharedResourcesKeys.Updated]);
                 default:
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.BadRequest]);
+            }
+        }
+        public async Task<Response<string>> Handle(UpdateUserClaimsCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authorizationService.UpdateUserClaimsAsync(request.UserId, request.UserClaims);
+
+            switch (result)
+            {
+                case "Success":
+                    return Success<string>(_localizer[SharedResourcesKeys.Success]);
+
+                case "UserNotFound":
+                    return NotFound<string>(_localizer[SharedResourcesKeys.UserNotFound]);
+
+                case "FailedToRemove":
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.FailedToRemovePermission]);
+
+                case "FailedToAdd":
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.FailedToAddPermission]);
+
+                case "FailedToUpdate":
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.FailedToUpdatePermissions]);
+
+                default:
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.BadRequest]);
+            }
+        }
+        public async Task<Response<string>> Handle(UpdateRoleClaimsCommand request, CancellationToken cancellationToken)
+        {
+            // Call the transactional service method
+            var result = await _authorizationService.UpdateRoleClaimsAsync(request.RoleId, request.RoleClaims);
+
+
+            switch (result)
+            {
+                case "Success":
+                    return Success<string>(_localizer[SharedResourcesKeys.RoleClaimsUpdatedSuccessfully]);
+
+                case "RoleNotFound":
+                    return NotFound<string>(_localizer[SharedResourcesKeys.RoleNotExist]);
+
+                case "FailedToRemove":
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.FailedToRemovePermission]);
+
+                case "FailedToAdd":
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.FailedToAddPermission]);
+
+                case "FailedToUpdate":
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.FailedToUpdatePermissions]);
+
+                default:
+                    // Fallback for any unexpected string returns
                     return BadRequest<string>(_localizer[SharedResourcesKeys.BadRequest]);
             }
         }

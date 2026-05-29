@@ -47,6 +47,12 @@ namespace Shoofly.Core.AppMetaData
 
             public const string ManageUserRoles = Prefix + "/User-Roles" + SignleRoute;
             public const string UpdateUserRoles = Prefix + "/User-Roles/Update";
+
+            public const string ManageUserClaims = Prefix + "/User-Claims" + SignleRoute;
+            public const string UpdateUserClaims = Prefix + "/User-Claims/Update";
+
+            public const string ManageRoleClaims = Prefix + "/Role-Claims" + SignleRoute;
+            public const string UpdateRoleClaims = Prefix + "/Role-Claims/Update";
         }
     }
 }

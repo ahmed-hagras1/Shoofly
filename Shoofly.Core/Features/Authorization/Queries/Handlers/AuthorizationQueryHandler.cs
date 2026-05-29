@@ -4,6 +4,7 @@ using Microsoft.Extensions.Localization;
 using Shoofly.Core.Bases;
 using Shoofly.Core.Features.Authorization.Queries.Models;
 using Shoofly.Core.Features.Authorization.Queries.Results;
+using Shoofly.Data.Results.Authorization;
 using Shoofly.Service.Abstracts;
 using Shoofly.Shared.Resources;
 using System;
@@ -17,7 +18,10 @@ namespace Shoofly.Core.Features.Authorization.Queries.Handlers
     public class AuthorizationQueryHandler : ResponseHandler,
         IRequestHandler<GetRoleListQuery, Response<List<GetRoleListResult>>>,
         IRequestHandler<GetRoleByIdQuery, Response<GetRoleByIdResult>>,
-        IRequestHandler<ManageUserRolesQuery, Response<ManageUserRolesResult>>
+        IRequestHandler<ManageUserRolesQuery, Response<ManageUserRolesResult>>,
+        IRequestHandler<ManageUserClaimsQuery, Response<ManageUserClaimsResult>>,
+        IRequestHandler<ManageRoleClaimsQuery, Response<ManageRoleClaimsResult>>
+        
     {
         #region Fields
         private readonly IAuthorizationService _authorizationService;
@@ -94,6 +98,32 @@ namespace Shoofly.Core.Features.Authorization.Queries.Handlers
             }
 
             // Return the fully mapped object
+            return Success(result);
+        }
+        public async Task<Response<ManageUserClaimsResult>> Handle(ManageUserClaimsQuery request, CancellationToken cancellationToken)
+        {
+            // 1. Call the service which now returns the fully built checklist
+            var result = await _authorizationService.ManageUserClaimsAsync(request.UserId);
+
+            // 2. If null, the user doesn't exist
+            if (result == null)
+            {
+                return NotFound<ManageUserClaimsResult>(_localizer[SharedResourcesKeys.UserNotFound]);
+            }
+
+            // 3. Return success
+            return Success(result);
+        }
+
+        public async Task<Response<ManageRoleClaimsResult>> Handle(ManageRoleClaimsQuery request, CancellationToken cancellationToken)
+        {
+            var result = await _authorizationService.ManageRoleClaimsAsync(request.RoleId);
+
+            if (result == null)
+            {
+                return NotFound<ManageRoleClaimsResult>(_localizer[SharedResourcesKeys.RoleNotExist]);
+            }
+
             return Success(result);
         }
         #endregion

@@ -15,6 +15,8 @@ using Shoofly.Api.Middlewares;
 using Shoofly.API.Filters;
 using Shoofly.Infrastructure.BackgroundServices;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Reflection;
+using Shoofly.Shared.Security;
 
 namespace Shoofly.API
 {
@@ -57,6 +59,28 @@ namespace Shoofly.API
                         fixedOptions.Window = TimeSpan.FromMinutes(1); // per 1 minute
                         fixedOptions.QueueLimit = 0; // Reject immediately if over the limit
                     });
+                });
+
+                // This converts every string in your Permissions class into an active Security Policy
+                builder.Services.AddAuthorization(options =>
+                {
+                    var permissionClasses = typeof(Permissions).GetNestedTypes(BindingFlags.Public | BindingFlags.Static);
+
+                    foreach (var module in permissionClasses)
+                    {
+                        var permissions = module.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                                                .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+                                                .Select(fi => fi.GetRawConstantValue()?.ToString());
+
+                        foreach (var permission in permissions)
+                        {
+                            if (permission != null)
+                            {
+                                options.AddPolicy(permission, policy =>
+                                    policy.RequireClaim(Permissions.Type, permission));
+                            }
+                        }
+                    }
                 });
 
                 #region Dependency Injection

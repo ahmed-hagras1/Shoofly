@@ -25,6 +25,7 @@ namespace Shoofly.Service.Implementations
         private readonly JWTSettings _jwtSettings;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IEmailService _emailService; 
         private readonly ISmsService _smsService;     
         private readonly AppDbContext _dbContext;     
@@ -36,7 +37,8 @@ namespace Shoofly.Service.Implementations
             UserManager<ApplicationUser> userManager,
             IEmailService emailService,
             ISmsService smsService,
-            AppDbContext dbContext)
+            AppDbContext dbContext,
+            RoleManager<ApplicationRole> roleManager)
         {
             _jwtSettings = jwtSettings.Value;
             _refreshTokenRepository = refreshTokenRepository;
@@ -44,6 +46,7 @@ namespace Shoofly.Service.Implementations
             _emailService = emailService;
             _smsService = smsService;
             _dbContext = dbContext;
+            _roleManager = roleManager;
         }
         #endregion
 
@@ -300,7 +303,25 @@ namespace Shoofly.Service.Implementations
             };
 
             claims.AddRange(userClaims);
-            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            // NEW ROLE & PERMISSIONS LOOP 
+            foreach (var roleName in userRoles)
+            {
+                // Add the basic Role claim ("Admin", "Client", etc.)
+                claims.Add(new Claim(ClaimTypes.Role, roleName));
+
+                // Fetch the role from the database
+                var role = await _roleManager.FindByNameAsync(roleName);
+                if (role != null)
+                {
+                    // Grab all Permissions assigned to this role
+                    var roleClaims = await _roleManager.GetClaimsAsync(role);
+
+                    // Add every permission into the JWT token!
+                    claims.AddRange(roleClaims);
+                }
+            }
+
 
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
 

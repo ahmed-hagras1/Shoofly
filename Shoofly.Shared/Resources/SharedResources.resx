@@ -120,8 +120,17 @@
   <data name="AccountAlreadyVerified" xml:space="preserve">
     <value>This account is already verified.</value>
   </data>
+  <data name="AccountDeactivated" xml:space="preserve">
+    <value>Your account has been deactivated.</value>
+  </data>
   <data name="AccountIsDisabled" xml:space="preserve">
     <value>This account has been deactivated. Please contact the system administrator.</value>
+  </data>
+  <data name="AccountLocked" xml:space="preserve">
+    <value>Your account is temporarily locked.</value>
+  </data>
+  <data name="AccountModified" xml:space="preserve">
+    <value>Your account permissions or status have changed. Please log in again.</value>
   </data>
   <data name="AccountVerifiedSuccessfully" xml:space="preserve">
     <value>Account verified successfully!</value>
@@ -188,6 +197,9 @@
   </data>
   <data name="InvalidOrExpiredCode" xml:space="preserve">
     <value>The verification code is invalid or has expired.</value>
+  </data>
+  <data name="InvalidToken" xml:space="preserve">
+    <value>Invalid token.</value>
   </data>
   <data name="LoggedOutSuccessfully" xml:space="preserve">
     <value>Logged out successfully.</value>

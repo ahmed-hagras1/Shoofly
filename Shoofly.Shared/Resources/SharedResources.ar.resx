@@ -120,8 +120,17 @@
   <data name="AccountAlreadyVerified" xml:space="preserve">
     <value>هذا الحساب مفعل بالفعل.</value>
   </data>
+  <data name="AccountDeactivated" xml:space="preserve">
+    <value>تم تعطيل حسابك.</value>
+  </data>
   <data name="AccountIsDisabled" xml:space="preserve">
     <value>تم إلغاء تنشيط هذا الحساب، يرجى التواصل مع مسؤول النظام.</value>
+  </data>
+  <data name="AccountLocked" xml:space="preserve">
+    <value>حسابك مقفل مؤقتاً.</value>
+  </data>
+  <data name="AccountModified" xml:space="preserve">
+    <value>تم تغيير صلاحيات أو حالة حسابك. يرجى تسجيل الدخول مرة أخرى.</value>
   </data>
   <data name="AccountVerifiedSuccessfully" xml:space="preserve">
     <value>تم التحقق من الحساب بنجاح!</value>
@@ -188,6 +197,9 @@
   </data>
   <data name="InvalidOrExpiredCode" xml:space="preserve">
     <value>كود التحقق غير صحيح أو انتهت صلاحيته.</value>
+  </data>
+  <data name="InvalidToken" xml:space="preserve">
+    <value>رمز غير صالح.</value>
   </data>
   <data name="LoggedOutSuccessfully" xml:space="preserve">
     <value>تم تسجيل الخروج بنجاح.</value>

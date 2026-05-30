@@ -294,6 +294,7 @@ namespace Shoofly.Service.Implementations
                 new Claim(nameof(UserClaimModel.UserName), user.UserName ?? ""),
                 new Claim(nameof(UserClaimModel.Email), user.Email ?? ""),
                 new Claim(nameof(UserClaimModel.PhoneNumber), user.PhoneNumber ?? ""),
+                new Claim("SecurityStamp", user.SecurityStamp ?? string.Empty),
                 
                 // Shoofly Specific Details
                 new Claim(nameof(UserClaimModel.FullName), user.FullName),

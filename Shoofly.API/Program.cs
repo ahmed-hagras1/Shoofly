@@ -109,11 +109,13 @@ namespace Shoofly.API
 
                 // Register the filter class for Dependency Injection
                 builder.Services.AddScoped<TokenValidationFilter>();
+                builder.Services.AddScoped<ValidateUserStatusFilter>();
 
                 // Add it to the global filters collection
                 builder.Services.AddControllers(options =>
                 {
                     options.Filters.AddService<TokenValidationFilter>();
+                    options.Filters.AddService<ValidateUserStatusFilter>();
                 });
 
                 // Register the background service worker 

@@ -61,5 +61,6 @@ namespace Shoofly.Shared.Resources
         public const string FailedToRemovePermission = "FailedToRemovePermission";
         public const string FailedToAddPermission = "FailedToAddPermission";
         public const string FailedToUpdatePermissions = "FailedToUpdatePermissions";
+        public const string CannotDeactivateOwnAccount = "CannotDeactivateOwnAccount";
     }
 }

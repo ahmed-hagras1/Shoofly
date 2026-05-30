@@ -18,7 +18,8 @@ namespace Shoofly.Core.Features.Authorization.Commands.Handlers
         IRequestHandler<DeleteRoleCommand, Response<string>>,
         IRequestHandler<UpdateUserRolesCommand, Response<string>>,
         IRequestHandler<UpdateRoleClaimsCommand, Response<string>>,
-        IRequestHandler<UpdateUserClaimsCommand, Response<string>>
+        IRequestHandler<UpdateUserClaimsCommand, Response<string>>,
+        IRequestHandler<ChangeUserStatusCommand, Response<string>>
     {
         #region Fields
         private readonly IAuthorizationService _authorizationService;
@@ -162,6 +163,28 @@ namespace Shoofly.Core.Features.Authorization.Commands.Handlers
 
                 default:
                     // Fallback for any unexpected string returns
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.BadRequest]);
+            }
+
+        }
+        public async Task<Response<string>> Handle(ChangeUserStatusCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authorizationService.ChangeUserStatusAsync(request.UserId, request.IsActive);
+
+            switch (result)
+            {
+                case "Success":
+                    // "User status has been successfully updated."
+                    return Success<string>(_localizer[SharedResourcesKeys.Success]);
+
+                case "UserNotFound":
+                    return NotFound<string>(_localizer[SharedResourcesKeys.UserNotFound]);
+
+                case "FailedToUpdateStatus":
+                    // "Failed to update user status. Please try again."
+                    return BadRequest<string>(_localizer[SharedResourcesKeys.BadRequest]);
+
+                default:
                     return BadRequest<string>(_localizer[SharedResourcesKeys.BadRequest]);
             }
         }

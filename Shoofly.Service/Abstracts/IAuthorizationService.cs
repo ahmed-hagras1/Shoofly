@@ -26,5 +26,6 @@ namespace Shoofly.Service.Abstracts
         Task<string> UpdateUserClaimsAsync(string userId, List<UserClaimDto> requestClaims);
         Task<ManageRoleClaimsResult> ManageRoleClaimsAsync(string roleId);
         Task<string> UpdateRoleClaimsAsync(string roleId, List<RoleClaimDto> requestClaims);
+        Task<string> ChangeUserStatusAsync(string userId, bool isActive);
     }
 }

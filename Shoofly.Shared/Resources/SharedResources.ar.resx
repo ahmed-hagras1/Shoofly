@@ -132,6 +132,9 @@
   <data name="BadRequest" xml:space="preserve">
     <value>طلب غير صالح</value>
   </data>
+  <data name="CannotDeactivateOwnAccount" xml:space="preserve">
+    <value>لا يمكنك تعطيل حسابك الخاص.</value>
+  </data>
   <data name="CodeMustBe6Digits" xml:space="preserve">
     <value>يجب أن يتكون الكود من 6 أرقام بالضبط.</value>
   </data>

@@ -403,6 +403,30 @@ namespace Shoofly.Service.Implementations
                 return "FailedToUpdate";
             }
         }
+        public async Task<string> ChangeUserStatusAsync(string userId, bool isActive)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return "UserNotFound";
+
+            // Update the status
+            user.IsActive = isActive;
+
+            // Execute the update
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                // CRITICAL: If deactivating, change the security stamp. 
+                // This instantly invalidates their current tokens across the system!
+                if (!isActive)
+                {
+                    await _userManager.UpdateSecurityStampAsync(user);
+                }
+                return "Success";
+            }
+
+            return "FailedToUpdateStatus";
+        }
         #endregion
     }
 }

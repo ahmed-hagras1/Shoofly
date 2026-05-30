@@ -97,5 +97,12 @@ namespace Shoofly.API.Controllers
             var response = await Mediator.Send(command, cancellationToken);
             return NewResult(response);
         }
+        [Authorize(Policy = Permissions.Users.ChangeStatus)]
+        [HttpPut(Router.AuthorizationRouting.ChangeUserStatus)]
+        public async Task<IActionResult> ChangeUserStatus([FromBody] ChangeUserStatusCommand command, CancellationToken cancellationToken)
+        {
+            var response = await Mediator.Send(command, cancellationToken);
+            return NewResult(response);
+        }
     }
 }

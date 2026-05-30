@@ -24,8 +24,7 @@ namespace Shoofly.Shared.Security
             public const string EditRoles = "Permissions.Users.EditRoles";
             public const string ViewClaims = "Permissions.Users.ViewClaims";
             public const string EditClaims = "Permissions.Users.EditClaims";
-            public const string Deactivate = "Permissions.Users.Deactivate";
-            public const string Reactivate = "Permissions.Users.Reactivate";
+            public const string ChangeStatus = "Permissions.Users.ChangeStatus";
         }
 
         public static class Security

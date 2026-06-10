@@ -73,14 +73,14 @@ namespace Shoofly.Api.Middlewares
 
                     default:
                         // Log the actual critical error to your console/file
-                        _logger.LogError(error, "An unhandled exception occurred in the Shoofly API.");
+                        _logger.LogError(error, "An unhandled exception occurred.");
 
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         responseModel.StatusCode = HttpStatusCode.InternalServerError;
 
                         // Optional Pro-Tip: In production, do not send the real error.Message to the client
                         // as it might expose database logic. Send a generic message instead.
-                        // responseModel.Message = "An unexpected server error occurred.";
+                        responseModel.Message = "An unexpected error occurred. Please try again later.";
                         break;
                 }
 

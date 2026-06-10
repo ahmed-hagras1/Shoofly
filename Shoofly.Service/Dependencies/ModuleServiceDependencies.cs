@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Shoofly.Service.Abstracts;
+using Shoofly.Service.Implementations;
 
 namespace Shoofly.Service.Dependencies
 {
@@ -6,6 +8,12 @@ namespace Shoofly.Service.Dependencies
     {
         public static IServiceCollection AddServiceDependencies(this IServiceCollection services)
         {
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ISmsService, SmsService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IAuthorizationService, AuthorizationService>();
+
             return services;
         }
     }

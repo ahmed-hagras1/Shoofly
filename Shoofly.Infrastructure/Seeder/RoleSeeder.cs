@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Shoofly.Data.Entities.Identity;
+using Shoofly.Shared.Security;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Shoofly.Infrastructure.Seeder
@@ -10,20 +13,38 @@ namespace Shoofly.Infrastructure.Seeder
     {
         public static async Task SeedAsync(RoleManager<ApplicationRole> roleManager)
         {
-            // Only seed if no roles exist
-            if (!roleManager.Roles.Any())
-            {
-                var roles = new List<ApplicationRole>
-                {
-                    new ApplicationRole { Name = "Admin" },
-                    new ApplicationRole { Name = "Coordinator" },
-                    new ApplicationRole { Name = "ServiceProvider" },
-                    new ApplicationRole { Name = "Client" }
-                };
+            var systemRoles = new List<string> { "Admin", "Coordinator", "ServiceProvider", "Client" };
 
-                foreach (var role in roles)
+            foreach (var roleName in systemRoles)
+            {
+                if (!await roleManager.RoleExistsAsync(roleName))
                 {
-                    await roleManager.CreateAsync(role);
+                    await roleManager.CreateAsync(new ApplicationRole { Name = roleName });
+                }
+            }
+
+            var adminRole = await roleManager.FindByNameAsync("Admin");
+            if (adminRole != null)
+            {
+                var existingClaims = await roleManager.GetClaimsAsync(adminRole);
+                var existingClaimValues = existingClaims.Select(c => c.Value).ToList();
+
+                // Read directly from the Shared Layer
+                var permissionClasses = typeof(Permissions).GetNestedTypes(BindingFlags.Public | BindingFlags.Static);
+
+                foreach (var module in permissionClasses)
+                {
+                    var permissions = module.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                                            .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+                                            .Select(fi => fi.GetRawConstantValue()?.ToString());
+
+                    foreach (var permission in permissions)
+                    {
+                        if (permission != null && !existingClaimValues.Contains(permission))
+                        {
+                            await roleManager.AddClaimAsync(adminRole, new Claim(Permissions.Type, permission));
+                        }
+                    }
                 }
             }
         }

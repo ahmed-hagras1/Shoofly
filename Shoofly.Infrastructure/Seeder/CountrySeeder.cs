@@ -8,15 +8,18 @@ namespace Shoofly.Infrastructure.Seeder
 {
     public static class CountrySeeder
     {
-        public static async Task SeedAsync(AppDbContext dbContext)
+        public static async Task SeedAsync(AppDbContext dbContext) // Use your actual DbContext name
         {
+            // Check if the table is empty
             if (!await dbContext.Set<Country>().AnyAsync())
             {
                 var countries = new List<Country>
                 {
-                    new Country { Name = "Egypt" }, // Based on your current location!
-                    new Country { Name = "Saudi Arabia" },
-                    new Country { Name = "United Arab Emirates" }
+                    new Country { Name = "Egypt", DialCode = "+20" },
+                    new Country { Name = "Saudi Arabia", DialCode = "+966" },
+                    new Country { Name = "United Arab Emirates", DialCode = "+971" },
+                    new Country { Name = "Kuwait", DialCode = "+965" },
+                    new Country { Name = "Qatar", DialCode = "+974" }
                 };
 
                 await dbContext.Set<Country>().AddRangeAsync(countries);

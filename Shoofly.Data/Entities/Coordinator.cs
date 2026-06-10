@@ -5,8 +5,6 @@ namespace Shoofly.Data.Entities
 {
     public class Coordinator : ApplicationUser
     {
-        // 1. HR & Admin Information
-        public bool IsActive { get; set; } = true;
         public decimal Salary { get; set; } = 7000m; // Example fixed salary
         public string? DocumentFileUrl { get; set; } // Contract, ID, or CV
 

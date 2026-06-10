@@ -226,6 +226,10 @@ namespace Shoofly.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("DialCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -292,6 +296,9 @@ namespace Shoofly.Infrastructure.Migrations
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -698,9 +705,6 @@ namespace Shoofly.Infrastructure.Migrations
 
                     b.Property<string>("DocumentFileUrl")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
 
                     b.Property<decimal>("Salary")
                         .HasColumnType("decimal(18,2)");

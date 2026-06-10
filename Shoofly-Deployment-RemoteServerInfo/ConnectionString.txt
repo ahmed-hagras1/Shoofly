@@ -1,0 +1,1 @@
+Server=db51937.databaseasp.net; Database=db51937; User Id=db51937; Password=3At-m?Y48Hq=; Encrypt=True; TrustServerCertificate=True; MultipleActiveResultSets=True;

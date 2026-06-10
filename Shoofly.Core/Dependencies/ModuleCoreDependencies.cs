@@ -8,6 +8,7 @@ namespace Shoofly.Core.Dependencies
 {
     public static class ModuleCoreDependencies
     {
+
         public static IServiceCollection AddCoreDependencies(this IServiceCollection services)
         {
             // 1. Register MediatR and add the ValidationBehavior
@@ -20,6 +21,10 @@ namespace Shoofly.Core.Dependencies
 
             // 2. Register all your FluentValidation rules automatically
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+            // 🟢 3. Register AutoMapper (THIS FIXES YOUR ERROR)
+            // It will scan the current assembly (Shoofly.Core) and find all your Profile classes automatically!
+            services.AddAutoMapper(cfg => cfg.AddMaps(Assembly.GetExecutingAssembly()));
 
             return services;
         }

@@ -13,9 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstracts\" />
-    <Folder Include="Implementations\" />
     <Folder Include="BackgroundServices\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Twilio" Version="7.14.9" />
   </ItemGroup>
 
 </Project>

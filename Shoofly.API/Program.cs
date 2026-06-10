@@ -12,6 +12,11 @@ using Shoofly.Data.Entities.Identity;
 
 // Add the Middleware namespace
 using Shoofly.Api.Middlewares;
+using Shoofly.API.Filters;
+using Shoofly.Infrastructure.BackgroundServices;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Reflection;
+using Shoofly.Shared.Security;
 
 namespace Shoofly.API
 {
@@ -28,7 +33,57 @@ namespace Shoofly.API
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
 
-                #region Dependency injection.
+                // ENABLE CORS
+                // This allows the Frontend (React, Angular, Flutter, etc.) 
+                // to communicate with your API from any domain.
+                builder.Services.AddCors(options =>
+                {
+                    options.AddPolicy("AllowAll", policy =>
+                    {
+                        policy.AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowAnyOrigin();
+                    });
+                });
+
+                // Add Rate Limiting Services
+                builder.Services.AddRateLimiter(options =>
+                {
+                    // Return a 429 status code when the limit is reached
+                    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                    // Define the specific policy
+                    options.AddFixedWindowLimiter("AuthBruteForcePolicy", fixedOptions =>
+                    {
+                        fixedOptions.PermitLimit = 5; // Allow 5 requests
+                        fixedOptions.Window = TimeSpan.FromMinutes(1); // per 1 minute
+                        fixedOptions.QueueLimit = 0; // Reject immediately if over the limit
+                    });
+                });
+
+                // This converts every string in your Permissions class into an active Security Policy
+                builder.Services.AddAuthorization(options =>
+                {
+                    var permissionClasses = typeof(Permissions).GetNestedTypes(BindingFlags.Public | BindingFlags.Static);
+
+                    foreach (var module in permissionClasses)
+                    {
+                        var permissions = module.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                                                .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+                                                .Select(fi => fi.GetRawConstantValue()?.ToString());
+
+                        foreach (var permission in permissions)
+                        {
+                            if (permission != null)
+                            {
+                                options.AddPolicy(permission, policy =>
+                                    policy.RequireClaim(Permissions.Type, permission));
+                            }
+                        }
+                    }
+                });
+
+                #region Dependency Injection
                 builder.Services.AddInfrastructureDependencies(builder.Configuration)
                     .AddServiceDependencies()
                     .AddCoreDependencies()
@@ -45,36 +100,65 @@ namespace Shoofly.API
 
                 builder.Services.Configure<RequestLocalizationOptions>(options =>
                 {
-                    options.DefaultRequestCulture = new RequestCulture("ar-EG");
+                    options.DefaultRequestCulture = new RequestCulture("en-US");
                     options.SupportedCultures = supportedCultures;
                     options.SupportedUICultures = supportedCultures;
                     options.ApplyCurrentCultureToResponseHeaders = true;
                 });
                 #endregion
 
+                // Register the filter class for Dependency Injection
+                builder.Services.AddScoped<TokenValidationFilter>();
+                builder.Services.AddScoped<ValidateUserStatusFilter>();
+
+                // Add it to the global filters collection
+                builder.Services.AddControllers(options =>
+                {
+                    options.Filters.AddService<TokenValidationFilter>();
+                    options.Filters.AddService<ValidateUserStatusFilter>();
+                });
+
+                // Register the background service worker 
+                builder.Services.AddHostedService<TokenCleanupBackgroundService>();
+
+
                 var app = builder.Build();
 
-                //  ERROR HANDLER (MUST BE FIRST)
+                // 🛑 MIDDLEWARE ORDER (CRITICAL)
+
+                // Error Handler must be first to catch exceptions from all following layers
                 app.UseMiddleware<ErrorHandlerMiddleware>();
+
+                // Move HttpsRedirection up to ensure local SSL works before routing
+                app.UseHttpsRedirection();
+
+                // Enable CORS Policy
+                // This must come before Authentication and MapControllers
+                app.UseCors("AllowAll");
+
+                // Add the Rate Limiter Middleware
+                app.UseRateLimiter();
 
                 app.UseRequestLocalization();
 
-                // Configure the HTTP request pipeline.
-                if (app.Environment.IsDevelopment())
+                // EXPOSE SWAGGER IN ALL ENVIRONMENTS
+                // We removed the 'if (app.Environment.IsDevelopment())' check 
+                // so your frontend partner can see the documentation on the host.
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
                 {
-                    app.UseSwagger();
-                    app.UseSwaggerUI();
-                }
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Shoofly API V1");
 
-                app.UseHttpsRedirection();
+                    // This makes Swagger the default home page (e.g., https://your-app.com/)
+                    options.RoutePrefix = string.Empty;
+                });
 
-                // AUTHENTICATION
-                app.UseAuthentication(); // <-- CRITICAL: Must be added before Authorization
+                // AUTHENTICATION & AUTHORIZATION
+                app.UseAuthentication();
                 app.UseAuthorization();
 
                 app.MapControllers();
 
-                // SEEDING BLOCK
                 #region Seeding Database
                 using (var scope = app.Services.CreateScope())
                 {
@@ -85,41 +169,26 @@ namespace Shoofly.API
                         var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
                         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
-                        // ---------------------------------------------------
-                        // STEP 1: Independent Tables (No Foreign Keys)
-                        // ---------------------------------------------------
+                        // Seed data in order of dependency
                         await CountrySeeder.SeedAsync(dbContext);
                         await CategorySeeder.SeedAsync(dbContext);
-                        await RoleSeeder.SeedAsync(roleManager); // Roles don't depend on users
-
-                        // ---------------------------------------------------
-                        // STEP 2: Level 1 Dependencies
-                        // ---------------------------------------------------
-                        // SubCategories require Categories to exist first
+                        await RoleSeeder.SeedAsync(roleManager);
                         await SubCategorySeeder.SeedAsync(dbContext);
-
-                        // Users require Roles to exist first (so we can assign them)
                         await UserSeeder.SeedAsync(userManager, dbContext);
-
-                        // ---------------------------------------------------
-                        // STEP 3: Level 2 Dependencies
-                        // ---------------------------------------------------
-                        // Services require SubCategories to exist first
                         await ServiceSeeder.SeedAsync(dbContext);
                     }
                     catch (Exception ex)
                     {
-                        // If seeding fails, log it to the console so we can see why
                         Console.WriteLine($"An error occurred during database seeding: {ex.Message}");
                     }
                 }
                 #endregion
 
-                // Run the application
                 await app.RunAsync();
             }
             catch (Exception ex)
             {
+                // Log critical startup failures here
                 throw;
             }
         }

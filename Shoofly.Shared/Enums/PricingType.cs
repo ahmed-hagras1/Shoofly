@@ -8,7 +8,8 @@ namespace Shoofly.Shared.Enums
 {
     public enum PricingType
     {
-        FixedAmount, // "All amount" (e.g., Logo Design, AC Installation)
-        PerHour      // "Per hour" (e.g., House Cleaning, Hourly Tech Support)
+        FixedAmount = 1,  // Total fixed price (e.g. logo design, AC installation)
+        PerHour = 2,      // Billed by the hour (e.g. cleaning, hourly tech support)
+        Custom = 3        // Price quoted after initial assessment
     }
 }

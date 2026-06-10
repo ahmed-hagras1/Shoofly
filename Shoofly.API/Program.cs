@@ -175,7 +175,7 @@ namespace Shoofly.API
                         await RoleSeeder.SeedAsync(roleManager);
                         await SubCategorySeeder.SeedAsync(dbContext);
                         await UserSeeder.SeedAsync(userManager, dbContext);
-                        await ServiceSeeder.SeedAsync(dbContext);
+                        await ManualServiceSeeder.SeedAsync(dbContext);
                     }
                     catch (Exception ex)
                     {

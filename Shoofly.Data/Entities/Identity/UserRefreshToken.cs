@@ -11,9 +11,7 @@ namespace Shoofly.Data.Entities.Identity
     {
         public int Id { get; set; }
 
-        // This MUST be a string because ApplicationUser uses string (GUID)
         public string UserId { get; set; } = string.Empty;
-
         public string? Token { get; set; }
         public string? JWTId { get; set; }
         public bool IsUsed { get; set; }

@@ -12,19 +12,10 @@ namespace Shoofly.Infrastructure.Seeder
         {
             if (!await dbContext.SubCategories.AnyAsync())
             {
-                var technical = await dbContext.Categories.FirstOrDefaultAsync(c => c.Name == "Technical");
                 var manual = await dbContext.Categories.FirstOrDefaultAsync(c => c.Name == "Manual");
+                var technical = await dbContext.Categories.FirstOrDefaultAsync(c => c.Name == "Technical");
 
                 var subCategories = new List<SubCategory>();
-
-                // --- TECHNICAL SUB-CATEGORIES ---
-                if (technical != null)
-                {
-                    subCategories.Add(new SubCategory { Name = "Web Development", CategoryId = technical.Id });
-                    subCategories.Add(new SubCategory { Name = "Mobile Development", CategoryId = technical.Id });
-                    subCategories.Add(new SubCategory { Name = "Graphic Design", CategoryId = technical.Id });
-                    subCategories.Add(new SubCategory { Name = "Digital Marketing", CategoryId = technical.Id });
-                }
 
                 // --- MANUAL SUB-CATEGORIES ---
                 if (manual != null)
@@ -34,6 +25,18 @@ namespace Shoofly.Infrastructure.Seeder
                     subCategories.Add(new SubCategory { Name = "Carpentry", CategoryId = manual.Id });
                     subCategories.Add(new SubCategory { Name = "Cleaning Services", CategoryId = manual.Id });
                     subCategories.Add(new SubCategory { Name = "AC Maintenance", CategoryId = manual.Id });
+                    subCategories.Add(new SubCategory { Name = "Painting", CategoryId = manual.Id });
+                }
+
+                // --- TECHNICAL SUB-CATEGORIES ---
+                if (technical != null)
+                {
+                    subCategories.Add(new SubCategory { Name = "Web Development", CategoryId = technical.Id });
+                    subCategories.Add(new SubCategory { Name = "Mobile Development", CategoryId = technical.Id });
+                    subCategories.Add(new SubCategory { Name = "Desktop Development", CategoryId = technical.Id });
+                    subCategories.Add(new SubCategory { Name = "Graphic Design", CategoryId = technical.Id });
+                    subCategories.Add(new SubCategory { Name = "Digital Marketing", CategoryId = technical.Id });
+                    subCategories.Add(new SubCategory { Name = "UI/UX Design", CategoryId = technical.Id });
                 }
 
                 if (subCategories.Count > 0)

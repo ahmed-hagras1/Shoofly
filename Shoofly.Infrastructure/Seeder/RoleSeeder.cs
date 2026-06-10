@@ -13,7 +13,15 @@ namespace Shoofly.Infrastructure.Seeder
     {
         public static async Task SeedAsync(RoleManager<ApplicationRole> roleManager)
         {
-            var systemRoles = new List<string> { "Admin", "Coordinator", "ServiceProvider", "Client" };
+            // Updated: ServiceProvider → ManualServiceProvider + DigitalServiceProvider
+            var systemRoles = new List<string>
+            {
+                "Admin",
+                "Coordinator",
+                "ManualServiceProvider",
+                "DigitalServiceProvider",
+                "Client"
+            };
 
             foreach (var roleName in systemRoles)
             {
@@ -23,20 +31,21 @@ namespace Shoofly.Infrastructure.Seeder
                 }
             }
 
+            // Seed all permission claims onto the Admin role
             var adminRole = await roleManager.FindByNameAsync("Admin");
             if (adminRole != null)
             {
                 var existingClaims = await roleManager.GetClaimsAsync(adminRole);
                 var existingClaimValues = existingClaims.Select(c => c.Value).ToList();
 
-                // Read directly from the Shared Layer
                 var permissionClasses = typeof(Permissions).GetNestedTypes(BindingFlags.Public | BindingFlags.Static);
 
                 foreach (var module in permissionClasses)
                 {
-                    var permissions = module.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
-                                            .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
-                                            .Select(fi => fi.GetRawConstantValue()?.ToString());
+                    var permissions = module
+                        .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                        .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+                        .Select(fi => fi.GetRawConstantValue()?.ToString());
 
                     foreach (var permission in permissions)
                     {

@@ -3,21 +3,26 @@ using System.Collections.Generic;
 
 namespace Shoofly.Data.Entities
 {
+    /// <summary>
+    /// A company employee who reviews incoming manual orders
+    /// and assigns ManualServiceProviders / ManualTeams to OrderItems.
+    /// </summary>
     public class Coordinator : ApplicationUser
     {
-        public decimal Salary { get; set; } = 7000m; // Example fixed salary
-        public string? DocumentFileUrl { get; set; } // Contract, ID, or CV
+        public Coordinator()
+        {
+            ManagedOrders = new HashSet<Order>();
+        }
 
-        // 2. Performance Tracking (Optional but highly recommended)
-        // You can increment this every time they successfully close an order
+        public decimal Salary { get; set; } = 7000m;
+        public string? DocumentFileUrl { get; set; }
+
+        // Incremented each time the coordinator successfully closes an order
         public int DispatchedOrdersCount { get; set; } = 0;
 
         // ----------------------------------------------------
         // Navigation Properties
         // ----------------------------------------------------
-
-        // The Coordinator is responsible for overseeing the Master Orders.
-        // They look at these orders and assign workers to the specific OrderItems inside.
-        public virtual ICollection<Order> ManagedOrders { get; set; } = new List<Order>();
+        public virtual ICollection<Order> ManagedOrders { get; set; }
     }
 }

@@ -6,15 +6,22 @@ using System.Threading.Tasks;
 
 namespace Shoofly.Data.Entities
 {
+    /// <summary>
+    /// Each Client has exactly one Cart.
+    /// They add ManualServices to it before checking out as a single Order.
+    ///
+    /// NOTE: There is NO cart for the digital/technical flow.
+    /// Digital orders are placed directly on a provider's profile.
+    /// </summary>
     public class Cart
     {
         public int Id { get; set; }
 
-        // Linked to the User
-        public string ClientId { get; set; }
-        // public ApplicationUser Client { get; set; } // If using Identity
+        public string ClientId { get; set; } = string.Empty;
+        public virtual Client Client { get; set; } = null!;
 
-        // Navigation property: A cart can have multiple services inside it
         public virtual ICollection<CartItem> Items { get; set; } = new List<CartItem>();
     }
+
+    
 }

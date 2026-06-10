@@ -3,6 +3,7 @@ using Shoofly.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Shoofly.Shared.Enums;
 
 namespace Shoofly.Infrastructure.Seeder
 {
@@ -14,8 +15,18 @@ namespace Shoofly.Infrastructure.Seeder
             {
                 var categories = new List<Category>
                 {
-                    new Category { Name = "Technical" },
-                    new Category { Name = "Manual" } // For Fikedmitkm style physical services
+                    new Category
+                    {
+                        Name = "Manual",
+                        Type = CategoryType.Manual,
+                        IconUrl = null  // Set a real icon later
+                    },
+                    new Category
+                    {
+                        Name = "Technical",
+                        Type = CategoryType.Technical,
+                        IconUrl = null
+                    }
                 };
 
                 await dbContext.Categories.AddRangeAsync(categories);

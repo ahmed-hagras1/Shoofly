@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shoofly — منصة الخدمات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:#F0EEE8;color:#1a1a1a;min-height:100vh}
+:root{
+  --brand:#2D6A4F;--brand-light:#52B788;--brand-pale:#D8F3DC;
+  --accent:#F4A261;--accent-pale:#FFF0E0;
+  --danger:#E63946;--danger-pale:#FFE8EA;
+  --info:#2176AE;--info-pale:#E3F0FA;
+  --warn:#E9A820;--warn-pale:#FFF4D6;
+  --surface:#FFFFFF;--surface2:#F5F4F0;--surface3:#EEEDE8;
+  --border:#E0DED8;--border2:#D0CEC8;
+  --text1:#1a1a1a;--text2:#555550;--text3:#888880;
+  --radius:14px;--shadow:0 2px 16px rgba(0,0,0,0.07);
+}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:inherit;white-space:nowrap}
+.btn-primary{background:var(--brand);color:#fff}.btn-primary:hover{background:#1B4332}
+.btn-secondary{background:var(--surface);color:var(--text1);border:1.5px solid var(--border)}.btn-secondary:hover{background:var(--surface2)}
+.btn-ghost{background:transparent;color:var(--text2);border:1.5px solid var(--border)}.btn-ghost:hover{background:var(--surface2)}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{background:#C1121F}
+.btn-success{background:#52B788;color:#fff}.btn-success:hover{background:#2D6A4F}
+.btn-info{background:var(--info);color:#fff}.btn-info:hover{background:#155C8A}
+.btn-warn{background:var(--warn);color:#fff}.btn-warn:hover{background:#B07D0E}
+.btn-sm{padding:5px 13px;font-size:12px;border-radius:7px}
+.btn-xs{padding:3px 9px;font-size:11px;border-radius:5px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:20px;box-shadow:var(--shadow)}
+.card-hover{transition:all .2s}.card-hover:hover{border-color:var(--brand-light);box-shadow:0 6px 24px rgba(45,106,79,0.12);transform:translateY(-1px)}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600}
+.badge-green{background:var(--brand-pale);color:var(--brand)}
+.badge-blue{background:var(--info-pale);color:var(--info)}
+.badge-amber{background:var(--warn-pale);color:#92620A}
+.badge-red{background:var(--danger-pale);color:var(--danger)}
+.badge-gray{background:#EEEEE8;color:var(--text2)}
+.badge-purple{background:#EEE8FF;color:#5534BC}
+.tag{display:inline-block;padding:2px 9px;border-radius:5px;font-size:11px;font-weight:500}
+.status-pending{background:#FFF4D6;color:#92620A}
+.status-dispatching{background:var(--info-pale);color:var(--info)}
+.status-assigned{background:#EEE8FF;color:#5534BC}
+.status-inprogress{background:var(--brand-pale);color:var(--brand)}
+.status-completed{background:#D4EDDA;color:#155724}
+.status-underreview{background:#FFF4D6;color:#92620A}
+.status-accepted{background:var(--brand-pale);color:var(--brand)}
+.status-disputed{background:var(--danger-pale);color:var(--danger)}
+.status-declined{background:#EEEEE8;color:var(--text2)}
+.nav-tab{padding:10px 22px;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600;transition:all .15s;border:1.5px solid transparent;white-space:nowrap}
+.nav-tab.active{background:var(--brand);color:#fff}
+.nav-tab:not(.active):hover{background:var(--surface);border-color:var(--border)}
+.toggle-pill{display:flex;background:#E8E6E0;border-radius:999px;padding:3px;gap:2px}
+.toggle-pill button{padding:7px 20px;border-radius:999px;border:none;background:transparent;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--text2)}
+.toggle-pill button.active{background:var(--surface);color:var(--text1);box-shadow:0 1px 5px rgba(0,0,0,0.12)}
+.avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+input[type=text],input[type=number],input[type=tel],input[type=password],select,textarea{font-family:inherit;font-size:13px;border:1.5px solid var(--border);border-radius:9px;padding:9px 13px;width:100%;background:var(--surface);color:var(--text1);outline:none;transition:border .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--brand-light);box-shadow:0 0 0 3px rgba(82,183,136,.12)}
+.cart-sidebar{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:20px;position:sticky;top:80px;max-height:calc(100vh - 100px);overflow-y:auto}
+.cart-item-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+.cart-item-row:last-child{border-bottom:none}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1B4332;color:#fff;padding:12px 28px;border-radius:999px;font-size:13px;font-weight:600;z-index:9999;opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap}
+.toast.show{opacity:1}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:right;padding:11px 15px;background:#F7F6F2;color:var(--text2);font-weight:600;font-size:12px;border-bottom:1px solid var(--border)}
+td{padding:12px 15px;border-bottom:1px solid var(--border);color:var(--text1);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FAFAF8}
+.empty-state{text-align:center;padding:52px 24px;color:var(--text3)}
+.empty-state .icon{font-size:44px;margin-bottom:14px;opacity:.35}
+.timeline-step{flex:1;text-align:center;position:relative}
+.timeline-step::after{content:'';position:absolute;top:10px;right:50%;width:100%;height:2px;background:#E0DED8;z-index:0}
+.timeline-step:last-child::after{display:none}
+.timeline-dot{width:20px;height:20px;border-radius:50%;border:2px solid #E0DED8;background:var(--surface);margin:0 auto 4px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+.timeline-dot.done{background:var(--brand);border-color:var(--brand);color:#fff}
+.timeline-dot.active{background:var(--brand-pale);border-color:var(--brand-light);color:var(--brand)}
+.timeline-label{font-size:10px;color:var(--text3)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal-box{background:var(--surface);border-radius:var(--radius);padding:28px;width:100%;box-shadow:0 12px 48px rgba(0,0,0,0.18);max-height:90vh;overflow-y:auto}
+.modal-lg{max-width:640px}
+.modal-md{max-width:480px}
+.modal-sm{max-width:380px}
+.form-label{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:6px;display:block}
+.form-group{margin-bottom:15px}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text3);margin-bottom:24px;flex-wrap:wrap}
+.breadcrumb span{cursor:pointer;transition:color .15s}.breadcrumb span:hover{color:var(--brand)}
+.breadcrumb .sep{color:var(--border2)}
+.breadcrumb .current{color:var(--text1);font-weight:600;cursor:default}
+.cat-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s}
+.cat-card:hover{border-color:var(--brand-light);box-shadow:0 8px 28px rgba(45,106,79,0.13);transform:translateY(-2px)}
+.cat-card.active{border-color:var(--brand);background:var(--brand-pale)}
+.subcat-chip{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:16px 20px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:12px}
+.subcat-chip:hover{border-color:var(--brand-light);background:#F8FBF9}
+.subcat-chip.active{border-color:var(--brand);background:var(--brand-pale)}
+/* payment methods */
+.pay-option{border:2px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:12px}
+.pay-option:hover{border-color:var(--brand-light)}
+.pay-option.selected{border-color:var(--brand);background:var(--brand-pale)}
+/* wallet options */
+.wallet-opt{border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .15s}
+.wallet-opt:hover{border-color:var(--brand-light)}
+.wallet-opt.selected{border-color:var(--brand);background:var(--brand-pale)}
+/* card input styling */
+.card-input-row{display:flex;gap:10px}
+.card-preview{background:linear-gradient(135deg,#1B4332,#2D6A4F);border-radius:14px;padding:20px 22px;color:#fff;font-size:13px;margin-bottom:16px;position:relative;overflow:hidden}
+.card-preview::before{content:'';position:absolute;top:-20px;left:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.07)}
+.card-preview::after{content:'';position:absolute;bottom:-30px;right:-10px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.05)}
+/* chat */
+.chat-bubble{max-width:75%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.6;margin-bottom:4px}
+.chat-bubble.me{background:var(--brand);color:#fff;border-radius:14px 4px 14px 14px;margin-inline-start:auto}
+.chat-bubble.them{background:var(--surface2);color:var(--text1);border-radius:4px 14px 14px 14px}
+.chat-msg-group{margin-bottom:12px;display:flex;flex-direction:column}
+.chat-msg-group.me{align-items:flex-start}
+.chat-msg-group.them{align-items:flex-end}
+.chat-time{font-size:10px;color:var(--text3);margin-top:2px;padding:0 4px}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:4px;min-height:300px;max-height:380px}
+.chat-input-row{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);align-items:flex-end}
+/* quick deal chips */
+.deal-chip{background:var(--brand-pale);color:var(--brand);border:1px solid var(--brand-light);border-radius:999px;padding:4px 12px;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.deal-chip:hover{background:var(--brand);color:#fff}
+/* profile page */
+.portfolio-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:9px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:28px;border:1px solid var(--border)}
+.team-member-card {border:1px solid var(--border);border-radius:10px;padding:10px;display:flex;align-items:center;gap:10px;}
+/* stars rating */
+.star-fill{color:#F4A261}.star-empty{color:#D0CEC8}
+/* scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+/* notif dot */
+.notif-dot{width:8px;height:8px;background:var(--danger);border-radius:50%;display:inline-block}
+/* page transitions */
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page-enter{animation:fadeSlideIn .2s ease forwards}
+/* team card */
+.team-badge{background:#EEE8FF;color:#5534BC;border-radius:6px;padding:3px 9px;font-size:11px;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="checkoutModal" style="display:none">
+  <div class="modal-box modal-md page-enter">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h3 style="font-size:17px;font-weight:700">تأكيد الطلب</h3>
+      <button onclick="closeCheckoutModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text3)">×</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">عنوان الخدمة</label>
+      <input type="text" id="checkoutStreet" placeholder="الشارع والمنطقة"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">تاريخ الخدمة</label>
+      <input type="text" id="checkoutDate" placeholder="مثال: 2025-08-15"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">طريقة الدفع</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div class="pay-option selected" id="payOpt-Cash" onclick="selectPayMethod('Cash')">
+          <span style="font-size:20px">💵</span>
+          <div><div style="font-size:13px;font-weight:600">نقداً</div><div style="font-size:11px;color:var(--text3)">عند الوصول</div></div>
+        </div>
+        <div class="pay-option" id="payOpt-Card" onclick="selectPayMethod('Card')">
+          <span style="font-size:20px">💳</span>
+          <div><div style="font-size:13px;font-weight:600">بطاقة</div><div style="font-size:11px;color:var(--text3)">فيزا / ماستر</div></div>
+        </div>
+        <div class="pay-option" id="payOpt-Wallet" onclick="selectPayMethod('Wallet')">
+          <span style="font-size:20px">👛</span>
+          <div><div style="font-size:13px;font-weight:600">المحفظة</div><div style="font-size:11px;color:var(--text3)">رصيدك المتاح</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="cardFormSection" style="display:none">
+      <div class="card-preview">
+        <div style="font-size:11px;opacity:.7;margin-bottom:12px;letter-spacing:.05em">SHOOFLY PAYMENTS</div>
+        <div style="font-size:18px;font-weight:600;letter-spacing:.15em;margin-bottom:14px" id="cardPreviewNum">•••• •••• •••• ••••</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end">
+          <div><div style="font-size:10px;opacity:.6;margin-bottom:3px">حامل البطاقة</div><div id="cardPreviewName" style="font-size:13px;font-weight:600">الاسم الكريم</div></div>
+          <div><div style="font-size:10px;opacity:.6;margin-bottom:3px">تاريخ الانتهاء</div><div id="cardPreviewExp" style="font-size:13px">••/••</div></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">رقم البطاقة</label>
+        <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCardNum(this)" onkeyup="updateCardPreview()"/>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">اسم حامل البطاقة</label>
+          <input type="text" id="cardName" placeholder="الاسم كما على البطاقة" oninput="updateCardPreview()"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">تاريخ الانتهاء</label>
+          <input type="text" id="cardExp" placeholder="MM/YY" maxlength="5" oninput="formatCardExp(this);updateCardPreview()"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">الرمز السري CVV</label>
+        <input type="password" id="cardCvv" placeholder="•••" maxlength="3" style="width:100px"/>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--brand-pale);border-radius:8px;margin-bottom:4px">
+        <span style="font-size:16px">🔒</span>
+        <span style="font-size:11px;color:var(--brand)">بياناتك محمية بتشفير SSL 256-bit</span>
+      </div>
+    </div>
+    <div id="walletSection" style="display:none">
+      <label class="form-label" style="margin-bottom:10px">اختر محفظتك</label>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="wallet-opt selected" id="wo-internal" onclick="selectWallet('internal')">
+          <div style="width:36px;height:36px;background:var(--brand-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">💚</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:600">محفظة Shoofly</div><div style="font-size:11px;color:var(--text3)">رصيدك: 1,240 ج.م</div></div>
+          <span class="badge badge-green" style="font-size:10px">موصى به</span>
+        </div>
+        <div class="wallet-opt" id="wo-vodafone" onclick="selectWallet('vodafone')">
+          <div style="width:36px;height:36px;background:#FFE8F0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">📱</div>
+          <div><div style="font-size:13px;font-weight:600">فودافون كاش</div><div style="font-size:11px;color:var(--text3)">ادفع برقم هاتفك</div></div>
+        </div>
+        <div class="wallet-opt" id="wo-instapay" onclick="selectWallet('instapay')">
+          <div style="width:36px;height:36px;background:#E3F0FA;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">⚡</div>
+          <div><div style="font-size:13px;font-weight:600">إنستاباي</div><div style="font-size:11px;color:var(--text3)">تحويل فوري</div></div>
+        </div>
+        <div class="wallet-opt" id="wo-fawry" onclick="selectWallet('fawry')">
+          <div style="width:36px;height:36px;background:#FFF4D6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">🏧</div>
+          <div><div style="font-size:13px;font-weight:600">فوري</div><div style="font-size:11px;color:var(--text3)">ادفع من أي نقطة فوري</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:14px">
+      <label class="form-label">ملاحظات</label>
+      <textarea id="checkoutNotes" rows="2" placeholder="أي تعليمات إضافية..."></textarea>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-ghost" onclick="closeCheckoutModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="confirmCheckout()">✓ تأكيد الطلب</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="profileModal" style="display:none">
+  <div class="modal-box modal-lg page-enter" id="profileModalContent"></div>
+</div>
+
+<div class="modal-overlay" id="chatModal" style="display:none">
+  <div class="modal-box modal-md page-enter" style="padding:0;overflow:hidden">
+    <div id="chatHeader" style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div id="chatAvatar" class="avatar" style="width:38px;height:38px;font-size:16px"></div>
+        <div><div id="chatName" style="font-size:14px;font-weight:700"></div><div style="font-size:11px;color:var(--brand)">● متصل الآن</div></div>
+      </div>
+      <button onclick="closeChatModal()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text3)">×</button>
+    </div>
+    <div style="padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border)">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:7px;font-weight:600">اقتراحات سريعة:</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="quickDealChips"></div>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-row">
+      <textarea id="chatInput" rows="1" placeholder="اكتب رسالتك..." style="flex:1;resize:none;min-height:38px;padding:8px 12px;font-size:13px" onkeydown="chatKeyDown(event)"></textarea>
+      <button class="btn btn-primary btn-sm" onclick="sendChatMsg()">إرسال</button>
+    </div>
+    <div id="dealBar" style="display:none;padding:12px 16px;background:var(--brand-pale);border-top:1px solid var(--brand-light);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <div style="font-size:13px;color:var(--brand);font-weight:600" id="dealBarText">تم الاتفاق على التفاصيل</div>
+      <button class="btn btn-primary btn-sm" onclick="confirmDealFromChat()">✓ تأكيد الطلب الرسمي</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="deliverableModal" style="display:none">
+  <div class="modal-box modal-sm page-enter">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:18px">رفع التسليم</h3>
+    <input type="hidden" id="deliverableOrderId"/>
+    <div class="form-group">
+      <label class="form-label">رابط الملف / التسليم</label>
+      <input type="text" id="deliverableUrl" placeholder="https://drive.google.com/..."/>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px">
+      <button class="btn btn-ghost" onclick="closeDeliverableModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="confirmDeliverable()">📤 رفع التسليم</button>
+    </div>
+  </div>
+</div>
+
+<header style="background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200">
+  <div style="max-width:1200px;margin:0 auto;padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:36px;height:36px;background:var(--brand);border-radius:9px;display:flex;align-items:center;justify-content:center">
+        <span style="color:#fff;font-weight:800;font-size:16px">S</span>
+      </div>
+      <span style="font-size:19px;font-weight:800;color:var(--brand)">Shoofly</span>
+      <span style="font-size:11px;color:var(--text3);padding:2px 8px;background:var(--surface2);border-radius:4px;border:1px solid var(--border)">نسخة تجريبية</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div id="notifArea" style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)">
+        <span class="notif-dot" id="notifDot" style="display:none"></span>
+        <span id="notifCount"></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div style="background:var(--surface);border-bottom:1px solid var(--border)">
+  <div style="max-width:1200px;margin:0 auto;padding:10px 24px;display:flex;gap:8px;overflow-x:auto">
+    <button class="nav-tab active" id="tab-client" onclick="switchView('client')">👤 بوابة العميل
+      <span id="pendingBadge" style="display:none;background:var(--danger);color:#fff;border-radius:999px;padding:1px 7px;font-size:11px;margin-inline-start:5px"></span>
+    </button>
+    <button class="nav-tab" id="tab-coordinator" onclick="switchView('coordinator')">🗂️ لوحة المنسق
+      <span id="coordBadge" style="display:none;background:var(--info);color:#fff;border-radius:999px;padding:1px 7px;font-size:11px;margin-inline-start:5px"></span>
+    </button>
+    <button class="nav-tab" id="tab-provider" onclick="switchView('provider')">🔧 تطبيق المزود
+      <span id="dispatchBadge" style="display:none;background:var(--accent);color:#fff;border-radius:999px;padding:1px 7px;font-size:11px;margin-inline-start:5px"></span>
+    </button>
+  </div>
+</div>
+
+<main style="max-width:1200px;margin:0 auto;padding:28px 24px">
+
+<div id="view-client">
+
+  <div id="screen-categories" class="page-enter">
+    <div style="text-align:center;margin-bottom:40px">
+      <div style="font-size:28px;font-weight:800;color:var(--text1);margin-bottom:8px">ماذا تحتاج اليوم؟</div>
+      <div style="font-size:15px;color:var(--text3)">اختر نوع الخدمة للبدء</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;max-width:900px;margin:0 auto" id="categoryGrid"></div>
+  </div>
+
+  <div id="screen-subcategories" style="display:none" class="page-enter">
+    <div class="breadcrumb" id="breadcrumb-subcat"></div>
+    <div style="margin-bottom:28px">
+      <div style="font-size:22px;font-weight:700" id="subcat-parent-title"></div>
+      <div style="font-size:14px;color:var(--text3);margin-top:4px" id="subcat-parent-desc"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px" id="subcategoryGrid"></div>
+  </div>
+
+  <div id="screen-services" style="display:none" class="page-enter">
+    <div class="breadcrumb" id="breadcrumb-services"></div>
+    <div id="manualServicesSection" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start">
+        <div>
+          <div style="font-size:20px;font-weight:700;margin-bottom:4px" id="manualServicesTitle"></div>
+          <div style="font-size:13px;color:var(--text3);margin-bottom:20px" id="manualServicesDesc"></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px" id="manualServiceGrid"></div>
+        </div>
+        <div class="cart-sidebar">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <span style="font-size:15px;font-weight:700">🛒 سلة المشتريات</span>
+            <span id="cartCount" class="badge badge-green">0 عناصر</span>
+          </div>
+          <div id="cartItems">
+            <div class="empty-state" style="padding:24px 8px"><div class="icon">🛒</div><div style="font-size:13px">السلة فارغة</div></div>
+          </div>
+          <div id="cartTotal" style="display:none;border-top:1px solid var(--border);padding-top:14px;margin-top:8px">
+            <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:700;margin-bottom:14px">
+              <span>الإجمالي</span><span id="totalPrice" style="color:var(--brand)">0 ج.م</span>
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="openCheckoutModal()">✓ إتمام الطلب</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="digitalProvidersSection" style="display:none">
+      <div style="font-size:20px;font-weight:700;margin-bottom:4px" id="digitalTitle"></div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:20px" id="digitalDesc"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px" id="digitalProviderGrid"></div>
+    </div>
+    <div id="teamsSection" style="display:none">
+      <div style="font-size:20px;font-weight:700;margin-bottom:4px" id="teamsTitle"></div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:20px" id="teamsDesc"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px" id="teamsGrid"></div>
+    </div>
+  </div>
+
+  <div id="clientOrdersSection" style="margin-top:44px;display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="font-size:17px;font-weight:700">طلباتي الأخيرة</div>
+    </div>
+    <div id="clientOrdersList"></div>
+  </div>
+</div>
+
+<div id="view-coordinator" style="display:none" class="page-enter">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+    <div><div style="font-size:20px;font-weight:700">لوحة المنسق 🗂️</div><div style="font-size:13px;color:var(--text3);margin-top:3px">مراجعة الطلبات وإرسال التكليفات</div></div>
+    <div style="display:flex;gap:10px">
+      <div class="card" style="padding:12px 22px;text-align:center;min-width:100px"><div style="font-size:24px;font-weight:800;color:var(--brand)" id="coordPendingCount">0</div><div style="font-size:11px;color:var(--text3)">قيد الانتظار</div></div>
+      <div class="card" style="padding:12px 22px;text-align:center;min-width:100px"><div style="font-size:24px;font-weight:800;color:var(--info)" id="coordDispatchingCount">0</div><div style="font-size:11px;color:var(--text3)">جاري التكليف</div></div>
+    </div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div style="padding:16px 20px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;background:#FAFAF8">طلبات الخدمات اليدوية</div>
+    <div id="coordinatorOrdersTable" style="overflow-x:auto"></div>
+  </div>
+</div>
+
+<div id="view-provider" style="display:none" class="page-enter">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+    <div><div style="font-size:20px;font-weight:700">تطبيق المزود 🔧</div><div style="font-size:13px;color:var(--text3);margin-top:3px">إدارة التكليفات والأرباح السابقة</div></div>
+    <div class="toggle-pill">
+      <button class="active" id="providerToggle-manual" onclick="switchProviderMode('manual')">🔧 يدوي</button>
+      <button id="providerToggle-digital" onclick="switchProviderMode('digital')">💻 رقمي</button>
+      <button id="providerToggle-wallet" onclick="switchProviderMode('wallet')">💰 حسابي وسجلي</button>
+    </div>
+  </div>
+  <div id="providerManual"><div id="manualProviderOrders"></div></div>
+  <div id="providerDigital" style="display:none"><div id="digitalProviderOrders"></div></div>
+  <div id="providerWallet" style="display:none" class="page-enter"></div>
+</div>
+
+</main>
+
+<script>
+// ===================== DATA =====================
+
+const categories = [
+  {id:'manual', name:'الخدمات المنزلية', icon:'🏠', desc:'صيانة ونظافة وخدمات يدوية متنوعة', color:'#D8F3DC', type:'manual'},
+  {id:'digital', name:'الخدمات الرقمية', icon:'💻', desc:'تطوير ومصممون وكتّاب وخبراء رقميون', color:'#E3F0FA', type:'digital'},
+  {id:'teams', name:'الفرق المتخصصة', icon:'👥', desc:'فرق احترافية لمشاريع رقمية وهندسية كبيرة', color:'#EEE8FF', type:'teams'},
+];
+
+const subcategories = [
+  {id:'sc1', parentId:'manual', name:'سباكة وصرف صحي', icon:'🔧', desc:'إصلاح المواسير والصنابير', count:6},
+  {id:'sc2', parentId:'manual', name:'كهرباء وإنارة', icon:'⚡', desc:'تركيب وإصلاح الكهرباء', count:8},
+  {id:'sc3', parentId:'manual', name:'نظافة وتعقيم', icon:'🧹', desc:'تنظيف منازل ومكاتب', count:5},
+  {id:'sc4', parentId:'manual', name:'دهانات وديكور', icon:'🎨', desc:'دهان وتشطيب الجدران', count:4},
+  {id:'sc5', parentId:'manual', name:'مكيفات وتبريد', icon:'❄️', desc:'صيانة وتركيب المكيفات', count:7},
+  {id:'sc6', parentId:'manual', name:'نجارة وأثاث', icon:'🪚', desc:'تركيب وإصلاح الأثاث', count:5},
+  {id:'sc7', parentId:'digital', name:'تطوير الويب', icon:'🌐', desc:'مواقع وتطبيقات ويب', count:12},
+  {id:'sc8', parentId:'digital', name:'تصميم الهوية', icon:'🎭', desc:'شعارات وهوية بصرية', count:9},
+  {id:'sc9', parentId:'digital', name:'كتابة المحتوى', icon:'✍️', desc:'مقالات وتسويق رقمي', count:8},
+  {id:'sc10', parentId:'digital', name:'تطبيقات الجوال', icon:'📱', desc:'iOS وAndroid', count:6},
+  {id:'sc11', parentId:'digital', name:'التسويق الرقمي', icon:'📊', desc:'إعلانات وحملات ممولة', count:7},
+  {id:'sc12', parentId:'teams', name:'فرق تطوير برمجيات', icon:'💻', desc:'تطبيقات ضخمة وSaaS', count:3},
+  {id:'sc13', parentId:'teams', name:'فرق صيانة متكاملة', icon:'🛠️', desc:'صيانة وتأسيس مباني', count:4},
+];
+
+const manualServices = [
+  {id:1, subcatId:'sc1', name:'إصلاح تسريب المياه', basePrice:200, icon:'💧', desc:'كشف وإصلاح جميع أنواع التسريبات بدون تكسير', requiresTeam:false, rating:4.8},
+  {id:2, subcatId:'sc1', name:'تركيب صنابير وخلاطات', basePrice:150, icon:'🚿', desc:'تركيب وتغيير الصنابير والخلاطات الحديثة', requiresTeam:false, rating:4.6},
+  {id:3, subcatId:'sc2', name:'تركيب نقاط كهربائية', basePrice:180, icon:'🔌', desc:'تركيب مفاتيح وبرايز وأسلاك آمنة', requiresTeam:false, rating:4.7},
+  {id:4, subcatId:'sc2', name:'كشف أعطال كهربائية', basePrice:250, icon:'⚡', desc:'تشخيص وإصلاح جميع أعطال الكهرباء', requiresTeam:false, rating:4.9},
+  {id:5, subcatId:'sc3', name:'تنظيف منزلي شامل', basePrice:380, icon:'🧹', desc:'تنظيف عميق بمواد احترافية آمنة', requiresTeam:true, rating:4.9},
+  {id:6, subcatId:'sc3', name:'تعقيم وتطهير', basePrice:280, icon:'🧴', desc:'تعقيم كامل بمواد معتمدة ضد البكتيريا', requiresTeam:false, rating:4.7},
+  {id:7, subcatId:'sc4', name:'دهان غرفة', basePrice:450, icon:'🎨', desc:'دهان كامل لغرفة بلون واحد مع تحضير الجدران', requiresTeam:true, rating:4.8},
+  {id:8, subcatId:'sc5', name:'تنظيف فلاتر مكيف', basePrice:120, icon:'❄️', desc:'تنظيف وصيانة الفلاتر ورفع كفاءة التبريد', requiresTeam:false, rating:4.5},
+  {id:9, subcatId:'sc5', name:'شحن فريون مكيف', basePrice:300, icon:'🌡️', desc:'شحن فريون الأنواع الحديثة مع الفحص الكامل', requiresTeam:false, rating:4.6},
+  {id:10, subcatId:'sc6', name:'تركيب غرفة نوم', basePrice:600, icon:'🛏️', desc:'تركيب طقم غرفة نوم كامل باحترافية', requiresTeam:true, rating:4.8},
+];
+
+const digitalProviders = [
+  {id:'dp1', subcatId:'sc7', name:'سارة المصرية', title:'مطورة ويب full-stack', skills:['React','Node.js','MongoDB','AWS'], hourlyRate:150, averageRating:4.9, isVerified:true, isAvailable:true, bio:'مطورة ويب بخبرة 6 سنوات في بناء تطبيقات الويب الحديثة. متخصصة في React وNode.js. سلّمت أكثر من 90 مشروعاً ناجحاً لعملاء من 12 دولة.', completedOrders:94, avatarBg:'#D8F3DC', avatarColor:'#2D6A4F', portfolio:[{thumb:'🌐',title:'متجر إلكتروني'},{thumb:'📊',title:'لوحة بيانات'},{thumb:'🏥',title:'نظام مستشفى'}], responseTime:'< 2 ساعة', languages:['العربية','الإنجليزية']},
+  {id:'dp2', subcatId:'sc8', name:'محمد الأهلاوي', title:'مصمم UI/UX', skills:['Figma','Adobe XD','Illustrator','Motion'], hourlyRate:120, averageRating:4.7, isVerified:true, isAvailable:true, bio:'مصمم إبداعي بخبرة 5 سنوات في تجربة المستخدم. متخصص في تصميم التطبيقات المحمولة وواجهات الويب التفاعلية.', completedOrders:67, avatarBg:'#E3F0FA', avatarColor:'#2176AE', portfolio:[{thumb:'📱',title:'تطبيق مصرفي'},{thumb:'🛒',title:'تطبيق تسوق'},{thumb:'🎯',title:'منصة تعليمية'}], responseTime:'< 1 ساعة', languages:['العربية','الإنجليزية','الفرنسية']},
+  {id:'dp3', subcatId:'sc9', name:'نورا علي', title:'كاتبة محتوى وSEO', skills:['SEO','Copywriting','Social Media','WordPress'], hourlyRate:80, averageRating:4.6, isVerified:false, isAvailable:true, bio:'كاتبة محتوى إبداعي ورقمي بخبرة 4 سنوات. كتبت لأكثر من 200 علامة تجارية في مختلف المجالات.', completedOrders:118, avatarBg:'#FFF0E0', avatarColor:'#B05A00', portfolio:[{thumb:'✍️',title:'مدونة تقنية'},{thumb:'📣',title:'محتوى سوشيال'},{thumb:'📧',title:'حملات بريدية'}], responseTime:'< 3 ساعات', languages:['العربية','الإنجليزية']},
+];
+
+const teams = [
+  {id:'t1', subcatIds:['sc12'], name:'فريق DevHub', specialty:'تطوير تطبيقات متكامل وSaaS', members:5, rating:4.9, projects:23, priceFrom:5000, icon:'💻', skills:['React','Node.js','Flutter','DevOps','UI/UX'], verified:true,
+   bio:'نحن فريق متكامل من مهندسي البرمجيات والمصممين. نعمل معاً لبناء منتجات رقمية قابلة للتوسع من الفكرة إلى الإطلاق. نعتمد على أحدث تقنيات الـ Agile.',
+   responseTime:'< 1 ساعة', languages:['العربية','الإنجليزية'],
+   membersList:[
+     {name:'أحمد وليد', role:'قائد الفريق / Backend', avatarBg:'#E3F0FA', color:'#2176AE'},
+     {name:'سارة سعيد', role:'مطور Frontend', avatarBg:'#D8F3DC', color:'#2D6A4F'},
+     {name:'كريم حسن', role:'مصمم UI/UX', avatarBg:'#FFF0E0', color:'#B05A00'},
+     {name:'يوسف علي', role:'مطور Mobile', avatarBg:'#EEE8FF', color:'#5534BC'}
+   ],
+   portfolio:[{thumb:'📱',title:'تطبيق توصيل'},{thumb:'🛒',title:'منصة تجارة إلكترونية'},{thumb:'📊',title:'لوحة تحكم طبية'}]
+  },
+  {id:'t2', subcatIds:['sc13'], name:'فريق الصقر للصيانة', specialty:'صيانة شاملة وتأسيس', members:8, rating:4.8, projects:156, priceFrom:800, icon:'🛠️', skills:['كهرباء','سباكة','نجارة','دهانات'], verified:true,
+   bio:'فريق متكامل للمقاولات المصغرة والصيانة الدورية للمباني. نضمن لك السرعة والجودة مع إشراف هندسي على كل المشاريع.',
+   responseTime:'< 3 ساعات', languages:['العربية'],
+   membersList:[
+     {name:'م. خالد', role:'مهندس مشرف', avatarBg:'#E3F0FA', color:'#2176AE'},
+     {name:'رامي إبراهيم', role:'فني كهرباء', avatarBg:'#D8F3DC', color:'#2D6A4F'},
+     {name:'سيد محمود', role:'فني سباكة', avatarBg:'#FFF0E0', color:'#B05A00'}
+   ],
+   portfolio:[{thumb:'🏠',title:'تشطيب فيلا'},{thumb:'🏢',title:'صيانة شركة'}]
+  },
+  {id:'t3', subcatIds:['sc12'], name:'فريق PixelForge', specialty:'هوية بصرية ومواقع', members:4, rating:4.7, projects:41, priceFrom:3000, icon:'🎨', skills:['Branding','Web Design','Motion','WordPress'], verified:false,
+   bio:'استوديو إبداعي يقدم خدمات الهوية البصرية وتصميم وتطوير مواقع الويب للشركات الناشئة لضمان ظهورهم بأفضل شكل.',
+   responseTime:'< 2 ساعة', languages:['العربية','الإنجليزية'],
+   membersList:[
+     {name:'نور مدحت', role:'Art Director', avatarBg:'#FFE8EA', color:'#E63946'},
+     {name:'عمر سعد', role:'WordPress Dev', avatarBg:'#D8F3DC', color:'#2D6A4F'}
+   ],
+   portfolio:[{thumb:'🎭',title:'هوية بصرية كاملة'},{thumb:'🌐',title:'موقع تعريفي'}]
+  },
+];
+
+const manualProviders = [
+  {id:'mp1', name:'خالد السيد', region:'القاهرة', services:[1,2,3,4,8,9], isAvailable:true},
+  {id:'mp2', name:'رامي إبراهيم', region:'الجيزة', services:[5,6,7,10], isAvailable:true},
+  {id:'mp3', name:'أمير يوسف', region:'القاهرة', services:[1,2,3,4,5,6,7,8,9,10], isAvailable:true},
+];
+
+// ===================== STATE =====================
+let cart = [];
+let orders = [];
+let digitalOrders = [];
+let nextOrderId = 1001;
+let nextDigitalOrderId = 2001;
+let currentView = 'client';
+let providerMode = 'manual';
+let selectedPayMethod = 'Cash';
+let selectedWallet = 'internal';
+// Navigation state
+let navState = {screen:'categories', categoryId:null, subcategoryId:null};
+// Chat state
+let chatTargetId = null;
+let chatTargetType = 'provider'; // 'provider' or 'team'
+let chatMessages = {};
+
+// ===================== UTILITIES =====================
+function showToast(msg, dur=3200){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
+}
+function stars(n, size=14){
+  let s='';
+  for(let i=1;i<=5;i++) s+=`<span class="${i<=Math.floor(n)?'star-fill':'star-empty'}" style="font-size:${size}px">${i<=Math.floor(n)?'★':'☆'}</span>`;
+  return s;
+}
+function statusLabel(s){
+  const m={Pending:'قيد الانتظار',Dispatching:'جاري التكليف',Assigned:'تم التكليف',InProgress:'قيد التنفيذ',Completed:'مكتمل',UnderReview:'قيد المراجعة',Accepted:'مقبول',Disputed:'متنازع عليه',Declined:'مرفوض'};
+  return m[s]||s;
+}
+function statusClass(s){return 'status-'+s.toLowerCase();}
+function updateBadges(){
+  const pending = orders.filter(o=>o.status==='Pending').length;
+  const dispatching = orders.filter(o=>o.status==='Dispatching').length;
+  const pb = document.getElementById('pendingBadge');
+  const cb = document.getElementById('coordBadge');
+  const db = document.getElementById('dispatchBadge');
+  if(pending>0){pb.style.display='inline';pb.textContent=pending}else pb.style.display='none';
+  if(pending+dispatching>0){cb.style.display='inline';cb.textContent=pending+dispatching}else cb.style.display='none';
+  if(dispatching>0){db.style.display='inline';db.textContent=dispatching}else db.style.display='none';
+  document.getElementById('coordPendingCount').textContent=pending;
+  document.getElementById('coordDispatchingCount').textContent=dispatching;
+  const total = pending+dispatching;
+  document.getElementById('notifDot').style.display=total?'inline-block':'none';
+  document.getElementById('notifCount').textContent=total?total+' إشعار':'';
+  const hasOrders = orders.length+digitalOrders.length>0;
+  document.getElementById('clientOrdersSection').style.display = hasOrders?'block':'none';
+}
+
+// ===================== VIEW SWITCHING =====================
+function switchView(v){
+  currentView=v;
+  ['client','coordinator','provider'].forEach(n=>{
+    document.getElementById('view-'+n).style.display=n===v?'block':'none';
+    document.getElementById('tab-'+n).classList.toggle('active',n===v);
+  });
+  if(v==='coordinator') renderCoordinatorView();
+  if(v==='provider') renderProviderView();
+  if(v==='client') renderClientOrders();
+}
+
+// ===================== NAVIGATION (Client) =====================
+function goToScreen(screen){
+  ['categories','subcategories','services'].forEach(s=>{
+    const el = document.getElementById('screen-'+s);
+    if(el) el.style.display = s===screen?'block':'none';
+  });
+}
+
+function selectCategory(catId){
+  navState.categoryId = catId;
+  navState.screen = 'subcategories';
+  const cat = categories.find(c=>c.id===catId);
+  const subs = subcategories.filter(s=>s.parentId===catId);
+  document.getElementById('subcat-parent-title').textContent = cat.name;
+  document.getElementById('subcat-parent-desc').textContent = cat.desc;
+  document.getElementById('breadcrumb-subcat').innerHTML =
+    `<span onclick="goBack('categories')">الرئيسية</span><span class="sep">›</span><span class="current">${cat.name}</span>`;
+  const grid = document.getElementById('subcategoryGrid');
+  grid.innerHTML = subs.map(s=>`
+    <div class="subcat-chip card-hover" onclick="selectSubcategory('${s.id}')">
+      <div style="width:46px;height:46px;background:${cat.color};border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${s.icon}</div>
+      <div>
+        <div style="font-size:14px;font-weight:600">${s.name}</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">${s.desc}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:3px">${s.count} ${cat.type==='teams'?'فريق':'خدمة'}</div>
+      </div>
+    </div>
+  `).join('');
+  goToScreen('subcategories');
+}
+
+function selectSubcategory(subId){
+  navState.subcategoryId = subId;
+  navState.screen = 'services';
+  const sub = subcategories.find(s=>s.id===subId);
+  const cat = categories.find(c=>c.id===navState.categoryId);
+  document.getElementById('breadcrumb-services').innerHTML =
+    `<span onclick="goBack('categories')">الرئيسية</span><span class="sep">›</span>
+     <span onclick="goBack('subcategories')">${cat.name}</span><span class="sep">›</span>
+     <span class="current">${sub.name}</span>`;
+  ['manualServicesSection','digitalProvidersSection','teamsSection'].forEach(id=>document.getElementById(id).style.display='none');
+  
+  if(cat.type==='manual'){
+    const svcs = manualServices.filter(s=>s.subcatId===subId);
+    document.getElementById('manualServicesTitle').textContent = sub.name;
+    document.getElementById('manualServicesDesc').textContent = sub.desc + ' — ' + svcs.length + ' خدمة متاحة';
+    const g = document.getElementById('manualServiceGrid');
+    g.innerHTML = svcs.map(s=>`
+      <div class="card card-hover">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <div style="width:50px;height:50px;border-radius:12px;background:${cat.color};display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">${s.icon}</div>
+          <div><div style="font-size:15px;font-weight:600">${s.name}</div><div style="font-size:11px;color:var(--text3)">${s.requiresTeam?'👥 يتطلب فريق':'👤 فردي'}</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.7">${s.desc}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div><div style="font-size:17px;font-weight:700;color:var(--brand)">${s.basePrice} <span style="font-size:12px;font-weight:400;color:var(--text3)">ج.م</span></div><div style="font-size:12px;margin-top:2px">${stars(s.rating,12)} <span style="color:var(--text3);font-size:11px">${s.rating}</span></div></div>
+          <button class="btn btn-primary btn-sm" onclick="addToCart(${s.id})">+ إضافة للسلة</button>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('manualServicesSection').style.display='block';
+  } else if(cat.type==='digital'){
+    const provs = digitalProviders.filter(p=>p.subcatId===subId);
+    document.getElementById('digitalTitle').textContent = sub.name;
+    document.getElementById('digitalDesc').textContent = sub.desc + ' — ' + provs.length + ' مزود متاح';
+    renderDigitalGrid(provs, 'digitalProviderGrid');
+    document.getElementById('digitalProvidersSection').style.display='block';
+  } else if(cat.type==='teams'){
+    const ts = teams.filter(t=>t.subcatIds.includes(subId));
+    document.getElementById('teamsTitle').textContent = sub.name;
+    document.getElementById('teamsDesc').textContent = ts.length + ' فريق متاح';
+    renderTeamsGrid(ts);
+    document.getElementById('teamsSection').style.display='block';
+  }
+  goToScreen('services');
+}
+
+function goBack(target){
+  if(target==='categories'){
+    navState={screen:'categories',categoryId:null,subcategoryId:null};
+    goToScreen('categories');
+  } else if(target==='subcategories'){
+    navState.screen='subcategories';
+    goToScreen('subcategories');
+  }
+}
+
+function renderCategoryGrid(){
+  const grid = document.getElementById('categoryGrid');
+  grid.innerHTML = categories.map(c=>`
+    <div class="cat-card" onclick="selectCategory('${c.id}')">
+      <div style="font-size:48px;margin-bottom:14px">${c.icon}</div>
+      <div style="font-size:17px;font-weight:700;margin-bottom:6px">${c.name}</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6">${c.desc}</div>
+      <div style="margin-top:14px">
+        <span class="btn btn-primary" style="font-size:12px;padding:6px 18px">استكشف ←</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===================== DIGITAL & TEAMS GRIDS =====================
+function renderDigitalGrid(provs, targetId){
+  const grid = document.getElementById(targetId);
+  if(!provs.length){grid.innerHTML='<div class="empty-state card"><div class="icon">🔍</div><div>لا يوجد مزودون في هذه الفئة حالياً</div></div>';return;}
+  grid.innerHTML = provs.map(p=>`
+    <div class="card card-hover" style="cursor:pointer" onclick="openProfile('${p.id}', 'provider')">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+        <div class="avatar" style="width:50px;height:50px;font-size:20px;background:${p.avatarBg};color:${p.avatarColor}">${p.name.charAt(0)}</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <span style="font-size:15px;font-weight:700">${p.name}</span>
+            ${p.isVerified?'<span class="badge badge-blue" style="font-size:10px">✓ موثق</span>':''}
+          </div>
+          <div style="font-size:12px;color:var(--text3)">${p.title}</div>
+        </div>
+        <span class="badge ${p.isAvailable?'badge-green':'badge-gray'}">${p.isAvailable?'متاح':'مشغول'}</span>
+      </div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.bio}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:13px">
+        ${p.skills.slice(0,3).map(sk=>`<span class="tag" style="background:#F0F0E8;color:var(--text2)">${sk}</span>`).join('')}
+        ${p.skills.length>3?`<span class="tag" style="background:#F0F0E8;color:var(--text3)">+${p.skills.length-3}</span>`:''}
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border)">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--brand)">${p.hourlyRate} ج.م<span style="font-size:11px;font-weight:400;color:var(--text3)">/ساعة</span></div>
+          <div style="font-size:12px;margin-top:3px">${stars(p.averageRating,12)} <span style="color:var(--text3);font-size:11px">${p.averageRating} · ${p.completedOrders} طلب</span></div>
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openChatModal('${p.id}', 'provider')">💬 محادثة</button>
+          <button class="btn btn-primary btn-sm" ${!p.isAvailable?'disabled':''} onclick="event.stopPropagation();openDigitalOrder('${p.id}')">طلب →</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTeamsGrid(ts){
+  const grid = document.getElementById('teamsGrid');
+  if(!ts.length){grid.innerHTML='<div class="empty-state card"><div class="icon">👥</div><div>لا توجد فرق في هذه الفئة</div></div>';return;}
+  grid.innerHTML = ts.map(t=>`
+    <div class="card card-hover" style="cursor:pointer" onclick="openProfile('${t.id}', 'team')">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+        <div style="width:50px;height:50px;border-radius:12px;background:#EEE8FF;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">${t.icon}</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+            <span style="font-size:15px;font-weight:700">${t.name}</span>
+            ${t.verified?'<span class="badge badge-blue" style="font-size:10px">✓ فريق موثق</span>':''}
+          </div>
+          <div style="font-size:12px;color:var(--text3)">${t.specialty} · ${t.members} أعضاء</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${t.bio}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px">
+        ${t.skills.slice(0,3).map(sk=>`<span class="tag" style="background:#EEE8FF;color:#5534BC">${sk}</span>`).join('')}
+        ${t.skills.length>3?`<span class="tag" style="background:#EEE8FF;color:#5534BC">+${t.skills.length-3}</span>`:''}
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border)">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--brand)">مشاريع تبدأ من ${t.priceFrom.toLocaleString()} ج.م</div>
+          <div style="font-size:12px;margin-top:3px">${stars(t.rating,12)} <span style="color:var(--text3);font-size:11px">${t.rating} · ${t.projects} مشروع</span></div>
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openChatModal('${t.id}', 'team')">💬 محادثة</button>
+          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openDigitalOrder('${t.id}')">طلب →</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===================== PROVIDER & TEAM PROFILE =====================
+function openProfile(id, type){
+  const p = type === 'team' ? teams.find(x=>x.id===id) : digitalProviders.find(x=>x.id===id);
+  if(!p) return;
+  const box = document.getElementById('profileModalContent');
+  
+  const isTeam = type === 'team';
+  const nameInitial = p.name.charAt(0);
+  const avatarHtml = isTeam 
+    ? `<div style="width:70px;height:70px;border-radius:14px;background:#EEE8FF;display:flex;align-items:center;justify-content:center;font-size:32px">${p.icon}</div>`
+    : `<div class="avatar" style="width:70px;height:70px;font-size:28px;background:${p.avatarBg};color:${p.avatarColor}">${nameInitial}</div>`;
+  
+  const priceHtml = isTeam 
+    ? `<div style="font-size:18px;font-weight:700;color:var(--brand)">${p.priceFrom.toLocaleString()} ج.م</div><div style="font-size:11px;color:var(--text3)">يبدأ من</div>`
+    : `<div style="font-size:18px;font-weight:700;color:var(--brand)">${p.hourlyRate} ج.م</div><div style="font-size:11px;color:var(--text3)">في الساعة</div>`;
+
+  const ordersCount = isTeam ? p.projects : p.completedOrders;
+  const subtitle = isTeam ? `${p.specialty} · ${p.members} أعضاء` : p.title;
+  const isAvailable = isTeam ? true : p.isAvailable; // Assume teams are always available for demo
+
+  let membersHtml = '';
+  if(isTeam && p.membersList){
+    membersHtml = `
+      <div style="margin-bottom:24px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px">أعضاء الفريق</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">
+          ${p.membersList.map(m=>`
+            <div class="team-member-card">
+              <div class="avatar" style="width:36px;height:36px;background:${m.avatarBg};color:${m.color};font-size:14px">${m.name.charAt(0)}</div>
+              <div><div style="font-size:13px;font-weight:600">${m.name}</div><div style="font-size:11px;color:var(--text3)">${m.role}</div></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  box.innerHTML = `
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:16px">
+        ${avatarHtml}
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span style="font-size:20px;font-weight:800">${p.name}</span>
+            ${p.isVerified || p.verified ? `<span class="badge badge-blue">✓ ${isTeam?'فريق موثق':'موثق'}</span>`:''}
+            ${!isTeam ? `<span class="badge ${p.isAvailable?'badge-green':'badge-gray'}">${p.isAvailable?'متاح':'مشغول'}</span>` : ''}
+          </div>
+          <div style="font-size:14px;color:var(--text2);margin-top:4px">${subtitle}</div>
+          <div style="margin-top:6px">${stars(p.rating || p.averageRating,15)} <span style="font-size:13px;color:var(--text2);font-weight:600">${p.rating || p.averageRating}</span> <span style="font-size:12px;color:var(--text3)">(${ordersCount} مشروع مكتمل)</span></div>
+        </div>
+      </div>
+      <button onclick="closeProfileModal()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text3)">×</button>
+    </div>
+    
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+      <div style="background:var(--surface2);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:18px;font-weight:700;color:var(--brand)">${ordersCount}</div>
+        <div style="font-size:11px;color:var(--text3)">مشروع ناجح</div>
+      </div>
+      <div style="background:var(--surface2);border-radius:10px;padding:12px;text-align:center">
+        ${priceHtml}
+      </div>
+      <div style="background:var(--surface2);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:16px;font-weight:700;color:var(--brand)">${p.responseTime}</div>
+        <div style="font-size:11px;color:var(--text3)">وقت الرد</div>
+      </div>
+      <div style="background:var(--surface2);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:14px;font-weight:700;color:var(--brand)">${p.languages ? p.languages.join('، ') : 'العربية'}</div>
+        <div style="font-size:11px;color:var(--text3)">اللغات</div>
+      </div>
+    </div>
+    
+    <div style="margin-bottom:20px">
+      <div style="font-size:14px;font-weight:700;margin-bottom:8px">نبذة ${isTeam?'عن الفريق':'عني'}</div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.8">${p.bio}</p>
+    </div>
+    
+    <div style="margin-bottom:20px">
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px">المهارات والتقنيات</div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px">
+        ${p.skills.map(sk=>`<span class="tag" style="background:var(--brand-pale);color:var(--brand);font-size:12px;padding:5px 12px">${sk}</span>`).join('')}
+      </div>
+    </div>
+
+    ${membersHtml}
+    
+    <div style="margin-bottom:24px">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">أعمال سابقة</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+        ${p.portfolio.map(w=>`
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden">
+            <div class="portfolio-thumb" style="background:var(--surface2);display:flex;align-items:center;justify-content:center;height:90px;font-size:36px">${w.thumb}</div>
+            <div style="padding:8px 10px;font-size:12px;font-weight:600">${w.title}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    
+    <div style="display:flex;gap:10px;justify-content:flex-end;padding-top:16px;border-top:1px solid var(--border)">
+      <button class="btn btn-ghost" onclick="closeProfileModal();openChatModal('${p.id}', '${type}')">💬 بدء محادثة مع ال${isTeam?'فريق':'مزود'}</button>
+      <button class="btn btn-primary" ${!isAvailable?'disabled':''} onclick="closeProfileModal();openDigitalOrder('${p.id}')">⚡ طلب مشروع مباشر</button>
+    </div>
+  `;
+  document.getElementById('profileModal').style.display='flex';
+}
+function closeProfileModal(){document.getElementById('profileModal').style.display='none';}
+
+// ===================== CHAT (Provider & Team) =====================
+function openChatModal(id, type){
+  chatTargetId = id;
+  chatTargetType = type;
+  const p = type === 'team' ? teams.find(x=>x.id===id) : digitalProviders.find(x=>x.id===id);
+  if(!p) return;
+  if(!chatMessages[id]) chatMessages[id]=[];
+  
+  const hdr = document.getElementById('chatHeader');
+  if(type === 'team'){
+    document.getElementById('chatAvatar').style.cssText=`width:38px;height:38px;font-size:16px;background:#EEE8FF;color:#5534BC;border-radius:10px`;
+    document.getElementById('chatAvatar').textContent=p.icon;
+    document.getElementById('chatName').textContent=p.name;
+  } else {
+    document.getElementById('chatAvatar').style.cssText=`width:38px;height:38px;font-size:16px;background:${p.avatarBg};color:${p.avatarColor};border-radius:50%`;
+    document.getElementById('chatAvatar').textContent=p.name.charAt(0);
+    document.getElementById('chatName').textContent=p.name+' — '+p.title;
+  }
+  
+  const chips=[
+    {label:'💰 اقتراح سعر',msg:'أود مناقشة ميزانية مناسبة للمشروع'},
+    {label:'📅 تحديد موعد',msg:'متى يمكنكم البدء في التنفيذ؟'},
+    {label:'📋 طلب تفاصيل',msg:'ما هي المعلومات المطلوبة مني للبدء؟'},
+    {label:'⏱ مدة التسليم',msg:'ما هي المدة المتوقعة لإنجاز المشروع؟'},
+  ];
+  document.getElementById('quickDealChips').innerHTML = chips.map(c=>
+    `<span class="deal-chip" onclick="sendQuickDeal(\`${c.msg}\`)">${c.label}</span>`
+  ).join('');
+  document.getElementById('dealBar').style.display='none';
+  renderChatMessages(id);
+  document.getElementById('chatModal').style.display='flex';
+  setTimeout(()=>scrollChatToBottom(),100);
+}
+function closeChatModal(){document.getElementById('chatModal').style.display='none';}
+
+function renderChatMessages(id){
+  const msgs = chatMessages[id]||[];
+  const el = document.getElementById('chatMessages');
+  if(!msgs.length){
+    el.innerHTML=`<div style="text-align:center;padding:30px 0;color:var(--text3);font-size:13px">ابدأ محادثتك مع ${chatTargetType==='team'?'الفريق':'المزود'} 👋</div>`;
+    return;
+  }
+  el.innerHTML = msgs.map(m=>`
+    <div class="chat-msg-group ${m.sender==='me'?'me':'them'}">
+      <div class="chat-bubble ${m.sender==='me'?'me':'them'}">${m.text}</div>
+      <div class="chat-time">${m.time}</div>
+    </div>
+  `).join('');
+  scrollChatToBottom();
+}
+
+function scrollChatToBottom(){
+  const el=document.getElementById('chatMessages');
+  el.scrollTop=el.scrollHeight;
+}
+
+function sendChatMsg(){
+  const inp = document.getElementById('chatInput');
+  const text = inp.value.trim();
+  if(!text) return;
+  const id = chatTargetId;
+  const type = chatTargetType;
+  const p = type === 'team' ? teams.find(x=>x.id===id) : digitalProviders.find(x=>x.id===id);
+  const time = new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+  chatMessages[id].push({sender:'me',text,time});
+  inp.value='';
+  renderChatMessages(id);
+  
+  // Simulate auto-reply
+  setTimeout(()=>{
+    let priceText = type === 'team' ? `تبدأ أسعارنا من ${p.priceFrom} ج.م` : `سعري ${p.hourlyRate} ج.م/ساعة`;
+    const replies = [
+      `أهلاً بك! شكراً لتواصلك مع ${p.name} 😊`,
+      'بالتأكيد يمكننا مساعدتك في ذلك وإنجاز المشروع بأعلى جودة.',
+      'ممتاز، هل يمكنك إرسال تفاصيل أكثر عن المتطلبات؟',
+      `${priceText}، ونتوقع إنجاز هذا النوع من المشاريع قريباً.`,
+      'أحتاج منك: الوصف الكامل للمشروع، وأي ملفات أو تصاميم إن وجدت.',
+      'يمكننا البدء الأسبوع القادم، هل يناسبك ذلك؟',
+      'رائع! نتفق إذن على التفاصيل المبدئية، يمكنك تأكيد الطلب الرسمي الآن للبدء.',
+    ];
+    const reply = replies[Math.floor(Math.random()*replies.length)];
+    const rtime = new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+    chatMessages[id].push({sender:'them',text:reply,time:rtime});
+    renderChatMessages(id);
+    
+    // Show deal bar after a few messages
+    if(chatMessages[id].length>=4){
+      document.getElementById('dealBar').style.display='flex';
+      document.getElementById('dealBarText').textContent=`تم الاتفاق مع ${p.name} — جاهز لتأكيد الطلب`;
+    }
+  }, 900+Math.random()*800);
+}
+
+function sendQuickDeal(msg){document.getElementById('chatInput').value=msg;sendChatMsg();}
+function chatKeyDown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChatMsg();}}
+
+function confirmDealFromChat(){
+  closeChatModal();
+  openDigitalOrder(chatTargetId);
+}
+
+// ===================== DIGITAL ORDER (Providers & Teams) =====================
+function openDigitalOrder(id){
+  let isTeam = false;
+  let p = digitalProviders.find(x=>x.id===id);
+  if(!p) {
+    p = teams.find(x=>x.id===id);
+    isTeam = true;
+  }
+  if(!p) return;
+  
+  if(!isTeam && !p.isAvailable){showToast('❌ هذا المزود غير متاح حالياً');return;}
+  
+  const existingModal = document.getElementById('digitalOrderModal');
+  if(existingModal) existingModal.remove();
+  const div = document.createElement('div');
+  div.id='digitalOrderModal';
+  div.className='modal-overlay';
+  
+  const avatarHtml = isTeam 
+    ? `<div style="width:42px;height:42px;border-radius:10px;background:#EEE8FF;display:flex;align-items:center;justify-content:center;font-size:20px">${p.icon}</div>`
+    : `<div class="avatar" style="width:42px;height:42px;font-size:18px;background:${p.avatarBg};color:${p.avatarColor}">${p.name.charAt(0)}</div>`;
+  
+  const defaultPrice = isTeam ? p.priceFrom : p.hourlyRate * 10;
+  const subtitle = isTeam ? `${p.specialty}` : p.title;
+  
+  div.innerHTML=`
+    <div class="modal-box modal-md page-enter">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        ${avatarHtml}
+        <div><div style="font-size:16px;font-weight:700">طلب مشروع من ${p.name}</div><div style="font-size:12px;color:var(--text3)">${subtitle}</div></div>
+        <button onclick="this.closest('.modal-overlay').remove()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text3);margin-inline-start:auto">×</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">عنوان المشروع</label>
+        <input type="text" id="doTitle" placeholder="مثال: تصميم وتطوير موقع إلكتروني"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">وصف المتطلبات</label>
+        <textarea id="doDesc" rows="3" placeholder="اشرح متطلبات مشروعك بدقة..."></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group">
+          <label class="form-label">السعر المتفق عليه (ج.م)</label>
+          <input type="number" id="doPrice" value="${defaultPrice}"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">مدة التسليم المبدئية (أيام)</label>
+          <input type="number" id="doDays" value="7"/>
+        </div>
+      </div>
+      <div style="background:var(--brand-pale);border-radius:9px;padding:12px 14px;font-size:12px;color:var(--brand);margin-bottom:4px">
+        ⚡ ${isTeam?`مشاريع الفريق تبدأ من: ${p.priceFrom} ج.م`:`سعر مرجعي: ${p.hourlyRate} ج.م/ساعة`} · وقت الرد: ${p.responseTime}
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px">
+        <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">إلغاء</button>
+        <button class="btn btn-primary" onclick="confirmDigitalOrder('${p.id}', ${isTeam})">⚡ تأكيد وإرسال الطلب</button>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+}
+
+function confirmDigitalOrder(id, isTeam){
+  const p = isTeam ? teams.find(x=>x.id===id) : digitalProviders.find(x=>x.id===id);
+  const title = document.getElementById('doTitle').value||'مشروع لـ '+p.name;
+  const desc = document.getElementById('doDesc').value||'تفاصيل المشروع';
+  const price = parseFloat(document.getElementById('doPrice').value)||0;
+  const days = parseInt(document.getElementById('doDays').value)||7;
+  const order = {id:nextDigitalOrderId++,type:'digital',providerId:id,providerName:p.name,title,desc,price,days,status:'Pending',deliverableUrl:null,createdAt:new Date().toLocaleString('ar-EG'),completedAt:null, isTeamOrder:isTeam};
+  digitalOrders.push(order);
+  document.getElementById('digitalOrderModal').remove();
+  updateBadges();
+  renderClientOrders();
+  showToast(`✓ تم إرسال الطلب بنجاح إلى ${p.name}!`);
+}
+
+// ===================== MANUAL CART =====================
+function addToCart(serviceId){
+  const svc = manualServices.find(s=>s.id===serviceId);
+  const ex = cart.find(c=>c.serviceId===serviceId);
+  if(ex){ex.qty++;ex.total=ex.qty*svc.basePrice;}
+  else cart.push({serviceId,name:svc.name,price:svc.basePrice,qty:1,total:svc.basePrice,icon:svc.icon});
+  renderCart();
+  showToast(`✓ تمت إضافة "${svc.name}" للسلة`);
+}
+function removeFromCart(sid){cart=cart.filter(c=>c.serviceId!==sid);renderCart();}
+function renderCart(){
+  const count=cart.reduce((a,c)=>a+c.qty,0);
+  const total=cart.reduce((a,c)=>a+c.total,0);
+  document.getElementById('cartCount').textContent=count+' عناصر';
+  const el=document.getElementById('cartItems');
+  const tot=document.getElementById('cartTotal');
+  if(!cart.length){el.innerHTML='<div class="empty-state" style="padding:24px 8px"><div class="icon">🛒</div><div style="font-size:13px">السلة فارغة</div></div>';tot.style.display='none';return;}
+  el.innerHTML=cart.map(item=>`
+    <div class="cart-item-row">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:18px">${item.icon}</span>
+        <div><div style="font-weight:600;font-size:13px">${item.name}</div><div style="font-size:11px;color:var(--text3)">×${item.qty} × ${item.price}</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-weight:700;color:var(--brand);font-size:13px">${item.total} ج.م</span>
+        <button onclick="removeFromCart(${item.serviceId})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:18px;line-height:1">×</button>
+      </div>
+    </div>`).join('');
+  tot.style.display='block';
+  document.getElementById('totalPrice').textContent=total+' ج.م';
+}
+
+// ===================== PAYMENT & CHECKOUT =====================
+function selectPayMethod(m){
+  selectedPayMethod=m;
+  ['Cash','Card','Wallet'].forEach(x=>{document.getElementById('payOpt-'+x).classList.toggle('selected',x===m);});
+  document.getElementById('cardFormSection').style.display=m==='Card'?'block':'none';
+  document.getElementById('walletSection').style.display=m==='Wallet'?'block':'none';
+}
+function selectWallet(w){
+  selectedWallet=w;
+  ['internal','vodafone','instapay','fawry'].forEach(x=>{document.getElementById('wo-'+x).classList.toggle('selected',x===w);});
+}
+function formatCardNum(inp){
+  let v=inp.value.replace(/\D/g,'').replace(/(.{4})/g,'$1 ').trim();
+  inp.value=v;updateCardPreview();
+}
+function formatCardExp(inp){
+  let v=inp.value.replace(/\D/g,'');
+  if(v.length>2)v=v.slice(0,2)+'/'+v.slice(2);
+  inp.value=v;
+}
+function updateCardPreview(){
+  const num=document.getElementById('cardNumber')?.value||'';
+  const name=document.getElementById('cardName')?.value||'الاسم الكريم';
+  const exp=document.getElementById('cardExp')?.value||'••/••';
+  document.getElementById('cardPreviewNum').textContent=num||'•••• •••• •••• ••••';
+  document.getElementById('cardPreviewName').textContent=name||'الاسم الكريم';
+  document.getElementById('cardPreviewExp').textContent=exp||'••/••';
+}
+
+function openCheckoutModal(){
+  if(!cart.length){showToast('❌ السلة فارغة');return;}
+  document.getElementById('checkoutModal').style.display='flex';
+}
+function closeCheckoutModal(){document.getElementById('checkoutModal').style.display='none';}
+
+function confirmCheckout(){
+  const street=document.getElementById('checkoutStreet').value||'القاهرة، شارع التحرير';
+  const date=document.getElementById('checkoutDate').value||'2025-08-15';
+  const notes=document.getElementById('checkoutNotes').value;
+  const payLabel = selectedPayMethod==='Wallet'?`محفظة (${selectedWallet})`:selectedPayMethod==='Card'?`بطاقة (${document.getElementById('cardNumber')?.value?.slice(-4)||'****'})`:selectedPayMethod;
+  const total=cart.reduce((a,c)=>a+c.total,0);
+  const order={id:nextOrderId++,type:'manual',status:'Pending',street,date,payment:payLabel,notes,total,items:cart.map(c=>({...c,itemStatus:'Pending',providerId:null})),createdAt:new Date().toLocaleString('ar-EG'),coordinatorId:null,dispatchedAt:null,completedAt:null};
+  orders.push(order);
+  cart=[];
+  renderCart();
+  closeCheckoutModal();
+  updateBadges();
+  renderClientOrders();
+  document.getElementById('checkoutStreet').value='';
+  document.getElementById('checkoutDate').value='';
+  document.getElementById('checkoutNotes').value='';
+  showToast('✓ تم إنشاء الطلب بنجاح! رقم الطلب: #'+order.id);
+}
+
+// ===================== CLIENT ORDERS =====================
+function renderClientOrders(){
+  const el=document.getElementById('clientOrdersList');
+  const all=[...orders.map(o=>({...o,displayType:'manual'})),...digitalOrders.map(o=>({...o,displayType:'digital'}))].sort((a,b)=>b.id-a.id);
+  if(!all.length){el.innerHTML='<div class="empty-state card"><div class="icon">📋</div><div>لا توجد طلبات بعد</div></div>';return;}
+  const steps=['Pending','Dispatching','Assigned','InProgress','Completed'];
+  const stepLbls=['الانتظار','التكليف','التكليف','التنفيذ','مكتمل'];
+  el.innerHTML=all.map(o=>{
+    if(o.displayType==='manual'){
+      const si=steps.indexOf(o.status);
+      return `<div class="card" style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:14px;font-weight:700">#${o.id}</span>
+            <span style="font-size:13px;color:var(--text2)">يدوي</span>
+            <span class="tag ${statusClass(o.status)}">${statusLabel(o.status)}</span>
+          </div>
+          <div style="font-size:12px;color:var(--text3)">${o.createdAt}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+          ${o.items.map(i=>`<span class="tag" style="background:#F5F4F0;color:var(--text2)">${i.icon||'🔧'} ${i.name}</span>`).join('')}
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px">
+          <span style="color:var(--text2)">📍 ${o.street} · 💳 ${o.payment}</span>
+          <span style="font-weight:700;color:var(--brand)">${o.total} ج.م</span>
+        </div>
+        <div style="display:flex;gap:0;align-items:center;margin:14px 0 0">
+          ${steps.map((s,i)=>`<div class="timeline-step"><div class="timeline-dot ${i<si?'done':i===si?'active':''}">${i<si?'✓':i+1}</div><div class="timeline-label">${stepLbls[i]}</div></div>`).join('')}
+        </div>
+      </div>`;
+    } else {
+      return `<div class="card" style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:14px;font-weight:700">#${o.id}</span>
+            <span style="font-size:13px;color:var(--text2)">${o.isTeamOrder?'فريق':'رقمي'}</span>
+            <span class="tag ${statusClass(o.status)}">${statusLabel(o.status)}</span>
+          </div>
+          <div style="font-size:12px;color:var(--text3)">${o.createdAt}</div>
+        </div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:5px">${o.title}</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">الجهة: ${o.providerName} · ${o.days} أيام تسليم</div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12px;color:var(--text3)">${o.deliverableUrl?'📎 '+o.deliverableUrl.substring(0,28)+'...':''}</span>
+          <span style="font-weight:700;color:var(--brand)">${o.price} ج.م</span>
+        </div>
+        ${o.status==='UnderReview'?`<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn btn-danger btn-sm" onclick="disputeDigitalOrder(${o.id})">⚠ فتح نزاع</button>
+          <button class="btn btn-success btn-sm" onclick="approveDigitalOrder(${o.id})">✓ قبول التسليم</button>
+        </div>`:''}
+      </div>`;
+    }
+  }).join('');
+}
+
+function approveDigitalOrder(id){
+  const o=digitalOrders.find(o=>o.id===id);
+  if(o){o.status='Completed';o.completedAt=new Date().toLocaleString('ar-EG');}
+  renderClientOrders();showToast('✓ تم قبول التسليم وإغلاق الطلب!');
+}
+function disputeDigitalOrder(id){
+  const o=digitalOrders.find(o=>o.id===id);
+  if(o) o.status='Disputed';
+  renderClientOrders();showToast('⚠ تم فتح نزاع على الطلب');
+}
+
+// ===================== COORDINATOR =====================
+function renderCoordinatorView(){
+  updateBadges();
+  const el=document.getElementById('coordinatorOrdersTable');
+  const mo=orders.filter(o=>o.type==='manual');
+  if(!mo.length){el.innerHTML='<div class="empty-state" style="padding:44px"><div class="icon">📋</div><div>لا توجد طلبات يدوية بعد</div></div>';return;}
+  el.innerHTML=`<table><thead><tr><th>رقم الطلب</th><th>الخدمات</th><th>العنوان</th><th>التاريخ</th><th>الدفع</th><th>الإجمالي</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody>
+    ${mo.map(o=>`<tr>
+      <td><strong>#${o.id}</strong></td>
+      <td style="max-width:150px">${o.items.map(i=>`<span class="tag" style="background:#F5F4F0;color:var(--text2);margin:1px">${i.name}</span>`).join('')}</td>
+      <td style="font-size:12px;color:var(--text2);max-width:120px">${o.street}</td>
+      <td style="font-size:12px">${o.date}</td>
+      <td style="font-size:12px">${o.payment}</td>
+      <td><strong style="color:var(--brand)">${o.total} ج.م</strong></td>
+      <td><span class="tag ${statusClass(o.status)}">${statusLabel(o.status)}</span></td>
+      <td>${o.status==='Pending'?`<button class="btn btn-info btn-sm" onclick="triggerDispatch(${o.id})">📤 إرسال تكليف</button>`:o.status==='Dispatching'?`<span style="font-size:12px;color:var(--info)">⏳ انتظار قبول</span>`:o.status==='Completed'?`<span style="font-size:12px;color:#155724">✓ مكتمل</span>`:`<span style="font-size:12px;color:var(--brand)">✓ مُكلَّف</span>`}</td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+function triggerDispatch(oid){
+  const o=orders.find(x=>x.id===oid);
+  if(!o||o.status!=='Pending')return;
+  o.status='Dispatching';o.coordinatorId='coord1';o.dispatchedAt=new Date().toLocaleString('ar-EG');
+  o.items.forEach(item=>{
+    const prov=manualProviders.find(p=>p.isAvailable&&p.services.includes(item.serviceId))||manualProviders[0];
+    item.itemStatus='Dispatching';item.assignedProviderId=prov.id;item.assignedProviderName=prov.name;
+  });
+  updateBadges();renderCoordinatorView();
+  showToast(`📤 تم إرسال التكليف للطلب #${oid}`);
+}
+
+// ===================== PROVIDER =====================
+function switchProviderMode(m){
+  providerMode=m;
+  document.getElementById('providerManual').style.display=m==='manual'?'block':'none';
+  document.getElementById('providerDigital').style.display=m==='digital'?'block':'none';
+  document.getElementById('providerWallet').style.display=m==='wallet'?'block':'none';
+  document.getElementById('providerToggle-manual').classList.toggle('active',m==='manual');
+  document.getElementById('providerToggle-digital').classList.toggle('active',m==='digital');
+  document.getElementById('providerToggle-wallet').classList.toggle('active',m==='wallet');
+  renderProviderView();
+}
+function renderProviderView(){
+  if(providerMode==='manual') renderManualProviderView();
+  else if(providerMode==='digital') renderDigitalProviderView();
+  else renderProviderWalletView();
+}
+
+function renderManualProviderView(){
+  const el=document.getElementById('manualProviderOrders');
+  const disp=orders.filter(o=>['Dispatching','Assigned','InProgress'].includes(o.status));
+  if(!disp.length){el.innerHTML='<div class="empty-state card"><div class="icon">📬</div><div>لا توجد طلبات تكليف حالياً</div></div>';return;}
+  el.innerHTML=disp.map(o=>`
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:16px;font-weight:800">#${o.id}</span>
+          <span class="tag ${statusClass(o.status)}">${statusLabel(o.status)}</span>
+        </div>
+        <div style="font-size:12px;color:var(--text3)">${o.dispatchedAt||o.createdAt}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div style="font-size:13px;color:var(--text2)">📍 <strong>${o.street}</strong></div>
+        <div style="font-size:13px;color:var(--text2)">📅 ${o.date}</div>
+        <div style="font-size:13px;color:var(--text2)">💳 ${o.payment}</div>
+        <div style="font-size:14px;font-weight:700;color:var(--brand)">💰 ${o.total} ج.م</div>
+      </div>
+      <div style="margin-bottom:14px">${o.items.map(item=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:20px">${item.icon||'🔧'}</span>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">${item.name}</div><div style="font-size:11px;color:var(--text3)">مُكلَّف لـ: ${item.assignedProviderName||'—'}</div></div>
+        <span class="tag ${statusClass(item.itemStatus||'Pending')}">${statusLabel(item.itemStatus||'Pending')}</span>
+      </div>`).join('')}</div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end">
+        ${o.status==='Dispatching'?`<button class="btn btn-danger btn-sm" onclick="declineOrder(${o.id})">✕ رفض</button><button class="btn btn-success btn-sm" onclick="acceptOrder(${o.id})">✓ قبول التكليف</button>`:''}
+        ${o.status==='Assigned'?`<button class="btn btn-primary btn-sm" onclick="startOrder(${o.id})">▶ بدء التنفيذ</button>`:''}
+        ${o.status==='InProgress'?`<button class="btn btn-success btn-sm" onclick="completeOrder(${o.id})">✓ تم الإنجاز</button>`:''}
+      </div>
+    </div>`).join('');
+}
+function acceptOrder(oid){
+  const o=orders.find(x=>x.id===oid);if(!o)return;
+  o.status='Assigned';o.items.forEach(i=>{i.itemStatus='Assigned';});
+  updateBadges();renderProviderView();showToast(`✓ تم قبول تكليف الطلب #${oid}`);
+}
+function declineOrder(oid){
+  const o=orders.find(x=>x.id===oid);if(!o)return;
+  o.status='Pending';o.items.forEach(i=>{i.itemStatus='Pending';i.assignedProviderId=null;i.assignedProviderName=null;});
+  updateBadges();renderProviderView();showToast(`↩ تم رفض الطلب #${oid} وإعادته للانتظار`);
+}
+function startOrder(oid){
+  const o=orders.find(x=>x.id===oid);if(!o)return;
+  o.status='InProgress';o.items.forEach(i=>{i.itemStatus='InProgress';});
+  renderProviderView();showToast(`▶ بدأ تنفيذ الطلب #${oid}`);
+}
+function completeOrder(oid){
+  const o=orders.find(x=>x.id===oid);if(!o)return;
+  o.status='Completed';o.completedAt=new Date().toLocaleString('ar-EG');
+  o.items.forEach(i=>{i.itemStatus='Completed';});
+  updateBadges();renderProviderView();renderClientOrders();showToast(`🎉 تم إنجاز الطلب #${oid} بنجاح!`);
+}
+
+function renderDigitalProviderView(){
+  const el=document.getElementById('digitalProviderOrders');
+  const myOrders=digitalOrders.filter(o=>['Pending','Accepted','InProgress','UnderReview'].includes(o.status));
+  if(!myOrders.length){el.innerHTML='<div class="empty-state card"><div class="icon">💻</div><div>لا توجد طلبات رقمية حالياً</div></div>';return;}
+  el.innerHTML=myOrders.map(o=>`
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:15px;font-weight:800">#${o.id}</span>
+          <span style="font-size:14px;font-weight:600">${o.title}</span>
+          <span class="tag ${statusClass(o.status)}">${statusLabel(o.status)}</span>
+        </div>
+        <span style="font-weight:700;color:var(--brand)">${o.price} ج.م</span>
+      </div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:10px;line-height:1.7">${o.desc}</p>
+      <div style="display:flex;gap:16px;font-size:12px;color:var(--text3);margin-bottom:13px">
+        <span>📅 ${o.createdAt}</span><span>⏱ ${o.days} أيام</span>
+        ${o.deliverableUrl?`<span>📎 ${o.deliverableUrl.substring(0,22)}...</span>`:''}
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+        ${o.status==='Pending'?`<button class="btn btn-danger btn-sm" onclick="declineDigitalOrder(${o.id})">✕ رفض</button><button class="btn btn-success btn-sm" onclick="acceptDigitalOrder(${o.id})">✓ قبول</button>`:''}
+        ${o.status==='Accepted'||o.status==='InProgress'?`<button class="btn btn-primary btn-sm" onclick="openDeliverableModal(${o.id})">📤 رفع التسليم</button>`:''}
+        ${o.status==='UnderReview'?`<span style="font-size:12px;color:var(--warn);font-weight:600">⏳ قيد مراجعة العميل</span>`:''}
+      </div>
+    </div>`).join('');
+}
+function acceptDigitalOrder(id){
+  const o=digitalOrders.find(x=>x.id===id);if(o)o.status='Accepted';
+  renderDigitalProviderView();showToast(`✓ تم قبول الطلب الرقمي #${id}`);
+}
+function declineDigitalOrder(id){
+  const o=digitalOrders.find(x=>x.id===id);if(o)o.status='Declined';
+  renderDigitalProviderView();showToast(`↩ تم رفض الطلب الرقمي #${id}`);
+}
+function openDeliverableModal(id){
+  document.getElementById('deliverableOrderId').value=id;
+  document.getElementById('deliverableModal').style.display='flex';
+}
+function closeDeliverableModal(){document.getElementById('deliverableModal').style.display='none';document.getElementById('deliverableUrl').value='';}
+function confirmDeliverable(){
+  const id=parseInt(document.getElementById('deliverableOrderId').value);
+  const url=document.getElementById('deliverableUrl').value||'https://drive.google.com/file/example';
+  const o=digitalOrders.find(x=>x.id===id);
+  if(o){o.status='UnderReview';o.deliverableUrl=url;}
+  closeDeliverableModal();renderDigitalProviderView();renderClientOrders();
+  showToast(`📤 تم رفع التسليم للطلب #${id}`);
+}
+
+// Wallet & History
+function renderProviderWalletView() {
+  const el = document.getElementById('providerWallet');
+  const compManual = orders.filter(o=>o.status==='Completed');
+  const compDigital = digitalOrders.filter(o=>o.status==='Completed');
+  const totalManual = compManual.reduce((acc,o)=>acc+o.total,0);
+  const totalDigital = compDigital.reduce((acc,o)=>acc+o.price,0);
+  const grandTotal = totalManual + totalDigital;
+  
+  const allHistory = [...compManual.map(o=>({...o, hType:'manual'})), ...compDigital.map(o=>({...o, hType:'digital'}))].sort((a,b)=>b.id-a.id);
+
+  let historyHtml = '';
+  if(!allHistory.length){
+    historyHtml = '<div class="empty-state" style="padding:20px"><div class="icon">📄</div><div>لا توجد مهام منجزة حتى الآن</div></div>';
+  } else {
+    historyHtml = allHistory.map(o=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+        <div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:4px">#${o.id} — ${o.hType==='manual'?'خدمة يدوية':'خدمة رقمية'}</div>
+          <div style="font-size:12px;color:var(--text3)">تم الإنجاز في: ${o.completedAt}</div>
+        </div>
+        <div style="font-size:15px;font-weight:700;color:var(--brand)">+ ${o.hType==='manual'?o.total:o.price} ج.م</div>
+      </div>
+    `).join('');
+  }
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr;gap:20px;margin-bottom:20px">
+      <div class="card" style="background:linear-gradient(135deg, var(--brand), var(--brand-light)); color:white; padding:30px; text-align:center">
+        <div style="font-size:14px;opacity:0.9;margin-bottom:8px">الرصيد المتاح للسحب</div>
+        <div style="font-size:36px;font-weight:800;margin-bottom:12px">${grandTotal.toLocaleString()} ج.م</div>
+        <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4)">💸 سحب الأرباح</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:12px">سجل المهام المنجزة (${allHistory.length})</h3>
+      ${historyHtml}
+    </div>
+  `;
+}
+
+// ===================== INIT =====================
+renderCategoryGrid();
+updateBadges();
+</script>
+</body>
+</html>

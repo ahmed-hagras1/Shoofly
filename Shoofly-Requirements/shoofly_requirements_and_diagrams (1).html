@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shoofly — Requirements & Diagrams</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET ── */
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* ── TOKENS ── */
+:root{
+  --bg:         #0D1117;
+  --bg2:        #161B22;
+  --bg3:        #1C2128;
+  --bg4:        #212830;
+  --border:     #30363D;
+  --border2:    #3D444D;
+  --text1:      #E6EDF3;
+  --text2:      #8B949E;
+  --text3:      #6E7681;
+  --brand:      #2EA043;
+  --brand-bg:   rgba(46,160,67,.12);
+  --brand-border:rgba(46,160,67,.35);
+  --blue:       #4493F8;
+  --blue-bg:    rgba(68,147,248,.12);
+  --blue-border:rgba(68,147,248,.35);
+  --purple:     #A371F7;
+  --purple-bg:  rgba(163,113,247,.12);
+  --purple-border:rgba(163,113,247,.35);
+  --amber:      #E3B341;
+  --amber-bg:   rgba(227,179,65,.12);
+  --amber-border:rgba(227,179,65,.35);
+  --red:        #F85149;
+  --red-bg:     rgba(248,81,73,.12);
+  --red-border: rgba(248,81,73,.35);
+  --teal:       #39C5CF;
+  --teal-bg:    rgba(57,197,207,.1);
+  --teal-border:rgba(57,197,207,.3);
+  --coral:      #F0883E;
+  --coral-bg:   rgba(240,136,62,.12);
+  --coral-border:rgba(240,136,62,.35);
+  --mono:       'JetBrains Mono', monospace;
+  --sans:       'Inter', -apple-system, sans-serif;
+  --radius:     8px;
+  --radius-lg:  12px;
+  --shadow-glow:0 0 24px rgba(46,160,67,.06);
+}
+
+/* ── BASE ── */
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text1);
+  min-height:100vh;
+  line-height:1.6;
+  font-size:14px;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+/* ── HEADER ── */
+.page-header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(13,17,23,.88);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:54px;
+}
+.header-logo{display:flex;align-items:center;gap:10px}
+.header-logo-mark{
+  width:28px;height:28px;border-radius:7px;
+  background:linear-gradient(135deg,var(--brand),#1A7F37);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:14px;color:#fff;
+  box-shadow:0 0 12px rgba(46,160,67,.4);
+}
+.header-logo-text{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.header-logo-sub{font-size:11px;color:var(--text3);padding:2px 7px;border:1px solid var(--border);border-radius:4px;font-family:var(--mono)}
+
+/* ── WRAPPER ── */
+.page-wrap{max-width:1000px;margin:0 auto;padding:32px 24px 80px}
+
+/* ── TABS ── */
+.tabs{
+  display:flex;gap:2px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:4px;
+  margin-bottom:32px;
+  flex-wrap:wrap;
+}
+.tab{
+  padding:8px 18px;
+  font-size:13px;font-weight:500;
+  color:var(--text2);
+  cursor:pointer;
+  border-radius:7px;
+  border:1px solid transparent;
+  transition:all .18s ease;
+  white-space:nowrap;
+  position:relative;
+}
+.tab:hover{color:var(--text1);background:var(--bg3)}
+.tab.active{
+  color:var(--text1);
+  background:var(--bg3);
+  border-color:var(--border2);
+  box-shadow:0 1px 4px rgba(0,0,0,.3);
+}
+.tab.active::after{
+  content:'';
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:20px;height:2px;background:var(--brand);border-radius:99px;
+}
+
+/* ── PANEL ── */
+.panel{display:none;animation:panelFadeIn .22s ease}
+.panel.active{display:block}
+@keyframes panelFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTION TITLE ── */
+.section-label{
+  font-size:11px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--text3);
+  margin-bottom:14px;margin-top:32px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-label:first-child{margin-top:0}
+
+/* ── REQ GROUP ── */
+.req-group{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  margin-bottom:16px;
+  transition:border-color .2s;
+}
+.req-group:hover{border-color:var(--border2)}
+.req-group-title{
+  font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.06em;
+  color:var(--text2);
+  padding:10px 16px;
+  background:var(--bg3);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.req-group-title .icon{font-size:13px}
+
+.req-list{list-style:none}
+.req-item{
+  display:flex;gap:14px;
+  padding:12px 16px;
+  border-bottom:1px solid var(--border);
+  font-size:13px;line-height:1.65;
+  color:var(--text1);
+  transition:background .15s;
+  animation:reqSlideIn .25s ease backwards;
+}
+.req-item:hover{background:rgba(255,255,255,.02)}
+.req-item:last-child{border-bottom:none}
+
+.req-id{
+  min-width:54px;
+  font-size:11px;font-weight:600;
+  font-family:var(--mono);
+  color:var(--text3);
+  padding-top:2px;
+  flex-shrink:0;
+}
+
+@keyframes reqSlideIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── BADGES ── */
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10px;font-weight:600;letter-spacing:.02em;
+  padding:2px 8px;border-radius:4px;
+  vertical-align:middle;margin-inline-start:7px;
+  border:1px solid;
+  white-space:nowrap;
+}
+.b-must{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+.b-should{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.b-could{background:var(--brand-bg);color:var(--brand);border-color:var(--brand-border)}
+.b-perf{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
+
+/* ── SEQ BUTTONS ── */
+.seq-select{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;
+}
+.seq-btn{
+  padding:7px 15px;
+  font-size:12px;font-weight:500;
+  font-family:var(--sans);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  cursor:pointer;
+  background:var(--bg2);
+  color:var(--text2);
+  transition:all .15s;
+}
+.seq-btn:hover{border-color:var(--border2);color:var(--text1);background:var(--bg3)}
+.seq-btn.active{
+  background:var(--bg3);
+  color:var(--text1);
+  border-color:var(--blue-border);
+  box-shadow:0 0 0 1px var(--blue-border);
+}
+
+/* ── SEQ PANEL ── */
+.seq-panel{display:none;animation:panelFadeIn .22s ease}
+.seq-panel.active{display:block}
+
+/* ── SVG WRAPPER ── */
+.svg-wrap{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:20px;
+  overflow-x:auto;
+}
+.svg-wrap svg{display:block;min-width:560px}
+
+/* ── SVG INTERNAL STYLES (applied via class on svg elements) ── */
+/* lifelines */
+.life-line{stroke:var(--border2);stroke-width:1;stroke-dasharray:5 4}
+/* participant boxes */
+.part-box{fill:var(--bg3);stroke:var(--border2);stroke-width:1;rx:7}
+/* message arrows */
+.msg-arrow{stroke:var(--text1);stroke-width:1.2;fill:none}
+.ret-arrow{stroke:var(--text2);stroke-width:.9;stroke-dasharray:5 3;fill:none}
+/* labels */
+.part-lbl{font-size:12px;font-weight:600;fill:var(--text1);font-family:'Inter',sans-serif}
+.msg-lbl{font-size:11px;fill:var(--text1);font-family:'Inter',sans-serif}
+.ret-lbl{font-size:11px;fill:var(--text2);font-family:'Inter',sans-serif}
+.note-lbl{font-size:10px;fill:var(--text3);font-style:italic;font-family:'Inter',sans-serif}
+/* alt/else blocks */
+.alt-box{fill:var(--blue-bg)}
+.else-box{fill:var(--amber-bg)}
+
+/* actor diagram */
+.c-gray rect{fill:var(--bg3);stroke:var(--border2);stroke-width:1}
+.c-teal rect{fill:var(--teal-bg);stroke:var(--teal-border);stroke-width:1}
+.c-purple rect{fill:var(--purple-bg);stroke:var(--purple-border);stroke-width:1}
+.c-amber rect{fill:var(--amber-bg);stroke:var(--amber-border);stroke-width:1}
+.c-coral rect{fill:var(--coral-bg);stroke:var(--coral-border);stroke-width:1}
+.c-blue rect{fill:var(--blue-bg);stroke:var(--blue-border);stroke-width:1}
+.c-red rect{fill:var(--red-bg);stroke:var(--red-border);stroke-width:1}
+.th{font-size:12px;font-weight:600;fill:var(--text1);font-family:'Inter',sans-serif}
+.ts{font-size:11px;fill:var(--text2);font-family:'Inter',sans-serif}
+
+/* ── STATS BAR ── */
+.stats-bar{
+  display:flex;gap:12px;flex-wrap:wrap;
+  margin-bottom:28px;
+}
+.stat-chip{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:8px 14px;
+  font-size:12px;font-weight:500;color:var(--text2);
+  transition:all .2s;
+}
+.stat-chip:hover{border-color:var(--border2);color:var(--text1)}
+.stat-chip .num{font-size:16px;font-weight:700;font-family:var(--mono)}
+.stat-chip.green .num{color:var(--brand)}
+.stat-chip.blue  .num{color:var(--blue)}
+.stat-chip.purple .num{color:var(--purple)}
+.stat-chip.amber .num{color:var(--amber)}
+.stat-chip.red   .num{color:var(--red)}
+
+/* ── SEARCH ── */
+.search-bar{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:8px 14px;
+  margin-bottom:20px;transition:border-color .15s;
+}
+.search-bar:focus-within{border-color:var(--blue-border)}
+.search-bar input{
+  background:none;border:none;outline:none;
+  font-family:var(--sans);font-size:13px;color:var(--text1);
+  flex:1;
+}
+.search-bar input::placeholder{color:var(--text3)}
+.search-icon{color:var(--text3);font-size:14px;flex-shrink:0}
+
+/* ── TOOLTIP ── */
+[data-tip]{position:relative;cursor:help}
+[data-tip]::after{
+  content:attr(data-tip);
+  position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+  background:var(--bg4);border:1px solid var(--border2);
+  color:var(--text1);font-size:11px;font-weight:500;
+  padding:5px 10px;border-radius:6px;white-space:nowrap;
+  pointer-events:none;opacity:0;transition:opacity .15s;z-index:50;
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+}
+[data-tip]:hover::after{opacity:1}
+
+/* ── ANIMATIONS ── */
+@keyframes glow-pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(46,160,67,.2)}
+  50%     {box-shadow:0 0 0 6px rgba(46,160,67,0)}
+}
+.stat-chip.green{animation:glow-pulse 3s ease infinite}
+
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.header-logo-mark{animation:float 3s ease-in-out infinite}
+
+/* item stagger */
+.req-item:nth-child(1){animation-delay:.02s}
+.req-item:nth-child(2){animation-delay:.04s}
+.req-item:nth-child(3){animation-delay:.06s}
+.req-item:nth-child(4){animation-delay:.08s}
+.req-item:nth-child(5){animation-delay:.10s}
+.req-item:nth-child(6){animation-delay:.12s}
+.req-item:nth-child(7){animation-delay:.14s}
+.req-item:nth-child(8){animation-delay:.16s}
+.req-item:nth-child(9){animation-delay:.18s}
+
+/* ── LEGEND ── */
+.legend{display:flex;flex-wrap:wrap;gap:10px;padding:14px 16px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:24px;font-size:12px}
+.legend-item{display:flex;align-items:center;gap:6px;color:var(--text2)}
+.legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* ── NF PILL ── */
+.nf-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:600;font-family:var(--mono);
+  padding:2px 9px;border-radius:4px;border:1px solid;
+  vertical-align:middle;margin-inline-start:7px;
+}
+.nf-pill.perf{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
+.nf-pill.sec {background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+.nf-pill.rel {background:var(--teal-bg);color:var(--teal);border-color:var(--teal-border)}
+.nf-pill.sca {background:var(--purple-bg);color:var(--purple);border-color:var(--purple-border)}
+.nf-pill.ux  {background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.nf-pill.dev {background:var(--brand-bg);color:var(--brand);border-color:var(--brand-border)}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="page-header">
+  <div class="header-logo">
+    <div class="header-logo-mark">S</div>
+    <span class="header-logo-text">Shoofly</span>
+    <span class="header-logo-sub">spec v1.0</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span style="font-size:11px;color:var(--text3)">Last updated</span>
+    <span style="font-size:11px;font-family:var(--mono);color:var(--text2);background:var(--bg3);border:1px solid var(--border);padding:2px 8px;border-radius:4px">2025-08</span>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+<!-- Stats row -->
+<div class="stats-bar">
+  <div class="stat-chip green"><span class="num">35</span> Functional</div>
+  <div class="stat-chip blue"><span class="num">21</span> Non-functional</div>
+  <div class="stat-chip red"><span class="num">24</span> Must-have</div>
+  <div class="stat-chip amber"><span class="num">8</span> Should-have</div>
+  <div class="stat-chip purple"><span class="num">3</span> Could-have</div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('func')">📋 Functional</div>
+  <div class="tab" onclick="showTab('nonfunc')">⚡ Non-functional</div>
+  <div class="tab" onclick="showTab('seq')">🔀 Sequence diagrams</div>
+  <div class="tab" onclick="showTab('actors')">🗺️ Actor diagram</div>
+</div>
+
+<!-- ═══════ FUNCTIONAL ═══════ -->
+<div class="panel active" id="panel-func">
+
+  <!-- Search -->
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="funcSearch" placeholder="Search requirements… e.g. dispatch, cart, JWT" oninput="filterReqs(this.value)"/>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div><span>Must — core, non-negotiable</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div><span>Should — important, not blocking</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--brand)"></div><span>Could — nice-to-have</span></div>
+  </div>
+
+  <div id="funcGroups">
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">🔐</span> Authentication &amp; identity</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id" data-tip="Authentication">FR-01</span><span>Register as Client, ManualServiceProvider, DigitalServiceProvider, or Coordinator with role-specific fields (bio, region, portfolio URL).<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Authentication">FR-02</span><span>Login with JWT access token and sliding-window refresh token stored in UserRefreshToken table.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Authentication">FR-03</span><span>Revoke individual or all sessions; coordinator can revoke other users' sessions via Permissions.Security.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Authentication">FR-04</span><span>Multi-language preference (PreferredLanguage) stored per user; responses localised via SharedResources.<span class="badge b-should">Should</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Authentication">FR-05</span><span>Admin can change user IsActive flag, manage roles and permission claims.<span class="badge b-must">Must</span></span></li>
+    </ul>
+  </div>
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">🗂️</span> Category &amp; service catalogue</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id" data-tip="Catalogue">FR-06</span><span>Browse top-level Categories (Manual / Technical). CategoryType drives which flow the client enters.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Catalogue">FR-07</span><span>Manual path: SubCategory → ManualService list with pricing, cover photo, and RequiresTeam flag.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Catalogue">FR-08</span><span>Technical path: SubCategory → list of DigitalServiceProvider profiles filtered by IsAvailable and AverageRating.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Catalogue">FR-09</span><span>Admin seeds categories, sub-categories, and manual services; digital providers self-register under SubCategories.<span class="badge b-must">Must</span></span></li>
+    </ul>
+  </div>
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">🛒</span> Manual (Talabat-style) order flow</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id" data-tip="Manual flow">FR-10</span><span>Client adds ManualServices to Cart; each CartItem records AddedDate for stale-item cleanup.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Manual flow">FR-11</span><span>Client checks out: provides service address, ServeDate, notes, and PaymentMethod to create one Order with multiple OrderItems.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Manual flow">FR-12</span><span>Coordinator reviews Order, sets CoordinatorId, then triggers dispatch per OrderItem.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Manual flow">FR-13</span><span>Smart dispatch: system selects ManualServiceProvider matching Region + OfferedServices + IsAvailable, creates DispatchAttempt (Status=Sent), and pushes a notification.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Manual flow">FR-14</span><span>Provider accepts → DispatchAttempt=Accepted, OrderItem.ProviderId set, ItemStatus=Assigned, provider IsAvailable=false.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Manual flow">FR-15</span><span>Provider declines or timeout expires → DispatchAttempt=Declined/Expired, system picks next candidate and repeats.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Manual flow">FR-16</span><span>If ManualService.RequiresTeam=true, Coordinator assigns a ManualTeam instead of a solo provider to that OrderItem.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Manual flow">FR-17</span><span>OrderItem status lifecycle: Pending → Dispatching → Assigned → InProgress → Completed → Review created.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Manual flow">FR-18</span><span>Master Order status rolls up from its items: all Completed → Order Completed; any Cancelled → adjusts accordingly.<span class="badge b-should">Should</span></span></li>
+    </ul>
+  </div>
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">💻</span> Digital (Khamsat-style) order flow</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id" data-tip="Digital flow">FR-19</span><span>Client browses DigitalServiceProvider profiles, views PortfolioUrl, AverageRating, HourlyRate, IsVerified badge.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Digital flow">FR-20</span><span>Client places DigitalOrder directly on a provider or DigitalTeam: title, description, agreed price, delivery days.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Digital flow">FR-21</span><span>Provider accepts or declines DigitalOrder; on acceptance Status transitions to Accepted → InProgress.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Digital flow">FR-22</span><span>Provider uploads DeliverableUrl; order moves to UnderReview; client approves → Completed or raises dispute → Disputed.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Digital flow">FR-23</span><span>No cart for digital orders — direct order placement only.<span class="badge b-must">Must</span></span></li>
+    </ul>
+  </div>
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">⭐</span> Reviews &amp; ratings</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id" data-tip="Reviews">FR-24</span><span>Client submits Review (1–5 stars + comment) per OrderItem after ItemStatus=Completed; Review is tied to the specific task, not the whole order.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Reviews">FR-25</span><span>Client submits DigitalReview per DigitalOrder after Status=Completed.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Reviews">FR-26</span><span>ManualServiceProvider.AverageRating and DigitalServiceProvider.AverageRating are recalculated and cached after each new review.<span class="badge b-should">Should</span></span></li>
+    </ul>
+  </div>
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">🔔</span> Notifications</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id" data-tip="Notifications">FR-27</span><span>Push/in-app Notification sent for: dispatch requests, order status changes (manual + digital), payments, and general admin messages.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Notifications">FR-28</span><span>NotificationType field tells the mobile app how to route the tap: DispatchRequest opens accept/decline screen; OrderUpdate opens order detail.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Notifications">FR-29</span><span>Unread notifications count shown in-app; mark individual or all as read.<span class="badge b-should">Should</span></span></li>
+    </ul>
+  </div>
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">💰</span> Transactions &amp; financials</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id" data-tip="Finance">FR-30</span><span>Transaction recorded for: ClientPayment, ProviderEarnings, DigitalProviderEarnings, PlatformCommission, Refund, Withdrawal, SalaryPayment.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Finance">FR-31</span><span>Wallet balance derived from Transaction ledger per user (sum of positive minus negative amounts).<span class="badge b-should">Should</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Finance">FR-32</span><span>Provider can request withdrawal to bank / Vodafone Cash; coordinator approves and records Transaction.<span class="badge b-could">Could</span></span></li>
+    </ul>
+  </div>
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">👥</span> Teams</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id" data-tip="Teams">FR-33</span><span>Admin/Coordinator creates ManualTeam, assigns ManualServiceProvider members and QualifiedServices.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Teams">FR-34</span><span>DigitalServiceProvider creates/joins DigitalTeam; each member keeps their own profile and rating.<span class="badge b-must">Must</span></span></li>
+      <li class="req-item"><span class="req-id" data-tip="Teams">FR-35</span><span>Client can place DigitalOrder targeting a DigitalTeam rather than an individual provider.<span class="badge b-should">Should</span></span></li>
+    </ul>
+  </div>
+
+  </div><!-- end funcGroups -->
+</div>
+
+<!-- ═══════ NON-FUNCTIONAL ═══════ -->
+<div class="panel" id="panel-nonfunc">
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div><span>Performance</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div><span>Security</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div><span>Reliability</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div><span>Scalability</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div><span>Usability</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--brand)"></div><span>Maintainability</span></div>
+  </div>
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">⚡</span> Performance</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id">NFR-01</span><span>API response time ≤ 300 ms at p95 under 500 concurrent users for catalogue and order endpoints.<span class="nf-pill perf">perf</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-02</span><span>AverageRating cached on provider record; never computed in real-time per request to avoid N+1 joins.<span class="nf-pill perf">perf</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-03</span><span>Dispatch algorithm must resolve a candidate provider within 2 seconds of Coordinator triggering dispatch.<span class="nf-pill perf">perf</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-04</span><span>Push notifications delivered within 5 seconds of the triggering event (order placed, dispatch attempt, status change).<span class="nf-pill perf">perf</span></span></li>
+    </ul>
+  </div>
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">🔒</span> Security</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id">NFR-05</span><span>All endpoints protected with JWT bearer auth; role-based authorization enforced via ASP.NET Identity claims.<span class="nf-pill sec">security</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-06</span><span>Refresh tokens hashed in storage, single-use (IsUsed flag), with expiry enforced server-side.<span class="nf-pill sec">security</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-07</span><span>Admin-only permission claims (Permissions.Security.RevokeSessions) enforced at action level.<span class="nf-pill sec">security</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-08</span><span>Sensitive fields (document URLs, salary) readable only by the owner or Admin/Coordinator roles.<span class="nf-pill sec">security</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-09</span><span>All API communication over HTTPS/TLS 1.2+; no sensitive data in query strings or logs.<span class="nf-pill sec">security</span></span></li>
+    </ul>
+  </div>
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">🛡️</span> Reliability &amp; availability</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id">NFR-10</span><span>DispatchAttempt table provides full audit trail; no dispatch state is held only in memory — system restarts safely re-query pending attempts.<span class="nf-pill rel">reliability</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-11</span><span>Transaction ledger append-only; no record is ever deleted — refunds and corrections are new Transaction rows.<span class="nf-pill rel">reliability</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-12</span><span>99.5% uptime SLA for production; database daily backups with point-in-time recovery.<span class="nf-pill rel">reliability</span></span></li>
+    </ul>
+  </div>
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">📈</span> Scalability</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id">NFR-13</span><span>Dispatch query uses indexed Region + ManualService + IsAvailable columns to avoid full-table scans as provider count grows.<span class="nf-pill sca">scalability</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-14</span><span>Architecture supports horizontal scaling of the API layer behind a load balancer; JWT is stateless.<span class="nf-pill sca">scalability</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-15</span><span>Notification delivery extracted to a background job / message queue so it doesn't block the HTTP request thread.<span class="nf-pill sca">scalability</span></span></li>
+    </ul>
+  </div>
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">🌍</span> Usability &amp; internationalisation</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id">NFR-16</span><span>All user-facing strings in SharedResources; Arabic (ar) and English (en) supported from day one.<span class="nf-pill ux">usability</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-17</span><span>Country.DialCode stored for all phone numbers; international format enforced on registration.<span class="nf-pill ux">usability</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-18</span><span>Decimal amounts stored as decimal(18,2) to avoid floating-point rounding in financial records.<span class="nf-pill ux">usability</span></span></li>
+    </ul>
+  </div>
+
+  <div class="req-group">
+    <div class="req-group-title"><span class="icon">🧱</span> Maintainability</div>
+    <ul class="req-list">
+      <li class="req-item"><span class="req-id">NFR-19</span><span>Clean Architecture layers: Data → Shared → Infrastructure → Core → API; no upward dependencies.<span class="nf-pill dev">maintainability</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-20</span><span>All enum values stored as strings in the DB (HasConversion&lt;string&gt;) for readability in SQL queries and migrations.<span class="nf-pill dev">maintainability</span></span></li>
+      <li class="req-item"><span class="req-id">NFR-21</span><span>Seeders are idempotent (AnyAsync guard) and run on every startup — safe to re-run in CI/CD pipelines.<span class="nf-pill dev">maintainability</span></span></li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ═══════ SEQUENCE DIAGRAMS ═══════ -->
+<div class="panel" id="panel-seq">
+
+  <div class="seq-select">
+    <button class="seq-btn active" onclick="showSeq('s1')">📦 Manual order placement</button>
+    <button class="seq-btn" onclick="showSeq('s2')">🚀 Smart dispatch</button>
+    <button class="seq-btn" onclick="showSeq('s3')">💻 Digital order flow</button>
+    <button class="seq-btn" onclick="showSeq('s4')">🔐 Auth: login &amp; refresh</button>
+    <button class="seq-btn" onclick="showSeq('s5')">⭐ Review &amp; rating</button>
+  </div>
+
+  <!-- S1: Manual order placement -->
+  <div class="seq-panel active" id="seq-s1">
+  <div class="svg-wrap">
+  <svg width="100%" viewBox="0 0 680 530" role="img">
+  <title>Manual order placement</title>
+  <defs>
+    <marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#E6EDF3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="a1r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#8B949E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <!-- Participants -->
+  <rect x="20" y="14" width="90" height="32" rx="7" fill="#1C2128" stroke="#4493F8" stroke-width="1"/>
+  <text class="part-lbl" x="65" y="30" text-anchor="middle" dominant-baseline="central" fill="#4493F8">Client</text>
+  <rect x="162" y="14" width="80" height="32" rx="7" fill="#1C2128" stroke="#2EA043" stroke-width="1"/>
+  <text class="part-lbl" x="202" y="30" text-anchor="middle" dominant-baseline="central" fill="#2EA043">API</text>
+  <rect x="295" y="14" width="100" height="32" rx="7" fill="#1C2128" stroke="#A371F7" stroke-width="1"/>
+  <text class="part-lbl" x="345" y="30" text-anchor="middle" dominant-baseline="central" fill="#A371F7">Database</text>
+  <rect x="448" y="14" width="110" height="32" rx="7" fill="#1C2128" stroke="#F0883E" stroke-width="1"/>
+  <text class="part-lbl" x="503" y="30" text-anchor="middle" dominant-baseline="central" fill="#F0883E">Coordinator</text>
+  <!-- lifelines -->
+  <line x1="65"  y1="46" x2="65"  y2="522" class="life-line"/>
+  <line x1="202" y1="46" x2="202" y2="522" class="life-line"/>
+  <line x1="345" y1="46" x2="345" y2="522" class="life-line"/>
+  <line x1="503" y1="46" x2="503" y2="522" class="life-line"/>
+  <!-- section label -->
+  <text class="note-lbl" x="65" y="68" fill="#39C5CF">① Browse catalogue</text>
+  <line x1="65" y1="82" x2="192" y2="82" class="msg-arrow" marker-end="url(#a1)"/>
+  <text class="msg-lbl" x="128" y="76">GET /categories</text>
+  <line x1="192" y1="92" x2="75" y2="92" class="ret-arrow" marker-end="url(#a1r)"/>
+  <text class="ret-lbl" x="128" y="106">categories list</text>
+  <line x1="65" y1="118" x2="192" y2="118" class="msg-arrow" marker-end="url(#a1)"/>
+  <text class="msg-lbl" x="128" y="112">GET /services/{subCatId}</text>
+  <line x1="192" y1="128" x2="75" y2="128" class="ret-arrow" marker-end="url(#a1r)"/>
+  <text class="ret-lbl" x="128" y="142">manual services</text>
+  <!-- add to cart -->
+  <text class="note-lbl" x="65" y="162" fill="#39C5CF">② Add to cart</text>
+  <line x1="65" y1="176" x2="192" y2="176" class="msg-arrow" marker-end="url(#a1)"/>
+  <text class="msg-lbl" x="128" y="170">POST /cart/items</text>
+  <line x1="202" y1="182" x2="335" y2="182" class="msg-arrow" marker-end="url(#a1)"/>
+  <text class="ret-lbl" x="268" y="176">INSERT CartItem</text>
+  <line x1="192" y1="194" x2="75" y2="194" class="ret-arrow" marker-end="url(#a1r)"/>
+  <text class="ret-lbl" x="128" y="208">201 Created</text>
+  <!-- checkout -->
+  <text class="note-lbl" x="65" y="228" fill="#39C5CF">③ Checkout</text>
+  <line x1="65" y1="242" x2="192" y2="242" class="msg-arrow" marker-end="url(#a1)"/>
+  <text class="msg-lbl" x="128" y="236">POST /orders/checkout</text>
+  <line x1="202" y1="250" x2="335" y2="250" class="msg-arrow" marker-end="url(#a1)"/>
+  <text class="ret-lbl" x="268" y="244">INSERT Order + OrderItems</text>
+  <line x1="202" y1="263" x2="335" y2="263" class="msg-arrow" marker-end="url(#a1)"/>
+  <text class="ret-lbl" x="268" y="257">INSERT Transaction</text>
+  <line x1="202" y1="276" x2="335" y2="276" class="msg-arrow" marker-end="url(#a1)"/>
+  <text class="ret-lbl" x="268" y="270">DELETE CartItems</text>
+  <line x1="192" y1="288" x2="75" y2="288" class="ret-arrow" marker-end="url(#a1r)"/>
+  <text class="ret-lbl" x="128" y="302">Order created ✓</text>
+  <!-- notify coordinator -->
+  <text class="note-lbl" x="202" y="322" fill="#39C5CF">④ Notify coordinator</text>
+  <line x1="202" y1="336" x2="493" y2="336" class="msg-arrow" stroke="#F0883E" marker-end="url(#a1)"/>
+  <text class="msg-lbl" x="347" y="330" fill="#F0883E">Push notification: new order</text>
+  <!-- coordinator confirms -->
+  <text class="note-lbl" x="348" y="362" fill="#39C5CF">⑤ Coordinator confirms</text>
+  <line x1="503" y1="376" x2="212" y2="376" class="msg-arrow" marker-end="url(#a1)"/>
+  <text class="msg-lbl" x="357" y="370">PATCH /orders/{id}/confirm</text>
+  <line x1="212" y1="386" x2="335" y2="386" class="msg-arrow" marker-end="url(#a1)"/>
+  <text class="ret-lbl" x="268" y="380">SET CoordinatorId, Status=Confirmed</text>
+  <line x1="212" y1="400" x2="493" y2="400" class="ret-arrow" marker-end="url(#a1r)"/>
+  <text class="ret-lbl" x="352" y="414">Order confirmed</text>
+  <!-- notify client -->
+  <line x1="202" y1="434" x2="75" y2="434" class="msg-arrow" stroke="#4493F8" marker-end="url(#a1)"/>
+  <text class="msg-lbl" x="138" y="428" fill="#4493F8">Push: order confirmed</text>
+  </svg>
+  </div>
+  </div>
+
+  <!-- S2: Smart dispatch -->
+  <div class="seq-panel" id="seq-s2">
+  <div class="svg-wrap">
+  <svg width="100%" viewBox="0 0 720 560" role="img">
+  <title>Smart dispatch flow</title>
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#E6EDF3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="a2r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#8B949E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="10" y="14" width="100" height="32" rx="7" fill="#1C2128" stroke="#F0883E" stroke-width="1"/>
+  <text class="part-lbl" x="60" y="30" text-anchor="middle" dominant-baseline="central" fill="#F0883E">Coordinator</text>
+  <rect x="140" y="14" width="78" height="32" rx="7" fill="#1C2128" stroke="#2EA043" stroke-width="1"/>
+  <text class="part-lbl" x="179" y="30" text-anchor="middle" dominant-baseline="central" fill="#2EA043">API</text>
+  <rect x="250" y="14" width="98" height="32" rx="7" fill="#1C2128" stroke="#A371F7" stroke-width="1"/>
+  <text class="part-lbl" x="299" y="30" text-anchor="middle" dominant-baseline="central" fill="#A371F7">Database</text>
+  <rect x="380" y="14" width="98" height="32" rx="7" fill="#1C2128" stroke="#E3B341" stroke-width="1"/>
+  <text class="part-lbl" x="429" y="30" text-anchor="middle" dominant-baseline="central" fill="#E3B341">Notif. Service</text>
+  <rect x="510" y="14" width="100" height="32" rx="7" fill="#1C2128" stroke="#39C5CF" stroke-width="1"/>
+  <text class="part-lbl" x="560" y="30" text-anchor="middle" dominant-baseline="central" fill="#39C5CF">Provider</text>
+  <line x1="60"  y1="46" x2="60"  y2="550" class="life-line"/>
+  <line x1="179" y1="46" x2="179" y2="550" class="life-line"/>
+  <line x1="299" y1="46" x2="299" y2="550" class="life-line"/>
+  <line x1="429" y1="46" x2="429" y2="550" class="life-line"/>
+  <line x1="560" y1="46" x2="560" y2="550" class="life-line"/>
+  <!-- trigger -->
+  <line x1="60" y1="80" x2="169" y2="80" class="msg-arrow" marker-end="url(#a2)"/>
+  <text class="msg-lbl" x="114" y="74">POST /orderitems/{id}/dispatch</text>
+  <line x1="189" y1="98" x2="289" y2="98" class="msg-arrow" marker-end="url(#a2)"/>
+  <text class="ret-lbl" x="239" y="92">Query: Region + Service + IsAvailable</text>
+  <line x1="289" y1="112" x2="189" y2="112" class="ret-arrow" marker-end="url(#a2r)"/>
+  <text class="ret-lbl" x="239" y="126">Provider candidates list</text>
+  <line x1="189" y1="142" x2="289" y2="142" class="msg-arrow" marker-end="url(#a2)"/>
+  <text class="ret-lbl" x="239" y="136">INSERT DispatchAttempt (Sent)</text>
+  <line x1="189" y1="160" x2="419" y2="160" class="msg-arrow" stroke="#E3B341" marker-end="url(#a2)"/>
+  <text class="msg-lbl" x="304" y="154" fill="#E3B341">Send push notification</text>
+  <line x1="429" y1="174" x2="550" y2="174" class="msg-arrow" stroke="#39C5CF" marker-end="url(#a2)"/>
+  <text class="msg-lbl" x="490" y="168" fill="#39C5CF">New job — accept?</text>
+  <!-- alt box -->
+  <rect x="60" y="192" width="570" height="20" rx="0" fill="rgba(68,147,248,.08)"/>
+  <text class="note-lbl" x="68" y="206" font-style="italic" fill="#4493F8">alt  [Provider accepts within timeout]</text>
+  <line x1="560" y1="222" x2="189" y2="222" class="msg-arrow" stroke="#39C5CF" marker-end="url(#a2)"/>
+  <text class="msg-lbl" x="374" y="216" fill="#39C5CF">POST /dispatch/{id}/accept</text>
+  <line x1="189" y1="234" x2="289" y2="234" class="msg-arrow" marker-end="url(#a2)"/>
+  <text class="ret-lbl" x="239" y="228">SET Attempt=Accepted, Item=Assigned</text>
+  <line x1="189" y1="248" x2="289" y2="248" class="msg-arrow" marker-end="url(#a2)"/>
+  <text class="ret-lbl" x="239" y="242">SET Provider.IsAvailable=false</text>
+  <line x1="189" y1="264" x2="419" y2="264" class="msg-arrow" stroke="#E3B341" marker-end="url(#a2)"/>
+  <text class="msg-lbl" x="304" y="258" fill="#E3B341">Notify client: provider assigned</text>
+  <!-- else box -->
+  <rect x="60" y="282" width="570" height="20" rx="0" fill="rgba(227,179,65,.07)"/>
+  <text class="note-lbl" x="68" y="296" font-style="italic" fill="#E3B341">else  [Timeout or provider declines]</text>
+  <line x1="189" y1="312" x2="289" y2="312" class="msg-arrow" marker-end="url(#a2)"/>
+  <text class="ret-lbl" x="239" y="306">SET Attempt=Expired/Declined</text>
+  <line x1="189" y1="328" x2="289" y2="328" class="msg-arrow" marker-end="url(#a2)"/>
+  <text class="ret-lbl" x="239" y="322">Query next candidate</text>
+  <line x1="189" y1="344" x2="289" y2="344" class="msg-arrow" marker-end="url(#a2)"/>
+  <text class="ret-lbl" x="239" y="338">INSERT new DispatchAttempt</text>
+  <line x1="189" y1="360" x2="419" y2="360" class="msg-arrow" stroke="#E3B341" marker-end="url(#a2)"/>
+  <text class="msg-lbl" x="304" y="354" fill="#E3B341">Send push to next provider</text>
+  <text class="note-lbl" x="68" y="392" fill="#8B949E">↻  repeats until accepted or no candidates remain</text>
+  <line x1="189" y1="410" x2="289" y2="410" class="msg-arrow" marker-end="url(#a2)"/>
+  <text class="ret-lbl" x="239" y="404">SET OrderItem=Canceled (no candidates)</text>
+  <line x1="189" y1="426" x2="419" y2="426" class="msg-arrow" stroke="#F85149" marker-end="url(#a2)"/>
+  <text class="msg-lbl" x="304" y="420" fill="#F85149">Notify coordinator: no provider found</text>
+  </svg>
+  </div>
+  </div>
+
+  <!-- S3: Digital order flow -->
+  <div class="seq-panel" id="seq-s3">
+  <div class="svg-wrap">
+  <svg width="100%" viewBox="0 0 720 500" role="img">
+  <title>Digital order flow</title>
+  <defs>
+    <marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#E6EDF3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="a3r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#8B949E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="10" y="14" width="80" height="32" rx="7" fill="#1C2128" stroke="#4493F8" stroke-width="1"/>
+  <text class="part-lbl" x="50" y="30" text-anchor="middle" dominant-baseline="central" fill="#4493F8">Client</text>
+  <rect x="130" y="14" width="70" height="32" rx="7" fill="#1C2128" stroke="#2EA043" stroke-width="1"/>
+  <text class="part-lbl" x="165" y="30" text-anchor="middle" dominant-baseline="central" fill="#2EA043">API</text>
+  <rect x="242" y="14" width="98" height="32" rx="7" fill="#1C2128" stroke="#A371F7" stroke-width="1"/>
+  <text class="part-lbl" x="291" y="30" text-anchor="middle" dominant-baseline="central" fill="#A371F7">Database</text>
+  <rect x="382" y="14" width="98" height="32" rx="7" fill="#1C2128" stroke="#E3B341" stroke-width="1"/>
+  <text class="part-lbl" x="431" y="30" text-anchor="middle" dominant-baseline="central" fill="#E3B341">Notif. Service</text>
+  <rect x="522" y="14" width="110" height="32" rx="7" fill="#1C2128" stroke="#A371F7" stroke-width="1"/>
+  <text class="part-lbl" x="577" y="30" text-anchor="middle" dominant-baseline="central" fill="#A371F7">Digital Provider</text>
+  <line x1="50"  y1="46" x2="50"  y2="492" class="life-line"/>
+  <line x1="165" y1="46" x2="165" y2="492" class="life-line"/>
+  <line x1="291" y1="46" x2="291" y2="492" class="life-line"/>
+  <line x1="431" y1="46" x2="431" y2="492" class="life-line"/>
+  <line x1="577" y1="46" x2="577" y2="492" class="life-line"/>
+  <!-- browse -->
+  <text class="note-lbl" x="50" y="68" fill="#39C5CF">① Browse providers</text>
+  <line x1="50" y1="80" x2="155" y2="80" class="msg-arrow" marker-end="url(#a3)"/>
+  <text class="msg-lbl" x="102" y="74">GET /technical/{subCatId}/providers</text>
+  <line x1="155" y1="92" x2="60" y2="92" class="ret-arrow" marker-end="url(#a3r)"/>
+  <text class="ret-lbl" x="102" y="106">profiles + ratings</text>
+  <!-- place order -->
+  <text class="note-lbl" x="50" y="126" fill="#39C5CF">② Place order</text>
+  <line x1="50" y1="140" x2="155" y2="140" class="msg-arrow" marker-end="url(#a3)"/>
+  <text class="msg-lbl" x="102" y="134">POST /digital-orders</text>
+  <line x1="175" y1="150" x2="281" y2="150" class="msg-arrow" marker-end="url(#a3)"/>
+  <text class="ret-lbl" x="228" y="144">INSERT DigitalOrder (Pending)</text>
+  <line x1="175" y1="164" x2="421" y2="164" class="msg-arrow" stroke="#E3B341" marker-end="url(#a3)"/>
+  <text class="msg-lbl" x="298" y="158" fill="#E3B341">Notify provider: new order</text>
+  <line x1="155" y1="176" x2="60" y2="176" class="ret-arrow" marker-end="url(#a3r)"/>
+  <text class="ret-lbl" x="102" y="190">201 order id</text>
+  <!-- provider accepts -->
+  <text class="note-lbl" x="370" y="212" fill="#39C5CF">③ Provider accepts</text>
+  <line x1="577" y1="226" x2="175" y2="226" class="msg-arrow" stroke="#A371F7" marker-end="url(#a3)"/>
+  <text class="msg-lbl" x="376" y="220" fill="#A371F7">PATCH /digital-orders/{id}/accept</text>
+  <line x1="175" y1="238" x2="281" y2="238" class="msg-arrow" marker-end="url(#a3)"/>
+  <text class="ret-lbl" x="228" y="232">SET Status=Accepted → InProgress</text>
+  <!-- deliver -->
+  <text class="note-lbl" x="370" y="262" fill="#39C5CF">④ Provider delivers</text>
+  <line x1="577" y1="276" x2="175" y2="276" class="msg-arrow" stroke="#A371F7" marker-end="url(#a3)"/>
+  <text class="msg-lbl" x="376" y="270" fill="#A371F7">PATCH /digital-orders/{id}/deliver</text>
+  <line x1="175" y1="288" x2="281" y2="288" class="msg-arrow" marker-end="url(#a3)"/>
+  <text class="ret-lbl" x="228" y="282">SET DeliverableUrl, Status=UnderReview</text>
+  <line x1="175" y1="302" x2="421" y2="302" class="msg-arrow" stroke="#E3B341" marker-end="url(#a3)"/>
+  <text class="msg-lbl" x="298" y="296" fill="#E3B341">Notify client: delivery ready</text>
+  <!-- client approves -->
+  <text class="note-lbl" x="50" y="326" fill="#39C5CF">⑤ Client approves</text>
+  <line x1="50" y1="340" x2="155" y2="340" class="msg-arrow" marker-end="url(#a3)"/>
+  <text class="msg-lbl" x="102" y="334">PATCH /digital-orders/{id}/approve</text>
+  <line x1="175" y1="352" x2="281" y2="352" class="msg-arrow" marker-end="url(#a3)"/>
+  <text class="ret-lbl" x="228" y="346">SET Status=Completed, CompletedDate</text>
+  <line x1="175" y1="366" x2="281" y2="366" class="msg-arrow" marker-end="url(#a3)"/>
+  <text class="ret-lbl" x="228" y="360">INSERT DigitalProviderEarnings</text>
+  <line x1="175" y1="380" x2="421" y2="380" class="msg-arrow" stroke="#E3B341" marker-end="url(#a3)"/>
+  <text class="msg-lbl" x="298" y="374" fill="#E3B341">Notify provider: payout recorded</text>
+  <!-- review -->
+  <text class="note-lbl" x="50" y="404" fill="#39C5CF">⑥ Review</text>
+  <line x1="50" y1="418" x2="155" y2="418" class="msg-arrow" marker-end="url(#a3)"/>
+  <text class="msg-lbl" x="102" y="412">POST /digital-orders/{id}/review</text>
+  <line x1="175" y1="430" x2="281" y2="430" class="msg-arrow" marker-end="url(#a3)"/>
+  <text class="ret-lbl" x="228" y="424">INSERT DigitalReview, UPDATE AverageRating</text>
+  <line x1="155" y1="442" x2="60" y2="442" class="ret-arrow" marker-end="url(#a3r)"/>
+  <text class="ret-lbl" x="102" y="456">review saved ✓</text>
+  </svg>
+  </div>
+  </div>
+
+  <!-- S4: Auth -->
+  <div class="seq-panel" id="seq-s4">
+  <div class="svg-wrap">
+  <svg width="100%" viewBox="0 0 680 430" role="img">
+  <title>Login and token refresh</title>
+  <defs>
+    <marker id="a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#E6EDF3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="a4r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#8B949E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="30" y="14" width="100" height="32" rx="7" fill="#1C2128" stroke="#4493F8" stroke-width="1"/>
+  <text class="part-lbl" x="80" y="30" text-anchor="middle" dominant-baseline="central" fill="#4493F8">Client app</text>
+  <rect x="190" y="14" width="100" height="32" rx="7" fill="#1C2128" stroke="#2EA043" stroke-width="1"/>
+  <text class="part-lbl" x="240" y="30" text-anchor="middle" dominant-baseline="central" fill="#2EA043">Auth API</text>
+  <rect x="360" y="14" width="100" height="32" rx="7" fill="#1C2128" stroke="#F85149" stroke-width="1"/>
+  <text class="part-lbl" x="410" y="30" text-anchor="middle" dominant-baseline="central" fill="#F85149">Identity</text>
+  <rect x="520" y="14" width="100" height="32" rx="7" fill="#1C2128" stroke="#A371F7" stroke-width="1"/>
+  <text class="part-lbl" x="570" y="30" text-anchor="middle" dominant-baseline="central" fill="#A371F7">Database</text>
+  <line x1="80"  y1="46" x2="80"  y2="420" class="life-line"/>
+  <line x1="240" y1="46" x2="240" y2="420" class="life-line"/>
+  <line x1="410" y1="46" x2="410" y2="420" class="life-line"/>
+  <line x1="570" y1="46" x2="570" y2="420" class="life-line"/>
+  <!-- login -->
+  <text class="note-lbl" x="80" y="68" fill="#39C5CF">① Login</text>
+  <line x1="80" y1="80" x2="230" y2="80" class="msg-arrow" marker-end="url(#a4)"/>
+  <text class="msg-lbl" x="155" y="74">POST /auth/login {email, password}</text>
+  <line x1="250" y1="92" x2="400" y2="92" class="msg-arrow" marker-end="url(#a4)"/>
+  <text class="ret-lbl" x="325" y="86">SignInManager.CheckPasswordAsync</text>
+  <line x1="400" y1="106" x2="250" y2="106" class="ret-arrow" marker-end="url(#a4r)"/>
+  <text class="ret-lbl" x="325" y="120">user + role claims</text>
+  <line x1="250" y1="134" x2="560" y2="134" class="msg-arrow" marker-end="url(#a4)"/>
+  <text class="ret-lbl" x="405" y="128">INSERT UserRefreshToken</text>
+  <line x1="230" y1="148" x2="90" y2="148" class="ret-arrow" marker-end="url(#a4r)"/>
+  <text class="ret-lbl" x="155" y="162">{accessToken, refreshToken}</text>
+  <!-- separator -->
+  <line x1="30" y1="186" x2="630" y2="186" stroke="#30363D" stroke-width="0.8" stroke-dasharray="4 4"/>
+  <text class="note-lbl" x="330" y="182" text-anchor="middle" fill="#6E7681">— access token expires —</text>
+  <!-- refresh -->
+  <text class="note-lbl" x="80" y="204" fill="#39C5CF">② Refresh token</text>
+  <line x1="80" y1="218" x2="230" y2="218" class="msg-arrow" marker-end="url(#a4)"/>
+  <text class="msg-lbl" x="155" y="212">POST /auth/refresh-token</text>
+  <line x1="250" y1="230" x2="560" y2="230" class="msg-arrow" marker-end="url(#a4)"/>
+  <text class="ret-lbl" x="405" y="224">Validate: !IsUsed, !IsRevoked, !Expired</text>
+  <line x1="560" y1="244" x2="250" y2="244" class="ret-arrow" marker-end="url(#a4r)"/>
+  <text class="ret-lbl" x="405" y="258">valid token record</text>
+  <line x1="250" y1="270" x2="560" y2="270" class="msg-arrow" marker-end="url(#a4)"/>
+  <text class="ret-lbl" x="405" y="264">SET IsUsed=true; INSERT new token</text>
+  <line x1="230" y1="284" x2="90" y2="284" class="ret-arrow" marker-end="url(#a4r)"/>
+  <text class="ret-lbl" x="155" y="298">{new accessToken, new refreshToken}</text>
+  <!-- revoke -->
+  <line x1="30" y1="316" x2="630" y2="316" stroke="#30363D" stroke-width="0.8" stroke-dasharray="4 4"/>
+  <text class="note-lbl" x="330" y="312" text-anchor="middle" fill="#6E7681">— revoke session —</text>
+  <text class="note-lbl" x="80" y="332" fill="#39C5CF">③ Revoke</text>
+  <line x1="80" y1="346" x2="230" y2="346" class="msg-arrow" marker-end="url(#a4)"/>
+  <text class="msg-lbl" x="155" y="340">POST /auth/revoke</text>
+  <line x1="250" y1="356" x2="560" y2="356" class="msg-arrow" marker-end="url(#a4)"/>
+  <text class="ret-lbl" x="405" y="350">SET IsRevoked=true (all user tokens)</text>
+  <line x1="230" y1="368" x2="90" y2="368" class="ret-arrow" marker-end="url(#a4r)"/>
+  <text class="ret-lbl" x="155" y="382">200 OK</text>
+  </svg>
+  </div>
+  </div>
+
+  <!-- S5: Review -->
+  <div class="seq-panel" id="seq-s5">
+  <div class="svg-wrap">
+  <svg width="100%" viewBox="0 0 680 390" role="img">
+  <title>Review and rating update</title>
+  <defs>
+    <marker id="a5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#E6EDF3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="a5r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#8B949E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="30" y="14" width="90" height="32" rx="7" fill="#1C2128" stroke="#4493F8" stroke-width="1"/>
+  <text class="part-lbl" x="75" y="30" text-anchor="middle" dominant-baseline="central" fill="#4493F8">Client</text>
+  <rect x="180" y="14" width="80" height="32" rx="7" fill="#1C2128" stroke="#2EA043" stroke-width="1"/>
+  <text class="part-lbl" x="220" y="30" text-anchor="middle" dominant-baseline="central" fill="#2EA043">API</text>
+  <rect x="330" y="14" width="100" height="32" rx="7" fill="#1C2128" stroke="#A371F7" stroke-width="1"/>
+  <text class="part-lbl" x="380" y="30" text-anchor="middle" dominant-baseline="central" fill="#A371F7">Database</text>
+  <rect x="498" y="14" width="112" height="32" rx="7" fill="#1C2128" stroke="#E3B341" stroke-width="1"/>
+  <text class="part-lbl" x="554" y="30" text-anchor="middle" dominant-baseline="central" fill="#E3B341">Notif. Service</text>
+  <line x1="75"  y1="46" x2="75"  y2="382" class="life-line"/>
+  <line x1="220" y1="46" x2="220" y2="382" class="life-line"/>
+  <line x1="380" y1="46" x2="380" y2="382" class="life-line"/>
+  <line x1="554" y1="46" x2="554" y2="382" class="life-line"/>
+  <text class="note-lbl" x="75" y="68" fill="#39C5CF">① Submit review</text>
+  <line x1="75" y1="82" x2="210" y2="82" class="msg-arrow" marker-end="url(#a5)"/>
+  <text class="msg-lbl" x="142" y="76">POST /orderitems/{id}/review</text>
+  <line x1="230" y1="94" x2="370" y2="94" class="msg-arrow" marker-end="url(#a5)"/>
+  <text class="ret-lbl" x="300" y="88">Check ItemStatus == Completed</text>
+  <line x1="370" y1="108" x2="230" y2="108" class="ret-arrow" marker-end="url(#a5r)"/>
+  <text class="ret-lbl" x="300" y="122">confirmed ✓</text>
+  <line x1="230" y1="138" x2="370" y2="138" class="msg-arrow" marker-end="url(#a5)"/>
+  <text class="ret-lbl" x="300" y="132">INSERT Review (rating, comment)</text>
+  <text class="note-lbl" x="220" y="162" fill="#39C5CF">② Recalculate rating</text>
+  <line x1="230" y1="176" x2="370" y2="176" class="msg-arrow" marker-end="url(#a5)"/>
+  <text class="ret-lbl" x="300" y="170">SELECT AVG(Rating) WHERE ProviderId</text>
+  <line x1="370" y1="190" x2="230" y2="190" class="ret-arrow" marker-end="url(#a5r)"/>
+  <text class="ret-lbl" x="300" y="204">new average value</text>
+  <line x1="230" y1="218" x2="370" y2="218" class="msg-arrow" marker-end="url(#a5)"/>
+  <text class="ret-lbl" x="300" y="212">UPDATE Provider.AverageRating</text>
+  <text class="note-lbl" x="220" y="242" fill="#39C5CF">③ Notify provider</text>
+  <line x1="230" y1="256" x2="544" y2="256" class="msg-arrow" stroke="#E3B341" marker-end="url(#a5)"/>
+  <text class="msg-lbl" x="387" y="250" fill="#E3B341">Notify provider: new review received</text>
+  <line x1="210" y1="274" x2="85" y2="274" class="ret-arrow" marker-end="url(#a5r)"/>
+  <text class="ret-lbl" x="142" y="288">201 review saved ✓</text>
+  </svg>
+  </div>
+  </div>
+
+</div>
+
+<!-- ═══════ ACTOR DIAGRAM ═══════ -->
+<div class="panel" id="panel-actors">
+
+  <div class="legend" style="margin-bottom:20px">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div><span>Client</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--coral)"></div><span>Coordinator</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div><span>Admin</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div><span>Manual Provider</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div><span>Digital Provider</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--brand)"></div><span>Shared service</span></div>
+    <div class="legend-item" style="gap:10px">
+      <svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#8B949E" stroke-width="1.2" marker-end="url(#aa)"/></svg>
+      <span>Uses</span>
+    </div>
+    <div class="legend-item" style="gap:10px">
+      <svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#8B949E" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#aa)"/></svg>
+      <span>Receives</span>
+    </div>
+  </div>
+
+  <div class="svg-wrap">
+  <svg width="100%" viewBox="0 0 680 720" role="img">
+  <title>Actor interaction diagram</title>
+  <defs>
+    <marker id="aa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <!-- Service boxes -->
+  <g class="c-gray"><rect x="250" y="20"  width="180" height="38" rx="8" stroke-width="1"/><text class="th" x="340" y="39" text-anchor="middle" dominant-baseline="central">Auth service</text></g>
+  <g class="c-gray"><rect x="250" y="80"  width="180" height="38" rx="8" stroke-width="1"/><text class="th" x="340" y="99" text-anchor="middle" dominant-baseline="central">Catalogue service</text></g>
+  <g class="c-teal"><rect x="250" y="148" width="180" height="38" rx="8" stroke-width="1"/><text class="th" x="340" y="167" text-anchor="middle" dominant-baseline="central">Cart &amp; checkout</text></g>
+  <g class="c-teal"><rect x="250" y="208" width="180" height="38" rx="8" stroke-width="1"/><text class="th" x="340" y="227" text-anchor="middle" dominant-baseline="central">Manual order mgmt</text></g>
+  <g class="c-teal"><rect x="250" y="268" width="180" height="38" rx="8" stroke-width="1"/><text class="th" x="340" y="287" text-anchor="middle" dominant-baseline="central">Dispatch engine</text></g>
+  <g class="c-purple"><rect x="250" y="328" width="180" height="38" rx="8" stroke-width="1"/><text class="th" x="340" y="347" text-anchor="middle" dominant-baseline="central">Digital order mgmt</text></g>
+  <g class="c-gray"><rect x="250" y="388" width="180" height="38" rx="8" stroke-width="1"/><text class="th" x="340" y="407" text-anchor="middle" dominant-baseline="central">Notifications</text></g>
+  <g class="c-gray"><rect x="250" y="448" width="180" height="38" rx="8" stroke-width="1"/><text class="th" x="340" y="467" text-anchor="middle" dominant-baseline="central">Reviews &amp; ratings</text></g>
+  <g class="c-gray"><rect x="250" y="508" width="180" height="38" rx="8" stroke-width="1"/><text class="th" x="340" y="527" text-anchor="middle" dominant-baseline="central">Transactions</text></g>
+  <g class="c-amber"><rect x="250" y="568" width="180" height="38" rx="8" stroke-width="1"/><text class="th" x="340" y="587" text-anchor="middle" dominant-baseline="central">Admin panel</text></g>
+  <g class="c-amber"><rect x="250" y="628" width="180" height="38" rx="8" stroke-width="1"/><text class="th" x="340" y="647" text-anchor="middle" dominant-baseline="central">Team management</text></g>
+  <!-- LEFT actors -->
+  <g class="c-amber"><rect x="10" y="568" width="110" height="38" rx="8" stroke-width="1"/><text class="th" x="65" y="587" text-anchor="middle" dominant-baseline="central">Admin</text></g>
+  <g class="c-coral"><rect x="10" y="208" width="110" height="38" rx="8" stroke-width="1"/><text class="th" x="65" y="227" text-anchor="middle" dominant-baseline="central">Coordinator</text></g>
+  <g class="c-blue"><rect x="10" y="148" width="110" height="38" rx="8" stroke-width="1"/><text class="th" x="65" y="167" text-anchor="middle" dominant-baseline="central">Client</text></g>
+  <!-- RIGHT actors -->
+  <g class="c-teal"><rect x="560" y="268" width="110" height="38" rx="8" stroke-width="1"/><text class="th" x="615" y="278" text-anchor="middle" dominant-baseline="central">Manual</text><text class="th" x="615" y="295" text-anchor="middle" dominant-baseline="central">Provider</text></g>
+  <g class="c-purple"><rect x="560" y="328" width="110" height="38" rx="8" stroke-width="1"/><text class="th" x="615" y="338" text-anchor="middle" dominant-baseline="central">Digital</text><text class="th" x="615" y="355" text-anchor="middle" dominant-baseline="central">Provider</text></g>
+  <!-- Left connections -->
+  <line x1="65" y1="568" x2="200" y2="40"  stroke="#6E7681" stroke-width="0.8" marker-end="url(#aa)"/>
+  <line x1="65" y1="208" x2="248" y2="40"  stroke="#6E7681" stroke-width="0.8" marker-end="url(#aa)"/>
+  <line x1="65" y1="148" x2="248" y2="40"  stroke="#6E7681" stroke-width="0.8" marker-end="url(#aa)"/>
+  <line x1="120" y1="162" x2="249" y2="96"  stroke="#4493F8" stroke-width="1.2" marker-end="url(#aa)"/>
+  <line x1="120" y1="167" x2="249" y2="164" stroke="#4493F8" stroke-width="1.2" marker-end="url(#aa)"/>
+  <line x1="120" y1="172" x2="249" y2="218" stroke="#4493F8" stroke-width="1.2" marker-end="url(#aa)"/>
+  <line x1="110" y1="175" x2="249" y2="340" stroke="#4493F8" stroke-width="1.2" marker-end="url(#aa)"/>
+  <line x1="110" y1="178" x2="249" y2="458" stroke="#4493F8" stroke-width="1.2" marker-end="url(#aa)"/>
+  <line x1="118" y1="174" x2="249" y2="400" stroke="#4493F8" stroke-width="0.7" stroke-dasharray="4 3" marker-end="url(#aa)"/>
+  <line x1="120" y1="224" x2="249" y2="224" stroke="#F0883E" stroke-width="1.4" marker-end="url(#aa)"/>
+  <line x1="120" y1="230" x2="249" y2="278" stroke="#F0883E" stroke-width="1.4" marker-end="url(#aa)"/>
+  <line x1="118" y1="218" x2="249" y2="396" stroke="#F0883E" stroke-width="0.7" stroke-dasharray="4 3" marker-end="url(#aa)"/>
+  <line x1="110" y1="234" x2="249" y2="518" stroke="#F0883E" stroke-width="0.8" marker-end="url(#aa)"/>
+  <line x1="120" y1="585" x2="249" y2="585" stroke="#E3B341" stroke-width="1.4" marker-end="url(#aa)"/>
+  <line x1="120" y1="590" x2="249" y2="641" stroke="#E3B341" stroke-width="1.4" marker-end="url(#aa)"/>
+  <line x1="120" y1="575" x2="249" y2="92"  stroke="#E3B341" stroke-width="0.8" marker-end="url(#aa)"/>
+  <!-- Right connections -->
+  <line x1="559" y1="283" x2="431" y2="283" stroke="#39C5CF" stroke-width="1.4" marker-end="url(#aa)"/>
+  <line x1="559" y1="295" x2="431" y2="402" stroke="#39C5CF" stroke-width="0.7" stroke-dasharray="4 3" marker-end="url(#aa)"/>
+  <line x1="559" y1="276" x2="431" y2="230" stroke="#39C5CF" stroke-width="0.8" marker-end="url(#aa)"/>
+  <line x1="565" y1="300" x2="431" y2="520" stroke="#39C5CF" stroke-width="0.8" marker-end="url(#aa)"/>
+  <line x1="580" y1="268" x2="431" y2="50"  stroke="#39C5CF" stroke-width="0.8" marker-end="url(#aa)"/>
+  <line x1="559" y1="343" x2="431" y2="343" stroke="#A371F7" stroke-width="1.4" marker-end="url(#aa)"/>
+  <line x1="559" y1="355" x2="431" y2="408" stroke="#A371F7" stroke-width="0.7" stroke-dasharray="4 3" marker-end="url(#aa)"/>
+  <line x1="570" y1="330" x2="431" y2="92"  stroke="#A371F7" stroke-width="0.8" marker-end="url(#aa)"/>
+  <line x1="570" y1="360" x2="431" y2="524" stroke="#A371F7" stroke-width="0.8" marker-end="url(#aa)"/>
+  <line x1="580" y1="328" x2="431" y2="52"  stroke="#A371F7" stroke-width="0.8" marker-end="url(#aa)"/>
+  </svg>
+  </div>
+</div>
+
+</div><!-- end page-wrap -->
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  var tabs = document.querySelectorAll('.tab');
+  for(var i=0;i<tabs.length;i++){
+    if(tabs[i].getAttribute('onclick') === "showTab('"+id+"')"){
+      tabs[i].classList.add('active');
+      break;
+    }
+  }
+  document.getElementById('panel-'+id).classList.add('active');
+  // re-trigger stagger animation
+  setTimeout(function(){
+    document.querySelectorAll('.panel.active .req-item').forEach(function(el,i){
+      el.style.animation='none';
+      (function(e,idx){ requestAnimationFrame(function(){ e.style.animation='reqSlideIn .25s ease '+(idx*0.022)+'s backwards'; }); })(el,i);
+    });
+  },30);
+}
+
+function showSeq(id){
+  document.querySelectorAll('.seq-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.seq-panel').forEach(function(p){p.classList.remove('active');});
+  var btns = document.querySelectorAll('.seq-btn');
+  for(var i=0;i<btns.length;i++){
+    if(btns[i].getAttribute('onclick') === "showSeq('"+id+"')"){
+      btns[i].classList.add('active');
+      break;
+    }
+  }
+  document.getElementById('seq-'+id).classList.add('active');
+}
+
+function filterReqs(q){
+  var s = q.toLowerCase().trim();
+  document.querySelectorAll('#funcGroups .req-item').forEach(function(item){
+    item.style.display = (!s || item.textContent.toLowerCase().includes(s)) ? 'flex' : 'none';
+  });
+  document.querySelectorAll('#funcGroups .req-group').forEach(function(grp){
+    var visible = Array.from(grp.querySelectorAll('.req-item')).some(function(i){ return i.style.display !== 'none'; });
+    grp.style.display = visible ? 'block' : 'none';
+  });
+}
+</script>
+</body>
+</html>

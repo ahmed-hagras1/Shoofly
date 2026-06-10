@@ -7,37 +7,34 @@ using System.Threading.Tasks;
 
 namespace Shoofly.Infrastructure.Seeder
 {
-    public static class UserSeeder
-    {
-        public static async Task SeedAsync(UserManager<ApplicationUser> userManager, AppDbContext dbContext)
+        public static class UserSeeder
         {
-            // Only seed if no users exist
-            if (!userManager.Users.Any())
+            public static async Task SeedAsync(UserManager<ApplicationUser> userManager, AppDbContext dbContext)
             {
-                // Grab the first country from the database to satisfy the CountryId FK
-                var defaultCountry = dbContext.Set<Country>().FirstOrDefault();
-                int defaultCountryId = defaultCountry != null ? defaultCountry.Id : 1;
-
-                var defaultAdmin = new ApplicationUser
+                if (!userManager.Users.Any())
                 {
-                    UserName = "admin@shoofly.com",
-                    Email = "admin@shoofly.com",
-                    FullName = "Shoofly Admin",
-                    EmailConfirmed = true,
-                    PhoneNumberConfirmed = true,
-                    PreferredLanguage = "ar-EG",
-                    CountryId = defaultCountryId
-                };
+                    var defaultCountry = dbContext.Set<Country>().FirstOrDefault();
+                    int defaultCountryId = defaultCountry?.Id ?? 1;
 
-                // Create the user with a strong default password
-                var result = await userManager.CreateAsync(defaultAdmin, "Admin@123");
+                    // Admin is a plain ApplicationUser (not a Client/Provider subtype)
+                    var defaultAdmin = new ApplicationUser
+                    {
+                        UserName = "admin@shoofly.com",
+                        Email = "admin@shoofly.com",
+                        FullName = "Shoofly Admin",
+                        EmailConfirmed = true,
+                        PhoneNumberConfirmed = true,
+                        PreferredLanguage = "ar-EG",
+                        CountryId = defaultCountryId
+                    };
 
-                // If successful, attach the Admin role to this user
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(defaultAdmin, "Admin");
+                    var result = await userManager.CreateAsync(defaultAdmin, "Admin@123");
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(defaultAdmin, "Admin");
+                    }
                 }
             }
         }
-    }
+    
 }

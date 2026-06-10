@@ -8,11 +8,12 @@ namespace Shoofly.Shared.Enums
 {
     public enum TransactionType
     {
-        ClientPayment = 1,        // Client paid for an order
-        ProviderEarnings = 2,     // Money added to worker's balance for finishing a job
-        PlatformCommission = 3,   // The cut the platform takes
-        Withdrawal = 4,           // Worker withdrew money to their bank/Vodafone Cash
-        Refund = 5,               // Money returned to the client
-        SalaryPayment = 6         // Monthly fixed salary paid to an employee
+        ClientPayment = 1,           // Client paid for a manual or digital order
+        ProviderEarnings = 2,        // Payout to a ManualServiceProvider after job completion
+        DigitalProviderEarnings = 3, // Payout to a DigitalServiceProvider after order completion
+        PlatformCommission = 4,      // The platform's cut on any transaction
+        Withdrawal = 5,              // Provider withdrew earnings to bank / Vodafone Cash
+        Refund = 6,                  // Money returned to the client
+        SalaryPayment = 7            // Fixed monthly salary paid to Coordinator / ManualServiceProvider
     }
 }

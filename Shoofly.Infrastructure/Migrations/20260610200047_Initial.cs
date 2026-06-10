@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Shoofly.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAllPrimaryTables : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,25 +26,14 @@ namespace Shoofly.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Carts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Carts", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IconUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,7 +46,8 @@ namespace Shoofly.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DialCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,19 +55,36 @@ namespace Shoofly.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Teams",
+                name: "DigitalTeams",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LeaderId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Teams", x => x.Id);
+                    table.PrimaryKey("PK_DigitalTeams", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ManualTeams",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LeaderId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ManualTeams", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -108,6 +115,7 @@ namespace Shoofly.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IconUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -127,19 +135,31 @@ namespace Shoofly.Infrastructure.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
                     PreferredLanguage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CountryId = table.Column<int>(type: "int", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(34)", maxLength: 34, nullable: false),
+                    DefaultArea = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DefaultStreet = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DefaultBuilding = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Salary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     DocumentFileUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DispatchedOrdersCount = table.Column<int>(type: "int", nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: true),
                     AverageRating = table.Column<double>(type: "float", nullable: true),
-                    ServiceProvider_DocumentFileUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ServiceProvider_Salary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    ProfileTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PortfolioUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HourlyRate = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    IsVerified = table.Column<bool>(type: "bit", nullable: true),
                     TeamId = table.Column<int>(type: "int", nullable: true),
+                    ManualServiceProvider_Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ManualServiceProvider_IsAvailable = table.Column<bool>(type: "bit", nullable: true),
+                    ManualServiceProvider_AverageRating = table.Column<double>(type: "float", nullable: true),
+                    ManualServiceProvider_Salary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    ManualServiceProvider_DocumentFileUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Region = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ManualServiceProvider_TeamId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -163,35 +183,42 @@ namespace Shoofly.Infrastructure.Migrations
                         column: x => x.CountryId,
                         principalTable: "Countries",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Teams_TeamId",
+                        name: "FK_AspNetUsers_DigitalTeams_TeamId",
                         column: x => x.TeamId,
-                        principalTable: "Teams",
+                        principalTable: "DigitalTeams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_ManualTeams_ManualServiceProvider_TeamId",
+                        column: x => x.ManualServiceProvider_TeamId,
+                        principalTable: "ManualTeams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Services",
+                name: "ManualServices",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CoverPhoto = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PricingType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ServiceAmountStart = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     HourlyRateStart = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     RequiresPhysicalAttendance = table.Column<bool>(type: "bit", nullable: false),
-                    PricingType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CoverPhoto = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RequiresTeam = table.Column<bool>(type: "bit", nullable: false),
                     SubCategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Services", x => x.Id);
+                    table.PrimaryKey("PK_ManualServices", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Services_SubCategories_SubCategoryId",
+                        name: "FK_ManualServices_SubCategories_SubCategoryId",
                         column: x => x.SubCategoryId,
                         principalTable: "SubCategories",
                         principalColumn: "Id",
@@ -284,6 +311,99 @@ namespace Shoofly.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Carts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Carts_AspNetUsers_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DigitalOrders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SubCategoryId = table.Column<int>(type: "int", nullable: false),
+                    AgreedPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DeliveryDays = table.Column<int>(type: "int", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CompletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TeamId = table.Column<int>(type: "int", nullable: true),
+                    AttachmentUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeliverableUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DigitalOrders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DigitalOrders_AspNetUsers_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DigitalOrders_AspNetUsers_ProviderId",
+                        column: x => x.ProviderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_DigitalOrders_DigitalTeams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "DigitalTeams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_DigitalOrders_SubCategories_SubCategoryId",
+                        column: x => x.SubCategoryId,
+                        principalTable: "SubCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DigitalProviderSubCategories",
+                columns: table => new
+                {
+                    DigitalProvidersId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OfferedSubCategoriesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DigitalProviderSubCategories", x => new { x.DigitalProvidersId, x.OfferedSubCategoriesId });
+                    table.ForeignKey(
+                        name: "FK_DigitalProviderSubCategories_AspNetUsers_DigitalProvidersId",
+                        column: x => x.DigitalProvidersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DigitalProviderSubCategories_SubCategories_OfferedSubCategoriesId",
+                        column: x => x.OfferedSubCategoriesId,
+                        principalTable: "SubCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Notifications",
                 columns: table => new
                 {
@@ -293,8 +413,11 @@ namespace Shoofly.Infrastructure.Migrations
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsRead = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: true)
+                    OrderId = table.Column<int>(type: "int", nullable: true),
+                    DigitalOrderId = table.Column<int>(type: "int", nullable: true),
+                    DispatchAttemptId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -325,17 +448,11 @@ namespace Shoofly.Infrastructure.Migrations
                     TotalCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     OrderStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CoordinatorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    CoordinatorId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Orders_AspNetUsers_ClientId",
                         column: x => x.ClientId,
@@ -347,7 +464,7 @@ namespace Shoofly.Infrastructure.Migrations
                         column: x => x.CoordinatorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -376,13 +493,61 @@ namespace Shoofly.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ManualServiceProviderServices",
+                columns: table => new
+                {
+                    OfferedServicesId = table.Column<int>(type: "int", nullable: false),
+                    QualifiedProvidersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ManualServiceProviderServices", x => new { x.OfferedServicesId, x.QualifiedProvidersId });
+                    table.ForeignKey(
+                        name: "FK_ManualServiceProviderServices_AspNetUsers_QualifiedProvidersId",
+                        column: x => x.QualifiedProvidersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ManualServiceProviderServices_ManualServices_OfferedServicesId",
+                        column: x => x.OfferedServicesId,
+                        principalTable: "ManualServices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ManualTeamServices",
+                columns: table => new
+                {
+                    QualifiedServicesId = table.Column<int>(type: "int", nullable: false),
+                    QualifiedTeamsId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ManualTeamServices", x => new { x.QualifiedServicesId, x.QualifiedTeamsId });
+                    table.ForeignKey(
+                        name: "FK_ManualTeamServices_ManualServices_QualifiedServicesId",
+                        column: x => x.QualifiedServicesId,
+                        principalTable: "ManualServices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ManualTeamServices_ManualTeams_QualifiedTeamsId",
+                        column: x => x.QualifiedTeamsId,
+                        principalTable: "ManualTeams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CartItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CartId = table.Column<int>(type: "int", nullable: false),
-                    ServiceId = table.Column<int>(type: "int", nullable: false),
+                    ManualServiceId = table.Column<int>(type: "int", nullable: false),
                     AddedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -395,57 +560,31 @@ namespace Shoofly.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CartItems_Services_ServiceId",
-                        column: x => x.ServiceId,
-                        principalTable: "Services",
+                        name: "FK_CartItems_ManualServices_ManualServiceId",
+                        column: x => x.ManualServiceId,
+                        principalTable: "ManualServices",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ServiceServiceProvider",
+                name: "DigitalReviews",
                 columns: table => new
                 {
-                    OfferedServicesId = table.Column<int>(type: "int", nullable: false),
-                    ProvidersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DigitalOrderId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ServiceServiceProvider", x => new { x.OfferedServicesId, x.ProvidersId });
+                    table.PrimaryKey("PK_DigitalReviews", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ServiceServiceProvider_AspNetUsers_ProvidersId",
-                        column: x => x.ProvidersId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ServiceServiceProvider_Services_OfferedServicesId",
-                        column: x => x.OfferedServicesId,
-                        principalTable: "Services",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ServiceTeam",
-                columns: table => new
-                {
-                    OfferedServicesId = table.Column<int>(type: "int", nullable: false),
-                    TeamsId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ServiceTeam", x => new { x.OfferedServicesId, x.TeamsId });
-                    table.ForeignKey(
-                        name: "FK_ServiceTeam_Services_OfferedServicesId",
-                        column: x => x.OfferedServicesId,
-                        principalTable: "Services",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ServiceTeam_Teams_TeamsId",
-                        column: x => x.TeamsId,
-                        principalTable: "Teams",
+                        name: "FK_DigitalReviews_DigitalOrders_DigitalOrderId",
+                        column: x => x.DigitalOrderId,
+                        principalTable: "DigitalOrders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -457,7 +596,7 @@ namespace Shoofly.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    ServiceId = table.Column<int>(type: "int", nullable: false),
+                    ManualServiceId = table.Column<int>(type: "int", nullable: false),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     HoursSelected = table.Column<int>(type: "int", nullable: true),
                     SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -475,23 +614,23 @@ namespace Shoofly.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
+                        name: "FK_OrderItems_ManualServices_ManualServiceId",
+                        column: x => x.ManualServiceId,
+                        principalTable: "ManualServices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_ManualTeams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "ManualTeams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderItems_Services_ServiceId",
-                        column: x => x.ServiceId,
-                        principalTable: "Services",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_OrderItems_Teams_TeamId",
-                        column: x => x.TeamId,
-                        principalTable: "Teams",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -502,11 +641,12 @@ namespace Shoofly.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PaymentMethod = table.Column<int>(type: "int", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: true)
+                    OrderId = table.Column<int>(type: "int", nullable: true),
+                    DigitalOrderId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -518,11 +658,47 @@ namespace Shoofly.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_Transactions_DigitalOrders_DigitalOrderId",
+                        column: x => x.DigitalOrderId,
+                        principalTable: "DigitalOrders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
                         name: "FK_Transactions_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DispatchAttempts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderItemId = table.Column<int>(type: "int", nullable: false),
+                    ProviderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RespondedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DeclineReason = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DispatchAttempts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DispatchAttempts_AspNetUsers_ProviderId",
+                        column: x => x.ProviderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DispatchAttempts_OrderItems_OrderItemId",
+                        column: x => x.OrderItemId,
+                        principalTable: "OrderItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -585,6 +761,11 @@ namespace Shoofly.Infrastructure.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_ManualServiceProvider_TeamId",
+                table: "AspNetUsers",
+                column: "ManualServiceProvider_TeamId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_TeamId",
                 table: "AspNetUsers",
                 column: "TeamId");
@@ -602,14 +783,81 @@ namespace Shoofly.Infrastructure.Migrations
                 column: "CartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItems_ServiceId",
+                name: "IX_CartItems_ManualServiceId",
                 table: "CartItems",
-                column: "ServiceId");
+                column: "ManualServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Carts_ClientId",
+                table: "Carts",
+                column: "ClientId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DigitalOrders_ClientId",
+                table: "DigitalOrders",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DigitalOrders_ProviderId",
+                table: "DigitalOrders",
+                column: "ProviderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DigitalOrders_SubCategoryId",
+                table: "DigitalOrders",
+                column: "SubCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DigitalOrders_TeamId",
+                table: "DigitalOrders",
+                column: "TeamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DigitalProviderSubCategories_OfferedSubCategoriesId",
+                table: "DigitalProviderSubCategories",
+                column: "OfferedSubCategoriesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DigitalReviews_DigitalOrderId",
+                table: "DigitalReviews",
+                column: "DigitalOrderId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DispatchAttempts_OrderItemId",
+                table: "DispatchAttempts",
+                column: "OrderItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DispatchAttempts_ProviderId",
+                table: "DispatchAttempts",
+                column: "ProviderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ManualServiceProviderServices_QualifiedProvidersId",
+                table: "ManualServiceProviderServices",
+                column: "QualifiedProvidersId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ManualServices_SubCategoryId",
+                table: "ManualServices",
+                column: "SubCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ManualTeamServices_QualifiedTeamsId",
+                table: "ManualTeamServices",
+                column: "QualifiedTeamsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_UserId",
                 table: "Notifications",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_ManualServiceId",
+                table: "OrderItems",
+                column: "ManualServiceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
@@ -622,19 +870,9 @@ namespace Shoofly.Infrastructure.Migrations
                 column: "ProviderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_ServiceId",
-                table: "OrderItems",
-                column: "ServiceId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_TeamId",
                 table: "OrderItems",
                 column: "TeamId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_ApplicationUserId",
-                table: "Orders",
-                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_ClientId",
@@ -653,24 +891,14 @@ namespace Shoofly.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Services_SubCategoryId",
-                table: "Services",
-                column: "SubCategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ServiceServiceProvider_ProvidersId",
-                table: "ServiceServiceProvider",
-                column: "ProvidersId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ServiceTeam_TeamsId",
-                table: "ServiceTeam",
-                column: "TeamsId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SubCategories_CategoryId",
                 table: "SubCategories",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_DigitalOrderId",
+                table: "Transactions",
+                column: "DigitalOrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_OrderId",
@@ -710,16 +938,25 @@ namespace Shoofly.Infrastructure.Migrations
                 name: "CartItems");
 
             migrationBuilder.DropTable(
+                name: "DigitalProviderSubCategories");
+
+            migrationBuilder.DropTable(
+                name: "DigitalReviews");
+
+            migrationBuilder.DropTable(
+                name: "DispatchAttempts");
+
+            migrationBuilder.DropTable(
+                name: "ManualServiceProviderServices");
+
+            migrationBuilder.DropTable(
+                name: "ManualTeamServices");
+
+            migrationBuilder.DropTable(
                 name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "Reviews");
-
-            migrationBuilder.DropTable(
-                name: "ServiceServiceProvider");
-
-            migrationBuilder.DropTable(
-                name: "ServiceTeam");
 
             migrationBuilder.DropTable(
                 name: "Transactions");
@@ -737,25 +974,31 @@ namespace Shoofly.Infrastructure.Migrations
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
+                name: "DigitalOrders");
+
+            migrationBuilder.DropTable(
+                name: "ManualServices");
+
+            migrationBuilder.DropTable(
                 name: "Orders");
-
-            migrationBuilder.DropTable(
-                name: "Services");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "SubCategories");
 
             migrationBuilder.DropTable(
-                name: "Countries");
-
-            migrationBuilder.DropTable(
-                name: "Teams");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Countries");
+
+            migrationBuilder.DropTable(
+                name: "DigitalTeams");
+
+            migrationBuilder.DropTable(
+                name: "ManualTeams");
         }
     }
 }
